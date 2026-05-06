@@ -32,5 +32,12 @@
     "tsx": "4.19.2",
     "typescript": "5.7.3",
     "vitest": "2.1.8"
-  }
+  },
+  "browserslist": [
+    "chrome >= 90",
+    "edge >= 90",
+    "firefox >= 90",
+    "safari >= 15",
+    "opera >= 76"
+  ]
 }

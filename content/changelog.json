@@ -1,5 +1,11 @@
 [
   {
+    "hash": "02e34dbd3fb05edd05049902898df43492f818ab",
+    "shortHash": "02e34db",
+    "date": "2026-05-06T14:32:23-06:00",
+    "subject": "Honest Lighthouse + a11y fixes from real audit run"
+  },
+  {
     "hash": "059ecf31665d66d98819f8c424a1059a18a5332e",
     "shortHash": "059ecf3",
     "date": "2026-05-06T14:22:11-06:00",

@@ -1,17 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Highlight, themes as prismThemes, type PrismTheme } from "prism-react-renderer";
 
-const SAMPLE_NAME = "Söhne";
 const FULL_CODE = `@font-face {
-  font-family: "${SAMPLE_NAME}";
+  font-family: "Söhne";
   src: url({{ 'söhne.woff2' | asset_url }}) format('woff2');
   font-weight: 400;
   font-display: swap;
 }`;
-
-const TYPE_INTERVAL_MS = 22;
 
 const CHARCOAL_THEME: PrismTheme = {
   ...prismThemes.vsLight,
@@ -31,34 +27,17 @@ const CHARCOAL_THEME: PrismTheme = {
 };
 
 /**
- * Hero-level micro-demo. Types out the @font-face block once on mount
- * so non-developer merchants see what they'll be copying before they
- * decide to scroll. Static after first paint — no looping cycle —
- * because a perpetually-changing block competes with the H1 for
- * attention. Reduced-motion users see the full block immediately.
+ * Hero-level micro-demo of the @font-face output. The content is
+ * tokenized exactly once; per-line "fade-up" appearance is driven by a
+ * CSS keyframe with a staggered animation-delay so we get the live
+ * feel without re-tokenizing on every animation tick (the previous
+ * char-by-char typewriter ran the highlighter ~80 times per render and
+ * was a measurable contributor to LCP element render delay).
+ *
+ * Reduced-motion users see the full block with no stagger via the
+ * global prefers-reduced-motion override in globals.css.
  */
 export function HeroCodePreview() {
-  const [shown, setShown] = useState(0);
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setReduced(true);
-      setShown(FULL_CODE.length);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (reduced || shown >= FULL_CODE.length) return;
-    const t = setTimeout(() => setShown((c) => c + 1), TYPE_INTERVAL_MS);
-    return () => clearTimeout(t);
-  }, [shown, reduced]);
-
-  const visibleCode = FULL_CODE.slice(0, shown);
-  const isTyping = !reduced && shown < FULL_CODE.length;
-
   return (
     <figure
       aria-label="Generated @font-face block preview"
@@ -75,7 +54,7 @@ export function HeroCodePreview() {
         </span>
       </header>
       <div className="p-4 min-h-[10.5rem]">
-        <Highlight code={visibleCode} language="css" theme={CHARCOAL_THEME}>
+        <Highlight code={FULL_CODE} language="css" theme={CHARCOAL_THEME}>
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <pre
               className={`${className} font-mono text-[12px] leading-relaxed m-0`}
@@ -83,18 +62,20 @@ export function HeroCodePreview() {
             >
               {tokens.map((line, i) => {
                 const lineProps = getLineProps({ line });
-                const isLast = i === tokens.length - 1;
                 return (
-                  <div key={i} {...lineProps}>
+                  <div
+                    key={i}
+                    {...lineProps}
+                    className={`${lineProps.className ?? ""} shopifont-line`}
+                    style={{
+                      ...lineProps.style,
+                      animationDelay: `${i * 80}ms`,
+                    }}
+                  >
                     {line.map((token, k) => {
                       const tokenProps = getTokenProps({ token });
                       return <span key={k} {...tokenProps} />;
                     })}
-                    {isLast && isTyping ? (
-                      <span aria-hidden className="animate-blink text-electric">
-                        |
-                      </span>
-                    ) : null}
                   </div>
                 );
               })}

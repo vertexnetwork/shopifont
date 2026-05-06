@@ -220,6 +220,27 @@ body {
   animation: shopifont-pulse 150ms ease-out both;
 }
 
+/*
+ * Per-line fade-up used by HeroCodePreview. Tokenization happens once;
+ * each line's animation-delay is set inline so the typewriter feel is
+ * achieved without React re-renders. The global prefers-reduced-motion
+ * rule below collapses the animation to ~instant.
+ */
+@keyframes shopifont-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.shopifont-line {
+  opacity: 0;
+  animation: shopifont-fade-up 220ms ease-out forwards;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

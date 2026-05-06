@@ -90,56 +90,48 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
       <head>
         {/*
-          Mediavine Grow Faves bootstrapper. Loads on every page so the
-          30-day Journey authentication window starts from launch
-          (PLAN.md §7). Inlined in <head> as a plain <script> — Mediavine's
-          documented snippet uses an IIFE that creates a deferred child
-          script (https://faves.grow.me/main.js) carrying the site ID as
-          a data attribute. Skipped in dev / preview when the env var is
-          unset to avoid 404s.
+          Mediavine Grow Faves bootstrapper. PLAN.md §7 needs this
+          firing on every page so the 30-day Journey authentication
+          window opens from launch — but it does NOT need to fire
+          before LCP. Moved to next/script lazyOnload so the IIFE that
+          creates the deferred main.js child script runs during
+          browser idle, not in the critical path. Mediavine still
+          authenticates the page view (it's the script load that
+          counts, not the timing). Skipped in dev/preview when the
+          env var is unset.
         */}
         {mediavineSiteId ? (
-          <script
-            data-grow-initializer=""
-            dangerouslySetInnerHTML={{
-              __html:
-                "!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement(\"script\");(e.type=\"text/javascript\"),(e.src=\"https://faves.grow.me/main.js\"),(e.defer=!0),e.setAttribute(\"data-grow-faves-site-id\"," +
-                JSON.stringify(mediavineSiteId) +
-                ");var t=document.getElementsByTagName(\"script\")[0];t.parentNode.insertBefore(e,t);})();",
-            }}
-          />
+          <Script id="mediavine-grow" strategy="lazyOnload">
+            {`!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id",${JSON.stringify(mediavineSiteId)});var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();`}
+          </Script>
         ) : null}
 
         {/*
-          Plausible analytics with country dimension so we can monitor
-          Tier-1 traffic share for future Raptive eligibility (PLAN.md §7).
+          Plausible analytics. Moved from afterInteractive to
+          lazyOnload — analytics doesn't need to fire before the user
+          can interact, and lazyOnload runs during browser idle so it
+          doesn't compete with the critical path. Trade-off: pageviews
+          on extreme bouncers (<1s) may be missed; that's a tiny
+          fraction of traffic vs. the LCP/TBT win.
         */}
         {plausibleDomain ? (
           <Script
             id="plausible"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             data-domain={plausibleDomain}
             src="https://plausible.io/js/script.outbound-links.js"
-            defer
           />
         ) : null}
 
         {/*
-          Microsoft Clarity — heatmaps, session recordings, dead/rage-click
-          forensics. The project ID is validated as alphanumeric before
-          interpolation so this stays safe even though we render via
-          dangerouslySetInnerHTML. Skipped when unset (dev/preview).
+          Microsoft Clarity — heatmaps, session recordings, dead/rage-
+          click forensics. Same lazyOnload reasoning. The project ID is
+          validated as alphanumeric before interpolation.
         */}
         {clarityProjectIdSafe ? (
-          <script
-            id="clarity-init"
-            dangerouslySetInnerHTML={{
-              __html:
-                "(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src=\"https://www.clarity.ms/tag/\"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,\"clarity\",\"script\",\"" +
-                clarityProjectIdSafe +
-                "\");",
-            }}
-          />
+          <Script id="clarity-init" strategy="lazyOnload">
+            {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityProjectIdSafe}");`}
+          </Script>
         ) : null}
 
         <SiteSchema />
