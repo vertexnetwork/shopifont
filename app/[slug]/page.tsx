@@ -94,7 +94,7 @@ export default async function PseoPage({ params }: PageProps) {
             </p>
             <h1
               id="hero-anchor"
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight font-system"
             >
               {entry.h1}
             </h1>

@@ -1,5 +1,11 @@
 [
   {
+    "hash": "5a06693eeff94048f4fe5be1da2c1861fb999ba6",
+    "shortHash": "5a06693",
+    "date": "2026-05-06T14:40:36-06:00",
+    "subject": "Lighthouse perf + security pass: defer 3p, drop polyfills, HSTS"
+  },
+  {
     "hash": "02e34dbd3fb05edd05049902898df43492f818ab",
     "shortHash": "02e34db",
     "date": "2026-05-06T14:32:23-06:00",

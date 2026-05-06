@@ -36,7 +36,7 @@ export default function HomePage() {
             <SignupChip />
             <h1
               id="hero-anchor"
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02]"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02] font-system"
             >
               Free Shopify Custom Font Generator
             </h1>

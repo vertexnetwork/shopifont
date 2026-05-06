@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FORMAT_LABEL,
   FORMAT_ORDER,
@@ -80,16 +80,39 @@ function useTypewriter(active: boolean) {
  * Self-contained so its frequent state ticks don't re-render the
  * whole Inputs panel. Visual cycling text is aria-hidden; an sr-only
  * span emits the full example list for assistive tech.
+ *
+ * IntersectionObserver gate: the typewriter only runs when this hint
+ * is in the viewport. The Generator sits below the fold on initial
+ * load — running the cycle while the user can't see it wasted style/
+ * layout cycles that Lighthouse counted toward LCP-window CPU time.
  */
 function TypedHint() {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [inView, setInView] = useState(false);
   const reduced = useReducedMotion();
-  const text = useTypewriter(!reduced);
+  const text = useTypewriter(!reduced && inView);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.IntersectionObserver) {
+      setInView(true);
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => setInView(entries[0]?.isIntersecting ?? false),
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <>
       <span className="sr-only">
         Examples: {TYPE_EXAMPLES.join(", ")}
       </span>
-      <span aria-hidden className="font-mono text-charcoal">
+      <span ref={ref} aria-hidden className="font-mono text-charcoal">
         Try:{" "}
         <span>{reduced ? TYPE_EXAMPLES[0] : text}</span>
         {!reduced ? (

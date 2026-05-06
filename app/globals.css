@@ -41,6 +41,15 @@
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  /*
+   * System-font stack used on the LCP H1 elements (homepage + pSEO).
+   * Painting the largest contentful element with a font that's
+   * already on disk skips the Inter Bold font-swap latency that
+   * Lighthouse measures as LCP element render delay (~3.4s on the
+   * desktop run). Body copy continues to use Inter via --font-sans.
+   */
+  --font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Mobile-first content rhythm */
   --spacing-touch: 2.75rem; /* 44px minimum touch target */
