@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ShopifontGenerator } from "@/components/Generator";
 import { AdSlot } from "@/components/Layout/AdSlot";
 import { RelatedLinks } from "@/components/Layout/RelatedLinks";
+import { Reveal } from "@/components/Reveal";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
 import { SoftwareApplicationSchema } from "@/components/Schema/SoftwareApplicationSchema";
@@ -91,7 +92,10 @@ export default async function PseoPage({ params }: PageProps) {
                 <time dateTime={BUILD_DATE_ISO}>{getBuildDateLabel()}</time>
               </span>
             </p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+            <h1
+              id="hero-anchor"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight"
+            >
               {entry.h1}
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">
@@ -109,45 +113,63 @@ export default async function PseoPage({ params }: PageProps) {
           <ShopifontGenerator />
         </section>
 
-        <section
-          aria-labelledby="usecase-heading"
-          className="prose prose-charcoal max-w-none"
-        >
-          <h2
-            id="usecase-heading"
-            className="text-2xl font-semibold tracking-tight"
-          >
-            How to use this on {entry.theme}
-          </h2>
-          <p className="mt-3 text-sm sm:text-base leading-relaxed text-charcoal/80 whitespace-pre-line">
-            {entry.useCase}
-          </p>
-        </section>
+        <Reveal>
+          <section aria-labelledby="usecase-heading" className="flex flex-col gap-3">
+            <h2
+              id="usecase-heading"
+              className="text-2xl font-bold tracking-tight"
+            >
+              How to use this on {entry.theme}
+            </h2>
+            <ol className="flex flex-col gap-3 list-none counter-reset-[step]">
+              {entry.useCaseSteps.map((step, i) => (
+                <li
+                  key={i}
+                  className="grid grid-cols-[2.25rem_1fr] gap-3 items-start"
+                >
+                  <span
+                    aria-hidden
+                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-electric/10 text-electric font-mono text-sm font-semibold"
+                  >
+                    {i + 1}
+                  </span>
+                  <p className="text-sm sm:text-base leading-relaxed text-charcoal/80 mt-1">
+                    {step}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </Reveal>
 
         <AdSlot id="ad-incontent" position="in-content" />
 
-        <section aria-labelledby="faq-heading" className="flex flex-col gap-4">
-          <h2 id="faq-heading" className="text-2xl font-semibold tracking-tight">
-            Frequently asked questions
-          </h2>
-          <ul className="flex flex-col gap-3">
-            {entry.faqs.map((f) => (
-              <li
-                key={f.q}
-                className="rounded-lg border border-charcoal-line/30 p-4"
-              >
-                <h3 className="text-base font-semibold tracking-tight">
-                  {f.q}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-charcoal/80">
-                  {f.a}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <Reveal>
+          <section aria-labelledby="faq-heading" className="flex flex-col gap-4">
+            <h2 id="faq-heading" className="text-2xl font-bold tracking-tight">
+              Frequently asked questions
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {entry.faqs.map((f) => (
+                <li
+                  key={f.q}
+                  className="rounded-lg border border-charcoal-line/30 p-4"
+                >
+                  <h3 className="text-base font-semibold tracking-tight">
+                    {f.q}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-charcoal/80">
+                    {f.a}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
 
-        <RelatedLinks slugs={entry.relatedSlugs} />
+        <Reveal>
+          <RelatedLinks slugs={entry.relatedSlugs} />
+        </Reveal>
       </div>
     </>
   );

@@ -29,15 +29,26 @@ describe("pSEO content map", () => {
     }
   });
 
-  it("intro + useCase + FAQs combine to ≥ 250 words per entry", () => {
+  it("intro + useCaseSteps + FAQs combine to ≥ 250 words per entry", () => {
     for (const entry of PSEO_ENTRIES) {
+      const useCase = entry.useCaseSteps.join(" ");
       const blob =
-        `${entry.oneLineAnswer} ${entry.intro} ${entry.useCase} ` +
+        `${entry.oneLineAnswer} ${entry.intro} ${useCase} ` +
         entry.faqs.map((f) => `${f.q} ${f.a}`).join(" ");
       const wordCount = blob.split(/\s+/).filter(Boolean).length;
-      expect(wordCount, `${entry.slug} unique copy < 250 words`).toBeGreaterThanOrEqual(
-        250,
-      );
+      expect(
+        wordCount,
+        `${entry.slug} unique copy < 250 words`,
+      ).toBeGreaterThanOrEqual(250);
+    }
+  });
+
+  it("useCaseSteps splits into at least 2 ordered steps per entry", () => {
+    for (const entry of PSEO_ENTRIES) {
+      expect(
+        entry.useCaseSteps.length,
+        `${entry.slug} should have at least 2 useCaseSteps`,
+      ).toBeGreaterThanOrEqual(2);
     }
   });
 

@@ -73,7 +73,7 @@ export default function AboutPage() {
         >
           <h2
             id="mission-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             Why this site exists
           </h2>
@@ -104,7 +104,7 @@ export default function AboutPage() {
         >
           <h2
             id="approach-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             How the tool is built
           </h2>
@@ -135,7 +135,7 @@ export default function AboutPage() {
         >
           <h2
             id="business-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             How {SITE_NAME} stays free
           </h2>
@@ -162,7 +162,7 @@ export default function AboutPage() {
         >
           <h2
             id="privacy-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             Privacy and data
           </h2>
@@ -194,7 +194,7 @@ export default function AboutPage() {
         >
           <h2
             id="maintainer-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             Who maintains {SITE_NAME}
           </h2>
@@ -221,7 +221,7 @@ export default function AboutPage() {
         >
           <h2
             id="contact-heading"
-            className="text-2xl font-semibold tracking-tight"
+            className="text-2xl font-bold tracking-tight"
           >
             Contact
           </h2>

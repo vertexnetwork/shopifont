@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ShopifontGenerator } from "@/components/Generator";
+import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
+import { LighthouseBadge } from "@/components/Layout/LighthouseBadge";
 import { ProofStrip } from "@/components/Layout/ProofStrip";
+import { Reveal } from "@/components/Reveal";
 import { HowToSchema } from "@/components/Schema/HowToSchema";
 import { SoftwareApplicationSchema } from "@/components/Schema/SoftwareApplicationSchema";
 import { THEMES } from "@/content/themes";
+import { BUILD_DATE_ISO, getBuildDateLabel } from "@/lib/site";
 
 const FEATURED_SLUG = "dawn";
 
@@ -20,23 +24,27 @@ export default function HomePage() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-12">
         {/*
          * Hero. Single-sentence value prop, falsifiable proof strip,
-         * and a primary above-the-fold CTA so mobile users see the
-         * Single Most Important Action without scrolling. The
-         * leaderboard ad sits in the hero row on desktop only — this
-         * is Mediavine's standard above-the-fold placement; mobile
-         * keeps the hero column undivided so the CTA stays primary.
+         * mini code preview, and a primary above-the-fold CTA so
+         * mobile users see the Single Most Important Action without
+         * scrolling. The leaderboard ad sits in the hero row on
+         * desktop only — Mediavine's standard above-the-fold
+         * placement; mobile keeps the column undivided.
          */}
         <section className="relative isolate grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div aria-hidden className="hero-radial" />
           <div className="flex flex-col gap-5">
             <SignupChip />
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02]">
+            <h1
+              id="hero-anchor"
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02]"
+            >
               Free Shopify Custom Font Generator
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">
               Paste a font name. Copy three error-free code blocks tailored
               to Shopify Dawn and every other OS 2.0 theme.
             </p>
+            <HeroCodePreview />
             <ProofStrip />
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
@@ -58,6 +66,17 @@ export default function HomePage() {
               <TrustItem>Works on Dawn, Sense, Refresh, and 10 more</TrustItem>
               <TrustItem>Pure CSS output — no JS in your store</TrustItem>
             </ul>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-muted/80">
+              <span>
+                Updated{" "}
+                <time dateTime={BUILD_DATE_ISO} className="text-charcoal/80">
+                  {getBuildDateLabel()}
+                </time>{" "}
+                · Built for Shopify Dawn 14
+              </span>
+              <span aria-hidden className="text-charcoal-line/60">·</span>
+              <LighthouseBadge />
+            </div>
             <p className="text-[11px] text-muted/80 max-w-xl">
               Verify the &ldquo;no upload&rdquo; claim in DevTools → Network:
               dropping a font file makes zero requests.
@@ -73,95 +92,102 @@ export default function HomePage() {
           <ShopifontGenerator />
         </section>
 
-        <section
-          id="how-it-works"
-          aria-labelledby="how-heading"
-          className="grid gap-6 sm:grid-cols-3 scroll-mt-20"
-        >
-          <h2 id="how-heading" className="sr-only">
-            How it works
-          </h2>
-          <Step
-            n={1}
-            title="Enter your font"
-            body="Type the display name and tick the formats your foundry sent you. WOFF2 covers ~97% of modern browsers."
-          />
-          <Step
-            n={2}
-            title="Copy three blocks"
-            body="The site generates @font-face CSS, a settings_schema.json snippet, and CSS variable overrides — each with a copy button."
-          />
-          <Step
-            n={3}
-            title="Paste into Shopify"
-            body="Upload the file to your theme's Assets folder, paste the @font-face into base.css, the JSON into settings_schema.json. Save and refresh."
-          />
-        </section>
+        <Reveal>
+          <section
+            id="how-it-works"
+            aria-labelledby="how-heading"
+            className="grid gap-6 sm:grid-cols-3 scroll-mt-20"
+          >
+            <h2 id="how-heading" className="sr-only">
+              How it works
+            </h2>
+            <Step
+              n={1}
+              title="Enter your font"
+              body="Type the display name and tick the formats your foundry sent you. WOFF2 covers ~97% of modern browsers."
+            />
+            <Step
+              n={2}
+              title="Copy three blocks"
+              body="The site generates @font-face CSS, a settings_schema.json snippet, and CSS variable overrides — each with a copy button."
+            />
+            <Step
+              n={3}
+              title="Paste into Shopify"
+              body="Upload the file to your theme's Assets folder, paste the @font-face into base.css, the JSON into settings_schema.json. Save and refresh."
+            />
+          </section>
+        </Reveal>
 
         <AdSlot id="ad-incontent" position="in-content" />
 
-        <section
-          id="themes"
-          aria-labelledby="themes-heading"
-          className="flex flex-col gap-4 scroll-mt-20"
-        >
-          <h2 id="themes-heading" className="text-2xl font-semibold tracking-tight">
-            Generators for every free Shopify theme
-          </h2>
-          <p className="text-sm text-muted max-w-2xl">
-            One generator, thirteen tailored landing pages. Each links the
-            theme-specific selectors, default fonts, and Liquid injection
-            point you actually need.
-          </p>
-
-          {featured ? (
-            <Link
-              href={`/shopify-${featured.slug}-custom-font-generator`}
-              className="group block rounded-lg border border-electric/60 bg-gradient-to-br from-electric/[0.08] via-electric/[0.04] to-transparent p-5 sm:p-6 shadow-featured"
+        <Reveal>
+          <section
+            id="themes"
+            aria-labelledby="themes-heading"
+            className="flex flex-col gap-4 scroll-mt-20"
+          >
+            <h2
+              id="themes-heading"
+              className="text-2xl font-bold tracking-tight"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <span
-                    aria-hidden
-                    className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-electric text-paper font-mono text-lg badge-glow"
-                  >
-                    Aa
-                  </span>
-                  <div>
-                    <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-electric font-semibold">
-                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-electric" />
-                      Most popular · ~70% of new Shopify stores
-                    </p>
-                    <p className="mt-1 text-lg sm:text-xl font-semibold tracking-tight">
-                      {featured.name} Custom Font Generator
-                    </p>
-                    <p className="text-xs text-muted">{featured.category}</p>
-                  </div>
-                </div>
-                <span className="inline-flex items-center self-start sm:self-center min-h-[2.5rem] px-4 rounded-md bg-electric text-paper font-medium text-sm group-hover:bg-electric-hover transition-colors">
-                  Open generator
-                  <span aria-hidden className="ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
-                </span>
-              </div>
-            </Link>
-          ) : null}
+              Generators for every free Shopify theme
+            </h2>
+            <p className="text-sm text-muted max-w-2xl">
+              One generator, thirteen tailored landing pages. Each links the
+              theme-specific selectors, default fonts, and Liquid injection
+              point you actually need.
+            </p>
 
-          <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {others.map((t) => (
-              <li key={t.slug}>
-                <Link
-                  href={`/shopify-${t.slug}-custom-font-generator`}
-                  className="block px-4 py-3 rounded-md border border-charcoal-line/30 hover:border-electric hover:text-electric transition-colors"
-                >
-                  <span className="font-medium block">
-                    {t.name} font generator
+            {featured ? (
+              <Link
+                href={`/shopify-${featured.slug}-custom-font-generator`}
+                className="group block rounded-lg border border-electric/60 bg-gradient-to-br from-electric/[0.08] via-electric/[0.04] to-transparent p-5 sm:p-6 shadow-featured"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <span
+                      aria-hidden
+                      className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-electric text-paper font-mono text-lg badge-glow"
+                    >
+                      Aa
+                    </span>
+                    <div>
+                      <p className="inline-flex items-center gap-1.5 rounded-full bg-amber-soft text-amber-deep px-2 py-0.5 text-[10px] uppercase tracking-wide font-semibold">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber" />
+                        Most popular · ~70% of new Shopify stores
+                      </p>
+                      <p className="mt-1 text-lg sm:text-xl font-semibold tracking-tight">
+                        {featured.name} Custom Font Generator
+                      </p>
+                      <p className="text-xs text-muted">{featured.category}</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center self-start sm:self-center min-h-[2.5rem] px-4 rounded-md bg-electric text-paper font-medium text-sm group-hover:bg-electric-hover transition-colors">
+                    Open generator
+                    <span aria-hidden className="ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
                   </span>
-                  <span className="block text-xs text-muted">{t.category}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+                </div>
+              </Link>
+            ) : null}
+
+            <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {others.map((t) => (
+                <li key={t.slug}>
+                  <Link
+                    href={`/shopify-${t.slug}-custom-font-generator`}
+                    className="block px-4 py-3 rounded-md border border-charcoal-line/30 hover:border-electric hover:text-electric transition-colors"
+                  >
+                    <span className="font-medium block">
+                      {t.name} font generator
+                    </span>
+                    <span className="block text-xs text-muted">{t.category}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
       </div>
     </>
   );
@@ -217,9 +243,9 @@ function TrustItem({ children }: { children: React.ReactNode }) {
 
 function Step({ n, title, body }: { n: number; title: string; body: string }) {
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-charcoal-line/30 p-5">
+    <div className="flex flex-col gap-2 rounded-lg border border-charcoal-line/30 p-5 shadow-card">
       <span className="font-mono text-xs text-electric">Step 0{n}</span>
-      <h3 className="font-semibold">{title}</h3>
+      <h3 className="font-semibold tracking-tight">{title}</h3>
       <p className="text-sm text-muted">{body}</p>
     </div>
   );

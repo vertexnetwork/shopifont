@@ -1,0 +1,68 @@
+[
+  {
+    "hash": "635db0db308ded28fb21ffba9972710a5057b96c",
+    "shortHash": "635db0d",
+    "date": "2026-05-06T13:55:29-06:00",
+    "subject": "Energy pass 2: hero radial, bolder H1, live typed hint"
+  },
+  {
+    "hash": "bf86f9473f770e626ecdfeef4d91963449dbf881",
+    "shortHash": "bf86f94",
+    "date": "2026-05-06T13:47:57-06:00",
+    "subject": "Fix code-block alignment, drop NoUpload expand, dial up visual energy"
+  },
+  {
+    "hash": "c0502473bbf8964da33518fb9d28d29819e81523",
+    "shortHash": "c050247",
+    "date": "2026-05-06T13:24:39-06:00",
+    "subject": "Apply Conversion Aesthetician audit: hero CTA, sequenced Copy, brand glyph"
+  },
+  {
+    "hash": "9589ae352c15e2253582d513d17d4dce52003120",
+    "shortHash": "9589ae3",
+    "date": "2026-05-06T12:41:44-06:00",
+    "subject": "Strip personal name and private repo link from About page"
+  },
+  {
+    "hash": "05e2291fa830e0ad18ed0db64f8f22c872f20792",
+    "shortHash": "05e2291",
+    "date": "2026-05-06T12:30:53-06:00",
+    "subject": "Apply UX/CRO audit fixes and wire Microsoft Clarity"
+  },
+  {
+    "hash": "f1dd4a85f852f4f54fdae4d0b97b93d50ebcfb5b",
+    "shortHash": "f1dd4a8",
+    "date": "2026-05-06T12:01:54-06:00",
+    "subject": "Bump Next.js to 15.5.15 to patch CVE-2025-66478"
+  },
+  {
+    "hash": "6c1bb5e1ec58af63893a10455c7a09703272f383",
+    "shortHash": "6c1bb5e",
+    "date": "2026-05-06T11:54:29-06:00",
+    "subject": "Strip vercel.json overrides that conflict with Next.js static export"
+  },
+  {
+    "hash": "70b79c60217c776901fbc7c369bdd7b16f4ecd8a",
+    "shortHash": "70b79c6",
+    "date": "2026-05-06T11:52:03-06:00",
+    "subject": "Regenerate public/llms.txt for /about"
+  },
+  {
+    "hash": "17064b313e09116dbdefe2168146d681e19d6636",
+    "shortHash": "17064b3",
+    "date": "2026-05-06T11:51:44-06:00",
+    "subject": "Add About page for Mediavine Journey authentication"
+  },
+  {
+    "hash": "96942decff199c8987bc5b3937c938c1aed09460",
+    "shortHash": "96942de",
+    "date": "2026-05-06T11:47:16-06:00",
+    "subject": "Use Mediavine Grow Faves bootstrapper snippet"
+  },
+  {
+    "hash": "4698e41294c78586d6b385bf3e6d8dba6fe911ce",
+    "shortHash": "4698e41",
+    "date": "2026-05-06T11:40:07-06:00",
+    "subject": "Initial commit: Shopifont — Shopify custom font CSS generator"
+  }
+]

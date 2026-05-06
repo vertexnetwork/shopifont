@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   buildCssVariableOverrides,
   buildFontFaceCss,
@@ -9,6 +9,7 @@ import {
   type FontStyle,
   type FontWeight,
   type GeneratorInput,
+  FORMAT_ORDER,
   VALID_WEIGHTS,
 } from "@/lib/generators";
 
@@ -74,6 +75,78 @@ export function useGenerator(): GeneratorState {
   const [copiedSteps, setCopiedSteps] = useState<ReadonlySet<CopyTarget>>(
     () => new Set(),
   );
+  const hydratedFromUrl = useRef(false);
+
+  // Hydrate from URL on first mount only. Static export means SSR can't
+  // see the search string, so we read it client-side and apply.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const p = new URLSearchParams(window.location.search);
+    const f = p.get("font");
+    if (f && f.trim().length > 0) setFontName(f);
+
+    const fmtRaw = p.get("formats");
+    if (fmtRaw) {
+      const valid = fmtRaw
+        .split(",")
+        .map((s) => s.trim().toLowerCase())
+        .filter((s): s is FontFormat =>
+          FORMAT_ORDER.includes(s as FontFormat),
+        );
+      if (valid.length > 0) setFormats(valid);
+    }
+
+    const w = Number(p.get("weight"));
+    if (VALID_WEIGHTS.includes(w as FontWeight)) setWeight(w as FontWeight);
+
+    const s = p.get("style");
+    if (s === "italic" || s === "normal") setStyle(s);
+
+    const apply = p.get("apply");
+    if (apply === "heading") {
+      setApplyToHeading(true);
+      setApplyToBody(false);
+    } else if (apply === "body") {
+      setApplyToHeading(false);
+      setApplyToBody(true);
+    } else if (apply === "both") {
+      setApplyToHeading(true);
+      setApplyToBody(true);
+    }
+
+    hydratedFromUrl.current = true;
+  }, []);
+
+  // Sync state to URL after hydration so a user can copy the address
+  // bar (or click Share) and return / forward the same configuration.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!hydratedFromUrl.current) return;
+    const p = new URLSearchParams();
+    if (fontName !== DEFAULT_FONT_NAME) p.set("font", fontName);
+    if (
+      !(formats.length === 1 && formats[0] === "woff2") &&
+      formats.length > 0
+    ) {
+      p.set("formats", formats.join(","));
+    }
+    if (weight !== DEFAULT_WEIGHT) p.set("weight", String(weight));
+    if (style !== DEFAULT_STYLE) p.set("style", style);
+    const applyKey =
+      applyToHeading && applyToBody
+        ? null
+        : applyToHeading
+          ? "heading"
+          : applyToBody
+            ? "body"
+            : "none";
+    if (applyKey) p.set("apply", applyKey);
+
+    const search = p.toString();
+    const url = new URL(window.location.href);
+    url.search = search;
+    window.history.replaceState({}, "", url.toString());
+  }, [fontName, formats, weight, style, applyToHeading, applyToBody]);
 
   const toggleFormat = useCallback((f: FontFormat) => {
     setFormats((prev) =>

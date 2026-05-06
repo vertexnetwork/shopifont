@@ -22,6 +22,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   };
 
+  const changelog = {
+    url: `${base}/changelog`,
+    lastModified: today,
+    changeFrequency: "weekly" as const,
+    priority: 0.4,
+  };
+
   const pages = PSEO_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
     lastModified: today,
@@ -29,5 +36,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [home, about, ...pages];
+  return [home, about, changelog, ...pages];
 }

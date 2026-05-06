@@ -40,8 +40,11 @@ export function buildLlmsTxt(): string {
   lines.push("## Supported Shopify themes");
   lines.push("");
   for (const t of THEMES) {
+    const defaults = t.defaultsVerified
+      ? `Default heading: ${t.defaultHeadingFont}.`
+      : `Defaults configured via the Shopify Theme Editor.`;
     lines.push(
-      `- ${t.name}: ${t.positioning.replace(/^the /i, "the ")} Default heading: ${t.defaultHeadingFont}.`,
+      `- ${t.name}: ${t.positioning.replace(/^the /i, "the ")} ${defaults}`,
     );
   }
   lines.push("");

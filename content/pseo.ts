@@ -5,11 +5,15 @@
  * Entries are generated from `themes.ts` metadata via per-intent
  * builders so:
  *
- *   1. Each page's intro, useCase, and FAQs are theme-specific (no
- *      boilerplate). The build asserts that no FAQ Q-string appears on
- *      more than 3 pages (PLAN.md §3 KGR guardrail).
+ *   1. Each page's intro, useCaseSteps, and FAQs are theme-specific
+ *      (no boilerplate). The build asserts that no FAQ Q-string
+ *      appears on more than 3 pages (PLAN.md §3 KGR guardrail).
  *   2. Adding a new theme to `themes.ts` automatically expands the
  *      pSEO surface — no hand-rolled entries to maintain.
+ *
+ * `useCaseSteps` is an ordered list rendered as `<ol>` on the page,
+ * which scans far better than the prior multi-sentence paragraph for
+ * users skimming installation steps on mobile.
  *
  * Page count target: 50–80 (PLAN.md §3 says ~80 at launch). Today this
  * file generates 71 entries:
@@ -39,12 +43,56 @@ export type PseoEntry = {
   oneLineAnswer: string;
   /** 2-3 sentence introduction. */
   intro: string;
-  /** Use-case section body. Pushes total unique copy past 250 words. */
-  useCase: string;
+  /**
+   * Ordered installation/usage steps. Rendered as `<ol>` on the page.
+   * Each entry is a single sentence or short paragraph; the test
+   * suite asserts the joined text contributes to the ≥250 word
+   * unique-copy requirement.
+   */
+  useCaseSteps: ReadonlyArray<string>;
   faqs: ReadonlyArray<{ q: string; a: string }>;
   relatedSlugs: ReadonlyArray<string>;
   breadcrumbLabel: string;
 };
+
+/* ------------------------------------------------------------------ */
+/* Helpers — guarded references to per-theme defaults                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Cite the theme's specific default heading face only when verified;
+ * otherwise return a generic phrasing. Keeps every pSEO page honest
+ * about what we've actually confirmed against a live install.
+ */
+function defaultHeading(theme: ThemeMeta): string {
+  return theme.defaultsVerified
+    ? theme.defaultHeadingFont
+    : "the theme's default heading face";
+}
+
+function defaultBody(theme: ThemeMeta): string {
+  return theme.defaultsVerified
+    ? theme.defaultBodyFont
+    : "the theme's default body face";
+}
+
+function defaultFallbackName(theme: ThemeMeta): string {
+  return theme.defaultsVerified
+    ? `${theme.defaultHeadingFont} fallback`
+    : "system fallback";
+}
+
+/**
+ * Split prose useCase into ordered steps on sentence boundaries.
+ * Preserves abbreviation-safe behavior because we only break on
+ * `.!?` followed by whitespace + capital letter.
+ */
+function splitSteps(prose: string): string[] {
+  return prose
+    .split(/(?<=[.!?])\s+(?=[A-Z])/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
 /* ------------------------------------------------------------------ */
 /* Builders                                                            */
@@ -54,7 +102,7 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
   const slug = `shopify-${theme.slug}-custom-font-generator`;
   const h1 = `Free Shopify ${theme.name} Custom Font Generator`;
   const oneLineAnswer = `Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify ${theme.name} needs to render your custom font without layout shifts.`;
-  const intro = `${theme.name} is ${theme.positioning} Out of the box, ${theme.name} ships with ${theme.defaultHeadingFont} for headings and ${theme.defaultBodyFont} for body — typography that's deliberately ${theme.typographyCharacter} If you need a brand-specific face on a ${theme.category} ${theme.name} store, this generator builds the three code blocks Shopify expects in seconds.`;
+  const intro = `${theme.name} is ${theme.positioning} Out of the box, ${theme.name} ships with ${defaultHeading(theme)} for headings and ${defaultBody(theme)} for body — typography that's deliberately ${theme.typographyCharacter} If you need a brand-specific face on a ${theme.category} ${theme.name} store, this generator builds the three code blocks Shopify expects in seconds.`;
   const useCase = `Upload your custom font files to your ${theme.name} theme's \`assets/\` folder. Paste the generated @font-face block into ${theme.injectionPoint} so Shopify's Liquid \`asset_url\` filter resolves correctly. Add the settings_schema.json snippet to expose a Theme Editor toggle for non-technical merchants. Finally, the CSS variable overrides retarget ${theme.notableSelector} and every other element that reads from \`--font-heading-family\` or \`--font-body-family\` — meaning your custom face propagates site-wide without touching ${theme.name}'s core templates.`;
 
   return {
@@ -68,7 +116,7 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `How do I add a custom font to the Shopify ${theme.name} theme?`,
@@ -118,7 +166,7 @@ function buildLiquidTutorialEntry(theme: ThemeMeta): PseoEntry {
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `Where do I paste the @font-face block in ${theme.name}?`,
@@ -134,7 +182,7 @@ function buildLiquidTutorialEntry(theme: ThemeMeta): PseoEntry {
       },
       {
         q: `How do I scope the font to only headings on ${theme.name}?`,
-        a: `Set \`--font-heading-family\` only and leave \`--font-body-family\` untouched. ${theme.name}'s heading selectors — including ${theme.notableSelector} — read from the heading token, while paragraph and form copy continue to use the body token and the original ${theme.defaultBodyFont} face.`,
+        a: `Set \`--font-heading-family\` only and leave \`--font-body-family\` untouched. ${theme.name}'s heading selectors — including ${theme.notableSelector} — read from the heading token, while paragraph and form copy continue to use the body token and ${defaultBody(theme)}.`,
       },
     ],
     relatedSlugs: [
@@ -164,7 +212,7 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `Which CSS variables control typography in ${theme.name}?`,
@@ -172,7 +220,7 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
       },
       {
         q: `What's the difference between --font-heading-family and --font-body-family in ${theme.name}?`,
-        a: `\`--font-heading-family\` is consumed by every heading-level rule, including ${theme.notableSelector}. \`--font-body-family\` is consumed by paragraphs, list items, form copy, and the cart drawer in ${theme.name}. Setting only one lets you mix a display heading face with the original ${theme.defaultBodyFont} body — a useful split when your custom font is large.`,
+        a: `\`--font-heading-family\` is consumed by every heading-level rule, including ${theme.notableSelector}. \`--font-body-family\` is consumed by paragraphs, list items, form copy, and the cart drawer in ${theme.name}. Setting only one lets you mix a display heading face with ${defaultBody(theme)} on body — a useful split when your custom font is large.`,
       },
       {
         q: `How do I override ${theme.name}'s typography without touching base.css directly?`,
@@ -210,11 +258,11 @@ function buildLayoutShiftFixEntry(theme: ThemeMeta): PseoEntry {
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `Why does my custom font cause layout shift on ${theme.name}?`,
-        a: `Almost always one of three causes: \`font-display\` defaults to \`auto\` which blocks rendering and then swaps, the WOFF2 isn't preloaded so the browser fetches it after parsing CSS, or a Liquid block is toggling a class via JavaScript after first paint. ${theme.name}'s default Assistant fallback has different metrics than most custom faces, which exaggerates the shift if any of those three are in play.`,
+        a: `Almost always one of three causes: \`font-display\` defaults to \`auto\` which blocks rendering and then swaps, the WOFF2 isn't preloaded so the browser fetches it after parsing CSS, or a Liquid block is toggling a class via JavaScript after first paint. ${theme.name}'s ${defaultFallbackName(theme)} has different metrics than most custom faces, which exaggerates the shift if any of those three are in play.`,
       },
       {
         q: `How do I preload a font on ${theme.name} to fix CLS?`,
@@ -265,11 +313,11 @@ function buildFormatTutorialEntry(
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `Why does ${theme.name} prefer WOFF2 over ${formatUpper}?`,
-        a: `WOFF2 is roughly 30% smaller than ${formatUpper} thanks to Brotli compression and is supported by 97% of browsers a ${theme.name} store sees. WOFF2 is the format ${theme.name}'s default Assistant face is delivered in. ${formatUpper} is included only when you have a meaningful long-tail of users on browsers that can't decode WOFF2.`,
+        a: `WOFF2 is roughly 30% smaller than ${formatUpper} thanks to Brotli compression and is supported by 97% of browsers a ${theme.name} store sees. WOFF2 is the format ${theme.name}'s ${defaultFallbackName(theme)} ships in. ${formatUpper} is included only when you have a meaningful long-tail of users on browsers that can't decode WOFF2.`,
       },
       {
         q: `How do I generate ${formatUpper} from a TTF for ${theme.name}?`,
@@ -296,9 +344,9 @@ function buildFormatTutorialEntry(
 function buildComparisonEntry(a: ThemeMeta, b: ThemeMeta): PseoEntry {
   const slug = `${a.slug}-vs-${b.slug}-custom-font`;
   const h1 = `${a.name} vs ${b.name}: Custom Font Setup Compared`;
-  const oneLineAnswer = `Both ${a.name} and ${b.name} expose the same six \`--font-heading-*\` and \`--font-body-*\` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default ${a.defaultHeadingFont} vs ${b.defaultHeadingFont} fallback.`;
+  const oneLineAnswer = `Both ${a.name} and ${b.name} expose the same six \`--font-heading-*\` and \`--font-body-*\` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default ${defaultHeading(a)} vs ${defaultHeading(b)} fallback.`;
   const intro = `${a.name} is ${a.positioning} ${b.name} is ${b.positioning} Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the ${a.notableSelector.split(",")[0]?.trim()} vs ${b.notableSelector.split(",")[0]?.trim()} selectors that pick up the override.`;
-  const useCase = `For a side-by-side migration: paste the same @font-face block into ${a.injectionPoint} on ${a.name} and into ${b.injectionPoint} on ${b.name}. The CSS variable override block is byte-identical between the two — both themes read \`--font-heading-family\` and \`--font-body-family\` from \`:root\`. The settings_schema.json snippet is also portable: ${a.name} and ${b.name} both honor \`font_picker\` and \`select\` types in the Theme Editor. Where the themes diverge is in their default fallback faces (${a.name} uses ${a.defaultHeadingFont}; ${b.name} uses ${b.defaultBodyFont}), so check that your custom face's \`size-adjust\` matches well enough that any swap is invisible.`;
+  const useCase = `For a side-by-side migration: paste the same @font-face block into ${a.injectionPoint} on ${a.name} and into ${b.injectionPoint} on ${b.name}. The CSS variable override block is byte-identical between the two — both themes read \`--font-heading-family\` and \`--font-body-family\` from \`:root\`. The settings_schema.json snippet is also portable: ${a.name} and ${b.name} both honor \`font_picker\` and \`select\` types in the Theme Editor. Where the themes diverge is in their default fallback faces (${a.name} uses ${defaultHeading(a)}; ${b.name} uses ${defaultBody(b)}), so check that your custom face's \`size-adjust\` matches well enough that any swap is invisible.`;
 
   return {
     slug,
@@ -311,7 +359,7 @@ function buildComparisonEntry(a: ThemeMeta, b: ThemeMeta): PseoEntry {
     ),
     oneLineAnswer,
     intro,
-    useCase,
+    useCaseSteps: splitSteps(useCase),
     faqs: [
       {
         q: `Which is easier to customize fonts on, ${a.name} or ${b.name}?`,

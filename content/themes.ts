@@ -7,6 +7,13 @@
  * the Theme Store as of 2024. All are OS 2.0 and inherit Dawn's
  * `--font-heading-family` / `--font-body-family` token convention,
  * which makes the CSS-variable override approach uniformly applicable.
+ *
+ * `defaultsVerified` gates whether the pSEO copy cites the specific
+ * default font name. Only Dawn is verified at the moment (its
+ * settings_schema sets `assistant_n4` as the default font_picker
+ * value). For the other 12 themes the copy defers to a generic "theme
+ * default" phrasing until each one's actual defaults are confirmed
+ * against a live install.
  */
 
 export type ThemeMeta = {
@@ -24,6 +31,12 @@ export type ThemeMeta = {
   defaultHeadingFont: string;
   /** The default body font Shopify ships with the theme. */
   defaultBodyFont: string;
+  /**
+   * True when defaultHeadingFont / defaultBodyFont have been
+   * confirmed against the live theme. When false, pSEO copy uses a
+   * generic phrasing instead of citing the specific font name.
+   */
+  defaultsVerified: boolean;
   /** A typography characteristic that distinguishes the theme. */
   typographyCharacter: string;
   /** Where the user pastes the @font-face block — file + section. */
@@ -44,6 +57,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "general-purpose",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: true,
     typographyCharacter:
       "neutral, low-contrast humanist sans that prioritizes legibility over personality.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -59,6 +73,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "health & wellness",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "rounded, soft-edged typography that pairs cleanly with high-resolution lifestyle imagery.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -74,6 +89,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "sport & energy",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "high-contrast display headings sitting above utilitarian body copy.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -89,6 +105,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "food & beverage",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "playful, slightly oversized headings that complement appetite-appeal photography.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -104,6 +121,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "home & garden",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "calm, generous-line-height typography optimized for long descriptions and lifestyle storytelling.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -119,6 +137,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "art & gallery",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "editorial display headings with restrained body copy that defers to imagery.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -134,6 +153,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "specialty food & wine",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "warm, slightly old-style serif headings that feel curated rather than generic.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -149,6 +169,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "fashion & entertainment",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "cinematic display sizing meant to be paired with autoplaying hero video.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -164,6 +185,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "novelty & gift",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "geometric-leaning sans typography that complements the theme's hard-edged blocks.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -179,6 +201,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "artisan & handmade",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "transitional serif headings paired with low-contrast body for craft-shop authenticity.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -194,6 +217,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "outdoor & sport",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "industrial sans headings that work well next to spec tables and dimension copy.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -209,6 +233,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "media & publishing",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "editorial serif headings paired with reader-optimized body copy for article-shaped pages.",
     injectionPoint: "the bottom of `assets/base.css`",
@@ -224,6 +249,7 @@ export const THEMES: ReadonlyArray<ThemeMeta> = [
     category: "B2B & hardware",
     defaultHeadingFont: "Assistant",
     defaultBodyFont: "Assistant",
+    defaultsVerified: false,
     typographyCharacter:
       "utilitarian sans typography that prioritizes scannability over personality.",
     injectionPoint: "the bottom of `assets/base.css`",

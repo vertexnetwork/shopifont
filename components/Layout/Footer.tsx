@@ -28,7 +28,10 @@ const COLUMNS: ReadonlyArray<{
   },
   {
     heading: "Site",
-    links: [{ href: "/about", label: "About" }],
+    links: [
+      { href: "/about", label: "About" },
+      { href: "/changelog", label: "Changelog" },
+    ],
   },
 ];
 

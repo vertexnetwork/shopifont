@@ -5,7 +5,7 @@
   "description": "Free Shopify custom-font CSS generator. Pure client-side @font-face, settings_schema.json, and CSS-variable output for Dawn and other OS 2.0 themes.",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "tsx scripts/build-llms-txt.ts",
+    "prebuild": "tsx scripts/build-llms-txt.ts && tsx scripts/build-changelog.ts",
     "build": "next build",
     "start": "serve out -l 3000",
     "lint": "next lint",

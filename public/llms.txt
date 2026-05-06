@@ -14,18 +14,18 @@ All generation is pure client-side string interpolation. No file is uploaded; th
 ## Supported Shopify themes
 
 - Dawn: the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Default heading: Assistant.
-- Sense: Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Default heading: Assistant.
-- Refresh: a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Default heading: Assistant.
-- Crave: Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. Default heading: Assistant.
-- Origin: a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. Default heading: Assistant.
-- Studio: an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm. Default heading: Assistant.
-- Taste: a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs. Default heading: Assistant.
-- Spotlight: a video- and motion-forward free theme for fashion, audio, and entertainment brands. Default heading: Assistant.
-- Colorblock: a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands. Default heading: Assistant.
-- Craft: an artisan- and maker-leaning free theme that pairs natural product photography with curated typography. Default heading: Assistant.
-- Ride: an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts. Default heading: Assistant.
-- Publisher: a media-, publishing-, and information-product free theme built around long-form content blocks. Default heading: Assistant.
-- Trade: a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products. Default heading: Assistant.
+- Sense: Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Defaults configured via the Shopify Theme Editor.
+- Refresh: a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Defaults configured via the Shopify Theme Editor.
+- Crave: Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. Defaults configured via the Shopify Theme Editor.
+- Origin: a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. Defaults configured via the Shopify Theme Editor.
+- Studio: an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm. Defaults configured via the Shopify Theme Editor.
+- Taste: a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs. Defaults configured via the Shopify Theme Editor.
+- Spotlight: a video- and motion-forward free theme for fashion, audio, and entertainment brands. Defaults configured via the Shopify Theme Editor.
+- Colorblock: a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands. Defaults configured via the Shopify Theme Editor.
+- Craft: an artisan- and maker-leaning free theme that pairs natural product photography with curated typography. Defaults configured via the Shopify Theme Editor.
+- Ride: an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts. Defaults configured via the Shopify Theme Editor.
+- Publisher: a media-, publishing-, and information-product free theme built around long-form content blocks. Defaults configured via the Shopify Theme Editor.
+- Trade: a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products. Defaults configured via the Shopify Theme Editor.
 
 ## Canonical URLs
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { GeneratorActions } from "./Actions";
 import { GeneratorInputs } from "./Inputs";
 import { GeneratorPreview } from "./Preview";
 import { CodeBlock } from "./CodeBlock";
@@ -71,10 +72,13 @@ export function ShopifontGenerator() {
         <GeneratorPreview state={state} />
       </div>
 
-      <p className="text-xs text-muted">
-        Paste these three blocks in order. They&apos;re independent files in
-        your theme — copying one without the others won&apos;t break the store.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted max-w-md">
+          Paste these three blocks in order. They&apos;re independent files in
+          your theme — copying one without the others won&apos;t break the store.
+        </p>
+        <GeneratorActions state={state} />
+      </div>
 
       {/*
        * Mobile (< lg): tabbed switcher to cut ~⅔ of vertical scroll on
