@@ -19,7 +19,14 @@
   --color-electric-hover: #0052cc;
   --color-error: #d92d20;
   --color-warn: #b54708;
-  --color-muted: #6b6b6b;
+  /*
+   * Muted text. Darkened from #6b6b6b -> #5a5a5a to clear WCAG AA on
+   * both white (bg-paper) and #f5f5f5 (bg-paper-dim) at the small
+   * sizes this color is most often used (text-xs / text-[11px]).
+   * Lighthouse a11y flagged the previous value at 4.39:1 on paper-dim
+   * and ~3.05:1 with the /80 alpha modifier.
+   */
+  --color-muted: #5a5a5a;
 
   /*
    * Secondary accent. Used sparingly: "Most popular" badges,

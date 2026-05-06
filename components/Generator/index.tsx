@@ -149,6 +149,7 @@ export function ShopifontGenerator() {
           >
             {activeMobile === b.id ? (
               <CodeBlock
+                idPrefix="m"
                 step={b.step}
                 title={b.title}
                 description={b.description}
@@ -167,6 +168,7 @@ export function ShopifontGenerator() {
         {BLOCKS.map((b) => (
           <CodeBlock
             key={b.id}
+            idPrefix="d"
             step={b.step}
             title={b.title}
             description={b.description}

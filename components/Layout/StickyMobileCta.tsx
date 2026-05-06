@@ -57,6 +57,9 @@ export function StickyMobileCta() {
     >
       <a
         href="#tool-heading"
+        // Drop out of tab order while hidden so the focusable
+        // descendant doesn't trip Lighthouse's aria-hidden audit.
+        tabIndex={visible ? undefined : -1}
         className="block min-h-[3.25rem] px-5 rounded-full bg-electric text-paper font-semibold text-center leading-[3.25rem] shadow-cta"
       >
         Generate my font code ↓

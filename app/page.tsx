@@ -66,7 +66,7 @@ export default function HomePage() {
               <TrustItem>Works on Dawn, Sense, Refresh, and 10 more</TrustItem>
               <TrustItem>Pure CSS output — no JS in your store</TrustItem>
             </ul>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-muted/80">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-muted">
               <span>
                 Updated{" "}
                 <time dateTime={BUILD_DATE_ISO} className="text-charcoal/80">
@@ -77,7 +77,7 @@ export default function HomePage() {
               <span aria-hidden className="text-charcoal-line/60">·</span>
               <LighthouseBadge />
             </div>
-            <p className="text-[11px] text-muted/80 max-w-xl">
+            <p className="text-[11px] text-muted max-w-xl">
               Verify the &ldquo;no upload&rdquo; claim in DevTools → Network:
               dropping a font file makes zero requests.
             </p>

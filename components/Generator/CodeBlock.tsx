@@ -25,6 +25,13 @@ type Props = {
   variant?: CopyVariant;
   /** Notify the parent so it can advance sequencing. */
   onCopySuccess?: () => void;
+  /**
+   * Disambiguates DOM ids when the same CodeBlock is rendered in
+   * both the mobile tabpanel and the desktop 3-col grid. Lighthouse
+   * a11y flagged duplicate `code-font-face-css` ids when both trees
+   * mount simultaneously.
+   */
+  idPrefix?: string;
 };
 
 /**
@@ -60,6 +67,7 @@ export function CodeBlock({
   warning,
   variant = "primary",
   onCopySuccess,
+  idPrefix,
 }: Props) {
   const deferredCode = useDeferredValue(code);
   const [copied, setCopied] = useState(false);
@@ -92,7 +100,7 @@ export function CodeBlock({
 
   const blocked = Boolean(warning);
   const canCopy = !blocked && deferredCode.trim().length > 0;
-  const sectionId = `code-${slugForId(title)}`;
+  const sectionId = `code-${idPrefix ? `${idPrefix}-` : ""}${slugForId(title)}`;
 
   return (
     <section
