@@ -141,6 +141,49 @@ body {
 }
 
 /*
+ * Soft electric-blue radial behind the homepage hero H1. Hidden on
+ * mobile so it doesn't crowd a 360px viewport; on tablets+ it adds a
+ * non-intrusive sense of light behind the headline. Sits at z=-1
+ * inside an isolated stacking context so it never bleeds into other
+ * sections.
+ */
+.hero-radial {
+  position: absolute;
+  top: -4rem;
+  right: -6rem;
+  width: 36rem;
+  height: 36rem;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 102, 255, 0.12),
+    rgba(0, 102, 255, 0.04) 35%,
+    transparent 70%
+  );
+}
+@media (max-width: 640px) {
+  .hero-radial {
+    display: none;
+  }
+}
+
+/*
+ * Typewriter cursor for the "Try: Söhne|" hint below the font-name
+ * input. Pure CSS blink — driven by JS state, but the cursor's blink
+ * is reduced-motion-safe via the global override.
+ */
+@keyframes shopifont-blink {
+  50% {
+    opacity: 0;
+  }
+}
+.animate-blink {
+  animation: shopifont-blink 1s step-end infinite;
+}
+
+/*
  * 150ms scale-and-fade for transient confirmation states (Copied ✓,
  * tab switch). Honors prefers-reduced-motion via the global override
  * below. Cheaper and lighter than Framer Motion for a static export.

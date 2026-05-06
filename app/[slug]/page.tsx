@@ -91,7 +91,7 @@ export default async function PseoPage({ params }: PageProps) {
                 <time dateTime={BUILD_DATE_ISO}>{getBuildDateLabel()}</time>
               </span>
             </p>
-            <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
               {entry.h1}
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">

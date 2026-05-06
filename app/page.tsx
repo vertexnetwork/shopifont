@@ -26,10 +26,11 @@ export default function HomePage() {
          * is Mediavine's standard above-the-fold placement; mobile
          * keeps the hero column undivided so the CTA stays primary.
          */}
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section className="relative isolate grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div aria-hidden className="hero-radial" />
           <div className="flex flex-col gap-5">
             <SignupChip />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight leading-[1.05]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02]">
               Free Shopify Custom Font Generator
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   FORMAT_LABEL,
   FORMAT_ORDER,
@@ -8,6 +9,96 @@ import {
   type FontWeight,
 } from "@/lib/generators";
 import type { GeneratorState } from "./state";
+
+/**
+ * Foundry-shaped names that signal "this works with the fonts you
+ * actually license." Cycled below the input via a typewriter so the
+ * tool reads as live without forcing the user to interact.
+ */
+const TYPE_EXAMPLES = [
+  "Söhne",
+  "PP Editorial New",
+  "Inter Display",
+  "Sentinel",
+  "Mona Sans",
+];
+
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = () => setReduced(mq.matches);
+    mq.addEventListener?.("change", handler);
+    return () => mq.removeEventListener?.("change", handler);
+  }, []);
+  return reduced;
+}
+
+function useTypewriter(active: boolean) {
+  const [text, setText] = useState("");
+  const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<
+    "typing" | "holding" | "erasing" | "pausing"
+  >("typing");
+
+  useEffect(() => {
+    if (!active) return;
+    const target = TYPE_EXAMPLES[idx]!;
+    const TYPE_MS = 80;
+    const ERASE_MS = 38;
+    const HOLD_MS = 1400;
+    const PAUSE_MS = 320;
+
+    let timer: ReturnType<typeof setTimeout>;
+    if (phase === "typing") {
+      timer =
+        text.length < target.length
+          ? setTimeout(() => setText(target.slice(0, text.length + 1)), TYPE_MS)
+          : setTimeout(() => setPhase("holding"), HOLD_MS);
+    } else if (phase === "holding") {
+      timer = setTimeout(() => setPhase("erasing"), 0);
+    } else if (phase === "erasing") {
+      timer =
+        text.length > 0
+          ? setTimeout(() => setText(text.slice(0, -1)), ERASE_MS)
+          : setTimeout(() => setPhase("pausing"), 0);
+    } else {
+      timer = setTimeout(() => {
+        setIdx((prev) => (prev + 1) % TYPE_EXAMPLES.length);
+        setPhase("typing");
+      }, PAUSE_MS);
+    }
+    return () => clearTimeout(timer);
+  }, [text, phase, idx, active]);
+
+  return text;
+}
+
+/**
+ * Self-contained so its frequent state ticks don't re-render the
+ * whole Inputs panel. Visual cycling text is aria-hidden; an sr-only
+ * span emits the full example list for assistive tech.
+ */
+function TypedHint() {
+  const reduced = useReducedMotion();
+  const text = useTypewriter(!reduced);
+  return (
+    <>
+      <span className="sr-only">
+        Examples: {TYPE_EXAMPLES.join(", ")}
+      </span>
+      <span aria-hidden className="font-mono text-charcoal">
+        Try:{" "}
+        <span>{reduced ? TYPE_EXAMPLES[0] : text}</span>
+        {!reduced ? (
+          <span className="animate-blink ml-px text-electric">|</span>
+        ) : null}
+      </span>
+    </>
+  );
+}
 
 const WEIGHT_LABEL: Record<FontWeight, string> = {
   100: "100 — Thin",
@@ -51,9 +142,16 @@ export function GeneratorInputs({ state }: Props) {
           placeholder="My Brand Sans"
           aria-describedby="fontname-hint"
         />
-        <span id="fontname-hint" className="text-xs text-muted font-normal">
-          Used as the @font-face <code className="font-mono">font-family</code> and to
-          derive the asset filename slug.
+        <span
+          id="fontname-hint"
+          className="text-xs text-muted font-normal flex flex-wrap items-baseline gap-x-2"
+        >
+          <TypedHint />
+          <span aria-hidden className="text-charcoal-line/60">·</span>
+          <span>
+            Becomes the @font-face{" "}
+            <code className="font-mono">font-family</code>
+          </span>
         </span>
       </label>
 
