@@ -1,20 +1,16 @@
-import { ShopifontGenerator } from "@/components/Generator";
 import { Logo } from "@/components/Brand/Logo";
 import { SITE_NAME } from "@/lib/site";
+import { CompactGenerator } from "./CompactGenerator";
 
 const FULL_VERSION_URL =
   "https://shopifont.app/?utm_source=extension&utm_medium=popup";
 
 /**
- * Chrome extension popup. Reuses the same React Generator that ships
- * on the website (`ShopifontGenerator mode="embed"`) — same code,
- * same brand, same tests. The popup is sized 380×600 to fit Chrome's
- * popup constraints without internal scrolling on most font configs.
- *
- * The Generator's `mode="embed"` prop disables URL hydration and
- * hides the Share-this-config button. Both behaviors only make sense
- * on a real page; the popup URL is `chrome-extension://<id>/popup.html`
- * which has no meaning to share.
+ * Chrome extension popup. Renders a popup-native CompactGenerator
+ * that shares the same `useGenerator` hook + `<CodeBlock>` component
+ * the website uses, but owns its own layout — the website's full
+ * <ShopifontGenerator> was designed for a 1024px+ canvas and didn't
+ * fit the 380×600 popup constraint without forcing.
  */
 export function App() {
   return (
@@ -35,8 +31,8 @@ export function App() {
         </a>
       </header>
 
-      <div className="flex-1 px-2 py-3">
-        <ShopifontGenerator mode="embed" />
+      <div className="flex-1 px-3 py-3">
+        <CompactGenerator />
       </div>
 
       <footer className="border-t border-charcoal-line/20 bg-paper-dim px-3 py-1.5 text-[10px] text-muted text-center">

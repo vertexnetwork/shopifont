@@ -23,6 +23,22 @@ export default defineConfig({
     },
   },
   plugins: [react(), crx({ manifest })],
+  /*
+   * The shared `lib/site.ts` reads `process.env.NEXT_PUBLIC_*` at
+   * module-load time. Next.js inlines those at build; Vite leaves
+   * `process` undefined in the browser, which crashes the popup
+   * before React mounts. Define them as string literals here so Vite
+   * does the same substitution Next.js does. The four keys cover
+   * everything the extension's import graph touches; SITE_URL is
+   * filled in so the "Open full site" link in the popup header
+   * resolves to the real domain instead of localhost.
+   */
+  define: {
+    "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify("https://shopifont.app"),
+    "process.env.NEXT_PUBLIC_SOCIAL_X": JSON.stringify(""),
+    "process.env.NEXT_PUBLIC_SOCIAL_TIKTOK": JSON.stringify(""),
+    "process.env.NEXT_PUBLIC_SOCIAL_PINTEREST": JSON.stringify(""),
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,
@@ -31,5 +47,15 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    fs: {
+      /*
+       * Vite's default `fs.allow` is the workspace root (extension/).
+       * We import from `@/components/...` which resolves to the parent
+       * project, so we have to widen the allow-list. Production
+       * builds bundle everything and don't hit this restriction; dev
+       * mode does because modules are served on demand.
+       */
+      allow: [projectRoot],
+    },
   },
 });

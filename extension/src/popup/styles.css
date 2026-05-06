@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 /*
+ * Tailwind v4 auto-detects sources within the workspace root (the
+ * extension/ package.json's directory). The popup imports React
+ * components from the parent project — components/Generator/*,
+ * components/Brand/*, and lib/* — and Tailwind needs to scan those
+ * files too or it won't emit the utilities they reference. Without
+ * these directives, classes like `lg:hidden`, `bg-electric`, the
+ * format-pill colors, and the responsive grid all silently disappear
+ * and the popup renders broken.
+ */
+@source "../../../components/**/*.{ts,tsx}";
+@source "../../../lib/**/*.{ts,tsx}";
+
+/*
  * Brand tokens — matches the parent project's app/globals.css. Defined
  * inline rather than imported so the extension is self-contained and
  * Tailwind v4's PostCSS scanner can hash the utility classes referenced
