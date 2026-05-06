@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Header } from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
 import { StickyMobileCta } from "@/components/Layout/StickyMobileCta";
@@ -146,6 +148,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <StickyMobileCta />
+        {/*
+         * Vercel Analytics + Speed Insights. Both auto-detect Vercel
+         * deployment via env vars and no-op locally / on non-Vercel
+         * hosts, so no env var gating is needed. Speed Insights gives
+         * us real-user Core Web Vitals to compare against the
+         * synthetic Lighthouse runs that drove the recent perf pass.
+         */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
