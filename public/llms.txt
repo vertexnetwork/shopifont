@@ -30,6 +30,7 @@ All generation is pure client-side string interpolation. No file is uploaded; th
 ## Canonical URLs
 
 - https://shopifont.app/  — homepage (full generator)
+- https://shopifont.app/about  — about, mission, contact
 - https://shopifont.app/shopify-dawn-custom-font-generator  — Free Shopify Dawn Custom Font Generator
 - https://shopifont.app/shopify-sense-custom-font-generator  — Free Shopify Sense Custom Font Generator
 - https://shopifont.app/shopify-refresh-custom-font-generator  — Free Shopify Refresh Custom Font Generator
