@@ -84,16 +84,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${geistMono.variable}`}>
       <head>
         {/*
-          Mediavine Grow. Loads on every page so the 30-day Journey
-          authentication window starts from launch (PLAN.md §7).
-          Skipped in dev / preview when the env var is unset to avoid 404s.
+          Mediavine Grow Faves bootstrapper. Loads on every page so the
+          30-day Journey authentication window starts from launch
+          (PLAN.md §7). Inlined in <head> as a plain <script> — Mediavine's
+          documented snippet uses an IIFE that creates a deferred child
+          script (https://faves.grow.me/main.js) carrying the site ID as
+          a data attribute. Skipped in dev / preview when the env var is
+          unset to avoid 404s.
         */}
         {mediavineSiteId ? (
-          <Script
-            id="mediavine-grow"
-            strategy="afterInteractive"
-            src={`https://scripts.mediavine.com/tags/${mediavineSiteId}.js`}
-            async
+          <script
+            data-grow-initializer=""
+            dangerouslySetInnerHTML={{
+              __html:
+                "!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement(\"script\");(e.type=\"text/javascript\"),(e.src=\"https://faves.grow.me/main.js\"),(e.defer=!0),e.setAttribute(\"data-grow-faves-site-id\"," +
+                JSON.stringify(mediavineSiteId) +
+                ");var t=document.getElementsByTagName(\"script\")[0];t.parentNode.insertBefore(e,t);})();",
+            }}
           />
         ) : null}
 
