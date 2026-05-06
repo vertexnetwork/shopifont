@@ -9,6 +9,18 @@ import {
 } from "@/lib/generators";
 import type { GeneratorState } from "./state";
 
+const WEIGHT_LABEL: Record<FontWeight, string> = {
+  100: "100 — Thin",
+  200: "200 — Extra Light",
+  300: "300 — Light",
+  400: "400 — Regular",
+  500: "500 — Medium",
+  600: "600 — Semi Bold",
+  700: "700 — Bold",
+  800: "800 — Extra Bold",
+  900: "900 — Black",
+};
+
 type Props = {
   state: GeneratorState;
 };
@@ -29,6 +41,7 @@ export function GeneratorInputs({ state }: Props) {
           spellCheck={false}
           value={state.fontName}
           onChange={(e) => state.setFontName(e.target.value)}
+          onFocus={(e) => e.currentTarget.select()}
           className="min-h-[var(--spacing-touch)] w-full px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal placeholder:text-muted focus:border-electric"
           placeholder="My Brand Sans"
           aria-describedby="fontname-hint"
@@ -67,7 +80,7 @@ export function GeneratorInputs({ state }: Props) {
           >
             {VALID_WEIGHTS.map((w) => (
               <option key={w} value={w}>
-                {w}
+                {WEIGHT_LABEL[w]}
               </option>
             ))}
           </select>
@@ -125,13 +138,16 @@ function FormatToggle({
       aria-checked={checked}
       onClick={onToggle}
       className={
-        "min-h-[var(--spacing-touch)] min-w-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors " +
+        "min-h-[var(--spacing-touch)] min-w-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
         (checked
           ? "bg-electric text-paper border-electric"
           : "bg-paper text-charcoal border-charcoal-line/60 hover:border-electric")
       }
     >
-      {FORMAT_LABEL[format]}
+      <span aria-hidden className={checked ? "opacity-100" : "opacity-0"}>
+        ✓
+      </span>
+      <span>{FORMAT_LABEL[format]}</span>
     </button>
   );
 }
@@ -152,13 +168,16 @@ function ApplyToggle({
       aria-checked={checked}
       onClick={onToggle}
       className={
-        "min-h-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors " +
+        "min-h-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
         (checked
-          ? "bg-charcoal text-paper border-charcoal"
+          ? "bg-electric text-paper border-electric"
           : "bg-paper text-charcoal border-charcoal-line/60 hover:border-electric")
       }
     >
-      {label}
+      <span aria-hidden className={checked ? "opacity-100" : "opacity-0"}>
+        ✓
+      </span>
+      <span>{label}</span>
     </button>
   );
 }

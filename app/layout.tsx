@@ -78,6 +78,11 @@ export const viewport: Viewport = {
 
 const mediavineSiteId = process.env.NEXT_PUBLIC_MEDIAVINE_SITE_ID?.trim();
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim();
+const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID?.trim();
+const clarityProjectIdSafe =
+  clarityProjectId && /^[a-z0-9]+$/i.test(clarityProjectId)
+    ? clarityProjectId
+    : null;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -115,6 +120,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             data-domain={plausibleDomain}
             src="https://plausible.io/js/script.outbound-links.js"
             defer
+          />
+        ) : null}
+
+        {/*
+          Microsoft Clarity — heatmaps, session recordings, dead/rage-click
+          forensics. The project ID is validated as alphanumeric before
+          interpolation so this stays safe even though we render via
+          dangerouslySetInnerHTML. Skipped when unset (dev/preview).
+        */}
+        {clarityProjectIdSafe ? (
+          <script
+            id="clarity-init"
+            dangerouslySetInnerHTML={{
+              __html:
+                "(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src=\"https://www.clarity.ms/tag/\"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,\"clarity\",\"script\",\"" +
+                clarityProjectIdSafe +
+                "\");",
+            }}
           />
         ) : null}
 

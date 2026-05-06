@@ -30,6 +30,16 @@ export type GeneratorState = {
   fontFaceCss: string;
   settingsSchemaJson: string;
   cssVariableOverrides: string;
+  /**
+   * Surface-level validation. Each warning is a short, actionable line we
+   * render at the top of the relevant code block AND use to gate the
+   * Copy button so users never paste a degenerate snippet.
+   */
+  warnings: {
+    fontFace: string | null;
+    settings: string | null;
+    cssVars: string | null;
+  };
 };
 
 const DEFAULT_FONT_NAME = "My Brand Sans";
@@ -72,6 +82,24 @@ export function useGenerator(): GeneratorState {
     [input],
   );
 
+  const warnings = useMemo(() => {
+    const trimmedName = fontName.trim();
+    const noName = trimmedName.length === 0
+      ? "Enter a font name above to generate this block."
+      : null;
+    const noFormats = formats.length === 0
+      ? "Pick at least one format above — without WOFF2 the @font-face block won't load any file."
+      : null;
+    const noApply = !applyToHeading && !applyToBody
+      ? "Select Headings or Body above so the override has a target."
+      : null;
+    return {
+      fontFace: noName ?? noFormats,
+      settings: noName,
+      cssVars: noName ?? noApply,
+    };
+  }, [fontName, formats, applyToHeading, applyToBody]);
+
   return {
     fontName,
     setFontName,
@@ -89,5 +117,6 @@ export function useGenerator(): GeneratorState {
     fontFaceCss,
     settingsSchemaJson,
     cssVariableOverrides,
+    warnings,
   };
 }

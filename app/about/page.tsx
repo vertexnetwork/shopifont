@@ -7,6 +7,8 @@ import { SITE_NAME } from "@/lib/site";
 export const dynamic = "force-static";
 
 const CONTACT_EMAIL = "hello@shopifont.app";
+const GITHUB_REPO_URL = "https://github.com/shopifont/shopifont";
+const MAINTAINER_NAME = "Josh Hickman";
 
 const ABOUT_DESCRIPTION =
   `${SITE_NAME} is a free, independently-built tool that generates the exact code Shopify merchants need to install custom fonts on Dawn and other OS 2.0 themes — without layout shifts, without uploads, and without paid plans.`;
@@ -178,6 +180,34 @@ export default function AboutPage() {
         </section>
 
         <section
+          aria-labelledby="maintainer-heading"
+          className="flex flex-col gap-3 rounded-lg border border-charcoal-line/30 bg-paper-dim p-5"
+        >
+          <h2
+            id="maintainer-heading"
+            className="text-2xl font-semibold tracking-tight"
+          >
+            Who maintains {SITE_NAME}
+          </h2>
+          <p className="text-charcoal/85 leading-relaxed">
+            {SITE_NAME} is built and maintained by {MAINTAINER_NAME}, an
+            independent developer who works with Shopify themes day-to-day.
+            The full source is open and viewable on{" "}
+            <a
+              href={GITHUB_REPO_URL}
+              className="text-electric hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>{" "}
+            — every code generator on this site is a function in that repo
+            you can read in under a minute. If something looks off, file an
+            issue and it&apos;ll get a real human reply.
+          </p>
+        </section>
+
+        <section
           aria-labelledby="contact-heading"
           className="flex flex-col gap-3"
         >
@@ -197,7 +227,7 @@ export default function AboutPage() {
               {CONTACT_EMAIL}
             </a>
             . If a theme update breaks the generated code, that&apos;s the
-            email to send — we treat correctness regressions as priority work.
+            email to send — correctness regressions are priority work.
           </p>
           <p className="text-charcoal/85 leading-relaxed">
             {SITE_NAME} is not affiliated with Shopify Inc. &quot;Shopify&quot;

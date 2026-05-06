@@ -17,10 +17,7 @@ export function Header() {
         <nav aria-label="Primary" className="text-sm">
           <ul className="flex items-center gap-4">
             <li>
-              <Link
-                href="/shopify-dawn-custom-font-generator"
-                className="hover:text-electric"
-              >
+              <Link href="/#themes" className="hover:text-electric">
                 Themes
               </Link>
             </li>

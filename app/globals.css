@@ -13,6 +13,8 @@
   --color-electric: #0066ff;
   --color-electric-hover: #0052cc;
   --color-success: #0066ff; /* copy-success uses electric blue per PLAN.md */
+  --color-error: #d92d20;
+  --color-warn: #b54708;
   --color-muted: #6b6b6b;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

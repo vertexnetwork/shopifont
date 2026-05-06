@@ -8,7 +8,7 @@ import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
 import { SoftwareApplicationSchema } from "@/components/Schema/SoftwareApplicationSchema";
 import { PSEO_BY_SLUG, PSEO_ENTRIES } from "@/content/pseo";
-import { absoluteUrl } from "@/lib/site";
+import { BUILD_DATE_ISO, absoluteUrl, getBuildDateLabel } from "@/lib/site";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -85,7 +85,11 @@ export default async function PseoPage({ params }: PageProps) {
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="flex flex-col gap-4">
             <p className="text-xs uppercase tracking-wide text-muted">
-              Shopify {entry.theme} · Free, no signup
+              Shopify {entry.theme} · Free, no signup ·{" "}
+              <span className="normal-case tracking-normal">
+                Last updated{" "}
+                <time dateTime={BUILD_DATE_ISO}>{getBuildDateLabel()}</time>
+              </span>
             </p>
             <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
               {entry.h1}
@@ -105,8 +109,6 @@ export default async function PseoPage({ params }: PageProps) {
           <ShopifontGenerator />
         </section>
 
-        <AdSlot id="ad-incontent" position="in-content" />
-
         <section
           aria-labelledby="usecase-heading"
           className="prose prose-charcoal max-w-none"
@@ -121,6 +123,8 @@ export default async function PseoPage({ params }: PageProps) {
             {entry.useCase}
           </p>
         </section>
+
+        <AdSlot id="ad-incontent" position="in-content" />
 
         <section aria-labelledby="faq-heading" className="flex flex-col gap-4">
           <h2 id="faq-heading" className="text-2xl font-semibold tracking-tight">

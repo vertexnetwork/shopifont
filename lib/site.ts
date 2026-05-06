@@ -25,3 +25,21 @@ export const SOCIAL_HANDLES = {
   pinterest: "shopifont",
   tiktok: "shopifont",
 } as const;
+
+/**
+ * Build-time timestamp baked into the bundle. Surfaced on every pSEO
+ * page as a "last updated" signal so visitors can see the guides are
+ * actively maintained — important trust gate for paste-into-production
+ * code. Refreshes automatically every deploy.
+ */
+export const BUILD_DATE_ISO: string = new Date().toISOString();
+
+const BUILD_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+export function getBuildDateLabel(): string {
+  return BUILD_DATE_FORMATTER.format(new Date(BUILD_DATE_ISO));
+}
