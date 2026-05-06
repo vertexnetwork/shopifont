@@ -45,13 +45,26 @@ const BLOCKS: ReadonlyArray<{
   },
 ];
 
+type ShopifontGeneratorProps = {
+  /**
+   * Render mode. "page" is the default homepage / pSEO context — the
+   * generator owns the URL and shows the Share-this-config action.
+   * "embed" is the iframe `/embed` route AND the Chrome extension
+   * popup — URL syncing is off (host page owns the URL) and the
+   * Share button is hidden because the URL it would copy isn't
+   * shareable from the host's perspective.
+   */
+  mode?: "page" | "embed";
+};
+
 /**
  * The full Shopifont generator surface. Embedded on the homepage and
  * on every pSEO page. Pure client-side string interpolation — no
  * network, no upload, no server round-trip.
  */
-export function ShopifontGenerator() {
-  const state = useGenerator();
+export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = {}) {
+  const isEmbed = mode === "embed";
+  const state = useGenerator({ syncToUrl: !isEmbed });
   const [activeMobile, setActiveMobile] = useState<CopyTarget>("fontFace");
 
   const codeFor = (id: CopyTarget): string => {
@@ -77,7 +90,7 @@ export function ShopifontGenerator() {
           Paste these three blocks in order. They&apos;re independent files in
           your theme — copying one without the others won&apos;t break the store.
         </p>
-        <GeneratorActions state={state} />
+        <GeneratorActions state={state} hideShare={isEmbed} />
       </div>
 
       {/*

@@ -65,7 +65,20 @@ const DEFAULT_FORMATS: FontFormat[] = ["woff2"];
 const DEFAULT_WEIGHT: FontWeight = 400;
 const DEFAULT_STYLE: FontStyle = "normal";
 
-export function useGenerator(): GeneratorState {
+export type GeneratorOptions = {
+  /**
+   * When false, the hook skips reading + writing
+   * `window.location.search`. Set this in non-page contexts where the
+   * URL belongs to someone else: the iframe `/embed` route (host page
+   * owns the URL) and the Chrome extension popup (popup URL is
+   * transient and rewriting it is meaningless). Default true keeps the
+   * existing share-the-config behavior on the homepage and pSEO pages.
+   */
+  syncToUrl?: boolean;
+};
+
+export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
+  const syncToUrl = opts.syncToUrl ?? true;
   const [fontName, setFontName] = useState<string>(DEFAULT_FONT_NAME);
   const [formats, setFormats] = useState<FontFormat[]>([...DEFAULT_FORMATS]);
   const [weight, setWeight] = useState<FontWeight>(DEFAULT_WEIGHT);
@@ -79,7 +92,12 @@ export function useGenerator(): GeneratorState {
 
   // Hydrate from URL on first mount only. Static export means SSR can't
   // see the search string, so we read it client-side and apply.
+  // Skipped when syncToUrl is false (embed iframe, extension popup).
   useEffect(() => {
+    if (!syncToUrl) {
+      hydratedFromUrl.current = true;
+      return;
+    }
     if (typeof window === "undefined") return;
     const p = new URLSearchParams(window.location.search);
     const f = p.get("font");
@@ -115,11 +133,13 @@ export function useGenerator(): GeneratorState {
     }
 
     hydratedFromUrl.current = true;
-  }, []);
+  }, [syncToUrl]);
 
   // Sync state to URL after hydration so a user can copy the address
   // bar (or click Share) and return / forward the same configuration.
+  // Skipped when syncToUrl is false — see GeneratorOptions.
   useEffect(() => {
+    if (!syncToUrl) return;
     if (typeof window === "undefined") return;
     if (!hydratedFromUrl.current) return;
     const p = new URLSearchParams();
@@ -146,7 +166,15 @@ export function useGenerator(): GeneratorState {
     const url = new URL(window.location.href);
     url.search = search;
     window.history.replaceState({}, "", url.toString());
-  }, [fontName, formats, weight, style, applyToHeading, applyToBody]);
+  }, [
+    syncToUrl,
+    fontName,
+    formats,
+    weight,
+    style,
+    applyToHeading,
+    applyToBody,
+  ]);
 
   const toggleFormat = useCallback((f: FontFormat) => {
     setFormats((prev) =>

@@ -29,6 +29,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.4,
   };
 
+  // /embed-this is the marketing surface partners discover; /embed
+  // itself is intentionally excluded from the sitemap (it's a partner
+  // endpoint, noindexed at the route level).
+  const embedThis = {
+    url: `${base}/embed-this`,
+    lastModified: today,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  };
+
   const pages = PSEO_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
     lastModified: today,
@@ -36,5 +46,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [home, about, changelog, ...pages];
+  return [home, about, changelog, embedThis, ...pages];
 }

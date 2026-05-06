@@ -30,6 +30,11 @@ export function Header() {
               </Link>
             </li>
             <li>
+              <Link href="/embed-this" className={NAV_LINK_CLASS}>
+                Embed
+              </Link>
+            </li>
+            <li>
               <Link href="/about" className={NAV_LINK_CLASS}>
                 About
               </Link>

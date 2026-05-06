@@ -31,6 +31,7 @@ const COLUMNS: ReadonlyArray<{
     links: [
       { href: "/about", label: "About" },
       { href: "/changelog", label: "Changelog" },
+      { href: "/embed-this", label: "Embed on your site" },
     ],
   },
 ];

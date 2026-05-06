@@ -10,11 +10,21 @@ import type { GeneratorState } from "./state";
  * downloads — browsers ask permission for the second and third on
  * first use, which is acceptable in exchange for not adding ~80 KB of
  * JSZip to the bundle.
+ *
+ * `hideShare` is set in embed contexts (iframe + extension popup),
+ * where the URL the share button would copy belongs to the host
+ * surface, not us — so copying it would mislead users.
  */
-export function GeneratorActions({ state }: { state: GeneratorState }) {
+export function GeneratorActions({
+  state,
+  hideShare = false,
+}: {
+  state: GeneratorState;
+  hideShare?: boolean;
+}) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <ShareLinkButton />
+      {hideShare ? null : <ShareLinkButton />}
       <DownloadAllButton state={state} />
     </div>
   );

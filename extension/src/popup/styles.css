@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/*
+ * Brand tokens — matches the parent project's app/globals.css. Defined
+ * inline rather than imported so the extension is self-contained and
+ * Tailwind v4's PostCSS scanner can hash the utility classes referenced
+ * by the imported Generator components.
+ */
+@theme {
+  --color-charcoal: #1a1a1a;
+  --color-charcoal-line: #333333;
+  --color-paper: #ffffff;
+  --color-paper-dim: #f5f5f5;
+  --color-electric: #0066ff;
+  --color-electric-hover: #0052cc;
+  --color-error: #d92d20;
+  --color-warn: #b54708;
+  --color-muted: #5a5a5a;
+  --color-amber: #f59e0b;
+  --color-amber-soft: #fef3c7;
+  --color-amber-deep: #78350f;
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-system:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+
+  --spacing-touch: 2.75rem;
+}
+
+:root {
+  /* Popup is tight — neutralize the website's CLS-prevention min-heights
+     so the generator collapses cleanly inside the 380×600 popup. */
+  --ad-slot-leaderboard-h: 0px;
+  --ad-slot-incontent-h: 0px;
+  --ad-slot-sidebar-h: 0px;
+  --code-card-min-h: 200px;
+  --preview-min-h: 0px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  width: 380px;
+}
+
+:where(a, button, input, textarea, select, [role="button"]):focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.code-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.shadow-card {
+  box-shadow:
+    0 1px 2px rgba(26, 26, 26, 0.04),
+    0 6px 20px rgba(26, 26, 26, 0.06);
+}
+.shadow-cta {
+  box-shadow:
+    0 4px 14px rgba(0, 102, 255, 0.3),
+    0 1px 2px rgba(0, 102, 255, 0.18);
+}
+.badge-glow {
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 102, 255, 0.32);
+}
+
+@keyframes shopifont-pulse {
+  from {
+    transform: scale(0.94);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.shopifont-pulse {
+  animation: shopifont-pulse 150ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

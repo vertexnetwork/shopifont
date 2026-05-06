@@ -52,6 +52,10 @@ export function buildLlmsTxt(): string {
   lines.push("");
   lines.push(`- ${baseUrl}/  — homepage (full generator)`);
   lines.push(`- ${baseUrl}/about  — about, mission, contact`);
+  lines.push(`- ${baseUrl}/changelog  — release notes and content updates`);
+  lines.push(
+    `- ${baseUrl}/embed-this  — iframe embed snippet for tutorial authors and theme reviewers`,
+  );
   for (const entry of PSEO_ENTRIES) {
     lines.push(`- ${baseUrl}/${entry.slug}  — ${entry.h1}`);
   }

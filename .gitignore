@@ -8,6 +8,17 @@
 /out/
 /build/
 
+# extension build artifacts (the workspace has its own .gitignore;
+# duplicated here so a top-level `git add -A` from the parent never
+# stages built JS or node_modules even if someone bypasses the
+# subdir gitignore).
+extension/dist/
+extension/node_modules/
+extension/public/icons/icon-*.png
+
+# Local image uploads — screenshots / mockups not intended for the repo.
+image-uploads/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

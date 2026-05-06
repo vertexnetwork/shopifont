@@ -1,5 +1,17 @@
 [
   {
+    "hash": "4f79b8faac9e9615db886914ba2d0bda38cf619f",
+    "shortHash": "4f79b8f",
+    "date": "2026-05-06T15:07:20-06:00",
+    "subject": "Add Vercel Analytics + Speed Insights"
+  },
+  {
+    "hash": "fc9930bcb0d17c5935841ba2b09f692d6da80951",
+    "shortHash": "fc9930b",
+    "date": "2026-05-06T14:54:42-06:00",
+    "subject": "LCP fix: system-font H1, gate TypedHint, strip Next polyfill module"
+  },
+  {
     "hash": "5a06693eeff94048f4fe5be1da2c1861fb999ba6",
     "shortHash": "5a06693",
     "date": "2026-05-06T14:40:36-06:00",
