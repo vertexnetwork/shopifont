@@ -3,7 +3,7 @@
   "name": "Shopifont — Shopify Custom Font Code Generator",
   "short_name": "Shopifont",
   "version": "0.1.0",
-  "description": "Generate @font-face, settings_schema.json, and CSS variable code for Shopify Dawn and other OS 2.0 themes — without leaving your tab.",
+  "description": "Generate @font-face, settings_schema.json, and CSS variable code for Shopify Dawn and OS 2.0 themes — without leaving your tab.",
   "action": {
     "default_popup": "src/popup/index.html",
     "default_title": "Shopifont — Custom Font Generator",
