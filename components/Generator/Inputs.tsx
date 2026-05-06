@@ -35,7 +35,7 @@ export function GeneratorInputs({ state }: Props) {
   return (
     <section
       aria-label="Configure font"
-      className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper"
+      className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card"
     >
       <label className="flex flex-col gap-2 text-sm font-medium">
         <span>Custom font name</span>

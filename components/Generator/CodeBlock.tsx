@@ -97,7 +97,7 @@ export function CodeBlock({
   return (
     <section
       aria-labelledby={sectionId}
-      className="flex flex-col rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden"
+      className="flex flex-col rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden shadow-card"
       style={{ minHeight: "var(--code-card-min-h)" }}
     >
       <header className="flex items-start gap-3 p-4 sm:p-5 border-b border-charcoal-line/40">
@@ -108,7 +108,7 @@ export function CodeBlock({
               "shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full font-mono text-xs font-semibold " +
               (variant === "done"
                 ? "bg-paper-dim text-muted border border-charcoal-line/40"
-                : "bg-electric text-paper")
+                : "bg-electric text-paper badge-glow")
             }
           >
             {variant === "done" ? "✓" : step}
@@ -119,7 +119,15 @@ export function CodeBlock({
             {step ? <span className="sr-only">Step {step}: </span> : null}
             {title}
           </h3>
-          <p className="mt-1 text-xs text-muted">{description}</p>
+          {/*
+           * Reserve 3 lines worth of description height so all three
+           * code blocks share equal-height headers in the desktop
+           * 3-col grid. Without this the @font-face description (the
+           * longest) pushes its code body down ~20px below the others.
+           */}
+          <p className="mt-1 text-xs text-muted line-clamp-3 min-h-[3rem]">
+            {description}
+          </p>
         </div>
       </header>
 

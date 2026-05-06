@@ -40,23 +40,27 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
                 href="#tool-heading"
-                className="inline-flex items-center justify-center min-h-[var(--spacing-touch)] px-5 rounded-md bg-electric text-paper font-medium hover:bg-electric-hover transition-colors"
+                className="group inline-flex items-center justify-center min-h-[3.25rem] px-6 rounded-md bg-electric text-paper font-semibold text-base shadow-cta hover:bg-electric-hover"
               >
                 Generate my font code
-                <ArrowDown className="ml-2 w-4 h-4" />
+                <ArrowDown className="ml-2 w-4 h-4 transition-transform group-hover:translate-y-0.5" />
               </a>
               <Link
                 href="#how-it-works"
-                className="inline-flex items-center justify-center min-h-[var(--spacing-touch)] px-4 rounded-md border border-charcoal-line/50 text-charcoal hover:border-electric hover:text-electric transition-colors"
+                className="inline-flex items-center justify-center min-h-[3.25rem] px-4 rounded-md border border-charcoal-line/50 text-charcoal hover:border-electric hover:text-electric transition-colors"
               >
                 How it works
               </Link>
             </div>
             <ul className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted">
-              <NoUploadDetail />
+              <TrustItem>No upload — files stay in your browser</TrustItem>
               <TrustItem>Works on Dawn, Sense, Refresh, and 10 more</TrustItem>
               <TrustItem>Pure CSS output — no JS in your store</TrustItem>
             </ul>
+            <p className="text-[11px] text-muted/80 max-w-xl">
+              Verify the &ldquo;no upload&rdquo; claim in DevTools → Network:
+              dropping a font file makes zero requests.
+            </p>
           </div>
           <AdSlot id="ad-leaderboard" position="leaderboard" className="hidden lg:flex" />
         </section>
@@ -112,25 +116,30 @@ export default function HomePage() {
           {featured ? (
             <Link
               href={`/shopify-${featured.slug}-custom-font-generator`}
-              className="group block rounded-lg border border-electric bg-electric/5 hover:bg-electric/10 transition-colors p-5 sm:p-6"
+              className="group block rounded-lg border border-electric/60 bg-gradient-to-br from-electric/[0.08] via-electric/[0.04] to-transparent p-5 sm:p-6 shadow-featured"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-electric text-paper font-mono text-base">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <span
+                    aria-hidden
+                    className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-electric text-paper font-mono text-lg badge-glow"
+                  >
                     Aa
                   </span>
                   <div>
-                    <p className="text-[10px] uppercase tracking-wide text-electric font-semibold">
+                    <p className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wide text-electric font-semibold">
+                      <span className="inline-block w-1.5 h-1.5 rounded-full bg-electric" />
                       Most popular · ~70% of new Shopify stores
                     </p>
-                    <p className="text-lg font-semibold tracking-tight">
+                    <p className="mt-1 text-lg sm:text-xl font-semibold tracking-tight">
                       {featured.name} Custom Font Generator
                     </p>
                     <p className="text-xs text-muted">{featured.category}</p>
                   </div>
                 </div>
-                <span className="inline-flex items-center text-electric font-medium text-sm group-hover:translate-x-0.5 transition-transform">
-                  Open generator →
+                <span className="inline-flex items-center self-start sm:self-center min-h-[2.5rem] px-4 rounded-md bg-electric text-paper font-medium text-sm group-hover:bg-electric-hover transition-colors">
+                  Open generator
+                  <span aria-hidden className="ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
                 </span>
               </div>
             </Link>
@@ -201,36 +210,6 @@ function TrustItem({ children }: { children: React.ReactNode }) {
         <path d="M3 8.5l3.5 3.5L13 5" />
       </svg>
       {children}
-    </li>
-  );
-}
-
-function NoUploadDetail() {
-  return (
-    <li>
-      <details className="group inline-flex items-baseline gap-1.5">
-        <summary className="inline-flex items-center gap-1.5 cursor-pointer list-none">
-          <svg
-            aria-hidden
-            viewBox="0 0 16 16"
-            className="w-3.5 h-3.5 text-electric shrink-0"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M3 8.5l3.5 3.5L13 5" />
-          </svg>
-          <span className="underline decoration-dotted underline-offset-2 group-open:no-underline">
-            No upload — files stay in your browser
-          </span>
-        </summary>
-        <span className="ml-1 text-muted">
-          Preview uses the FontFace API on a blob URL; there is no upload
-          endpoint. Verify in DevTools → Network on file drop.
-        </span>
-      </details>
     </li>
   );
 }

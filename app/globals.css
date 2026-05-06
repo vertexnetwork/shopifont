@@ -93,6 +93,54 @@ body {
 }
 
 /*
+ * Elevation tokens. Used on the primary tool surfaces (Inputs,
+ * Preview, CodeBlock) and the featured CTA so the generator reads as
+ * a discrete object worth interacting with — not a flat slab of
+ * borders. Shadows stay subtle on supporting cards; the CTA glow is
+ * deliberately stronger because it drives conversion.
+ */
+.shadow-card {
+  box-shadow:
+    0 1px 2px rgba(26, 26, 26, 0.04),
+    0 6px 20px rgba(26, 26, 26, 0.06);
+}
+
+.shadow-featured {
+  box-shadow:
+    0 1px 2px rgba(0, 102, 255, 0.06),
+    0 10px 28px rgba(0, 102, 255, 0.12);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.shadow-featured:hover {
+  box-shadow:
+    0 2px 4px rgba(0, 102, 255, 0.10),
+    0 14px 36px rgba(0, 102, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+/* Brand-blue glow for the hero CTA — explicitly conversion-driven. */
+.shadow-cta {
+  box-shadow:
+    0 4px 14px rgba(0, 102, 255, 0.30),
+    0 1px 2px rgba(0, 102, 255, 0.18);
+  transition: box-shadow 200ms ease, background-color 200ms ease,
+    transform 200ms ease;
+}
+.shadow-cta:hover {
+  box-shadow:
+    0 8px 24px rgba(0, 102, 255, 0.42),
+    0 2px 4px rgba(0, 102, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Subtle inner glow on active step badges so they read as live, not flat. */
+.badge-glow {
+  box-shadow:
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 102, 255, 0.32);
+}
+
+/*
  * 150ms scale-and-fade for transient confirmation states (Copied ✓,
  * tab switch). Honors prefers-reduced-motion via the global override
  * below. Cheaper and lighter than Framer Motion for a static export.

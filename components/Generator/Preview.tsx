@@ -158,7 +158,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   return (
     <section
       aria-labelledby="preview-heading"
-      className="flex flex-col gap-3 border border-charcoal-line/60 rounded-lg p-5 bg-paper"
+      className="flex flex-col gap-3 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card"
       style={{ minHeight: "var(--preview-min-h)" }}
     >
       <div className="flex items-center justify-between gap-3 flex-wrap">
