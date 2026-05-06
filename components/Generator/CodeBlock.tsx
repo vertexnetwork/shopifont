@@ -3,6 +3,8 @@
 import { useDeferredValue, useEffect, useState } from "react";
 import { Highlight, themes as prismThemes, type PrismTheme } from "prism-react-renderer";
 
+export type CopyVariant = "primary" | "secondary" | "done";
+
 type Props = {
   step?: number;
   title: string;
@@ -15,27 +17,36 @@ type Props = {
    * gate the Copy button — prevents users pasting a degenerate snippet.
    */
   warning?: string | null;
+  /**
+   * Visual weight of the Copy CTA. Sequenced by the parent so only the
+   * step the user should do next reads as primary; previously-copied
+   * blocks fade to `done`. Avoids three identical-priority CTAs.
+   */
+  variant?: CopyVariant;
+  /** Notify the parent so it can advance sequencing. */
+  onCopySuccess?: () => void;
 };
 
 /**
- * Charcoal-on-paper Prism theme. Built inline so it stays consistent
- * with the brand palette and we don't pay for a runtime fetch of an
- * external theme stylesheet.
+ * Charcoal-on-paper Prism theme. Token colors are intentionally
+ * neutral + warm so the only true brand-blue on screen is the Copy
+ * CTA — keeps the call-to-action visually distinct from the code it
+ * sits on top of.
  */
 const CHARCOAL_THEME: PrismTheme = {
   ...prismThemes.vsLight,
   plain: {
     backgroundColor: "#1a1a1a",
-    color: "#f5f5f5",
+    color: "#ededed",
   },
   styles: [
-    { types: ["comment"], style: { color: "#7a7a7a", fontStyle: "italic" } },
-    { types: ["string", "url"], style: { color: "#9ad7ff" } },
-    { types: ["keyword", "selector", "atrule", "rule"], style: { color: "#7fb1ff" } },
-    { types: ["property", "tag", "attr-name"], style: { color: "#bce0ff" } },
-    { types: ["number", "boolean"], style: { color: "#ffd58a" } },
-    { types: ["punctuation", "operator"], style: { color: "#cfcfcf" } },
-    { types: ["function"], style: { color: "#f4a99a" } },
+    { types: ["comment"], style: { color: "#8a8a8a", fontStyle: "italic" } },
+    { types: ["string", "url"], style: { color: "#e6c97a" } },
+    { types: ["keyword", "selector", "atrule", "rule"], style: { color: "#ffffff", fontWeight: "600" } },
+    { types: ["property", "tag", "attr-name"], style: { color: "#cfcfcf" } },
+    { types: ["number", "boolean"], style: { color: "#d8b386" } },
+    { types: ["punctuation", "operator"], style: { color: "#9a9a9a" } },
+    { types: ["function"], style: { color: "#c8a3ff" } },
   ],
 };
 
@@ -47,6 +58,8 @@ export function CodeBlock({
   language,
   copyLabel = "Copy",
   warning,
+  variant = "primary",
+  onCopySuccess,
 }: Props) {
   const deferredCode = useDeferredValue(code);
   const [copied, setCopied] = useState(false);
@@ -70,6 +83,7 @@ export function CodeBlock({
       }
       setCopied(true);
       setAnnounce("Copied to clipboard");
+      onCopySuccess?.();
     } catch {
       setCopied(false);
       setAnnounce("Could not copy. Select the code and copy manually.");
@@ -78,10 +92,11 @@ export function CodeBlock({
 
   const blocked = Boolean(warning);
   const canCopy = !blocked && deferredCode.trim().length > 0;
+  const sectionId = `code-${slugForId(title)}`;
 
   return (
     <section
-      aria-labelledby={`code-${slugForId(title)}`}
+      aria-labelledby={sectionId}
       className="flex flex-col rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden"
       style={{ minHeight: "var(--code-card-min-h)" }}
     >
@@ -89,16 +104,18 @@ export function CodeBlock({
         {step ? (
           <span
             aria-hidden
-            className="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full bg-electric text-paper font-mono text-xs font-semibold"
+            className={
+              "shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full font-mono text-xs font-semibold " +
+              (variant === "done"
+                ? "bg-paper-dim text-muted border border-charcoal-line/40"
+                : "bg-electric text-paper")
+            }
           >
-            {step}
+            {variant === "done" ? "✓" : step}
           </span>
         ) : null}
         <div className="min-w-0 flex-1">
-          <h3
-            id={`code-${slugForId(title)}`}
-            className="text-base font-semibold tracking-tight"
-          >
+          <h3 id={sectionId} className="text-base font-semibold tracking-tight">
             {step ? <span className="sr-only">Step {step}: </span> : null}
             {title}
           </h3>
@@ -121,45 +138,28 @@ export function CodeBlock({
         style={{ maxHeight: "60vh" }}
       >
         {/*
-         * Sticky copy button lives INSIDE the scrolling container so the
-         * `position: sticky` actually anchors as the user scrolls long
-         * blocks (PLAN.md §5 — sticky copy reachable while scrolling).
+         * Desktop: top-anchored sticky Copy. Visible immediately and
+         * stays in view as the user scrolls long blocks.
          */}
-        <div className="sticky top-2 z-10 flex justify-end px-2 pointer-events-none">
-          <button
-            type="button"
-            onClick={onCopy}
-            disabled={!canCopy}
-            aria-label={
-              blocked
-                ? `Copy disabled: ${warning ?? ""}`
-                : copied
-                  ? "Copied"
-                  : copyLabel
-            }
-            title={blocked ? warning ?? undefined : undefined}
-            className={
-              "pointer-events-auto min-h-[var(--spacing-touch)] px-3 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm " +
-              (copied
-                ? "bg-electric text-paper"
-                : "bg-paper text-charcoal hover:bg-electric hover:text-paper border border-charcoal-line/40")
-            }
-          >
-            {copied ? "Copied ✓" : copyLabel}
-          </button>
+        <div className="hidden lg:flex sticky top-2 z-10 justify-end px-2 pointer-events-none">
+          <CopyButton
+            blocked={blocked}
+            canCopy={canCopy}
+            copied={copied}
+            copyLabel={copyLabel}
+            onCopy={onCopy}
+            variant={variant}
+            warning={warning}
+          />
         </div>
 
-        <div className="-mt-[var(--spacing-touch)] pt-[var(--spacing-touch)]">
+        <div className="lg:-mt-[var(--spacing-touch)] lg:pt-[var(--spacing-touch)]">
           {!deferredCode.trim() ? (
             <p className="p-4 text-xs text-paper-dim/60 font-mono">
               {warning ?? "Enter a font name to generate this block."}
             </p>
           ) : (
-            <Highlight
-              code={deferredCode}
-              language={language}
-              theme={CHARCOAL_THEME}
-            >
+            <Highlight code={deferredCode} language={language} theme={CHARCOAL_THEME}>
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre
                   className={`${className} font-mono text-[13px] leading-relaxed p-4 m-0`}
@@ -181,12 +181,79 @@ export function CodeBlock({
             </Highlight>
           )}
         </div>
+
+        {/*
+         * Mobile: bottom-anchored sticky Copy. Sits in the natural
+         * thumb arc on a one-handed phone hold. Renders only at <lg
+         * because on desktop the top-anchored version is reachable.
+         */}
+        <div className="lg:hidden sticky bottom-2 z-10 flex justify-end px-2 pointer-events-none">
+          <CopyButton
+            blocked={blocked}
+            canCopy={canCopy}
+            copied={copied}
+            copyLabel={copyLabel}
+            onCopy={onCopy}
+            variant={variant}
+            warning={warning}
+          />
+        </div>
       </div>
 
       <span aria-live="polite" className="sr-only">
         {announce}
       </span>
     </section>
+  );
+}
+
+function CopyButton({
+  blocked,
+  canCopy,
+  copied,
+  copyLabel,
+  onCopy,
+  variant,
+  warning,
+}: {
+  blocked: boolean;
+  canCopy: boolean;
+  copied: boolean;
+  copyLabel: string;
+  onCopy: () => void;
+  variant: CopyVariant;
+  warning?: string | null;
+}) {
+  const stylesByVariant: Record<CopyVariant, string> = {
+    primary:
+      "bg-electric text-paper border border-electric hover:bg-electric-hover hover:border-electric-hover",
+    secondary:
+      "bg-paper text-charcoal border border-charcoal-line/50 hover:border-electric hover:text-electric",
+    done: "bg-paper-dim text-muted border border-charcoal-line/40 hover:bg-paper hover:text-charcoal",
+  };
+  const baseLabel = variant === "done" && !copied ? "Copy again" : copyLabel;
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      disabled={!canCopy}
+      aria-label={
+        blocked
+          ? `Copy disabled: ${warning ?? ""}`
+          : copied
+            ? "Copied"
+            : baseLabel
+      }
+      title={blocked ? warning ?? undefined : undefined}
+      className={
+        "pointer-events-auto min-h-[var(--spacing-touch)] px-3 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm " +
+        (copied
+          ? "bg-electric text-paper border border-electric shopifont-pulse"
+          : stylesByVariant[variant])
+      }
+    >
+      {copied ? "Copied ✓" : baseLabel}
+    </button>
   );
 }
 

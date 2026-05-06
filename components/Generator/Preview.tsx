@@ -38,7 +38,9 @@ type SampleId = (typeof SAMPLE_OPTIONS)[number]["id"];
  * exists, otherwise the system fallback — which is itself a useful
  * preview because it shows the metric box your users would see while
  * the WOFF2 is in flight. We surface a "not installed locally" badge in
- * that case so the user doesn't think the preview is broken.
+ * that case so the user doesn't think the preview is broken; a 120ms
+ * delay suppresses the brief flash that would otherwise appear while
+ * `document.fonts.check` settles.
  */
 export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -46,6 +48,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const [error, setError] = useState<string | null>(null);
   const [sampleId, setSampleId] = useState<SampleId>("storefront");
   const [installed, setInstalled] = useState<boolean | null>(null);
+  const [showNotInstalledBadge, setShowNotInstalledBadge] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
@@ -88,6 +91,19 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       setInstalled(null);
     }
   }, [state.fontName, previewFamily]);
+
+  // Defer the "not installed" badge so the rendered system fallback
+  // doesn't visibly flicker between paint and badge appearance.
+  useEffect(() => {
+    const shouldShow =
+      !previewFamily && installed === false && state.fontName.trim().length > 0;
+    if (!shouldShow) {
+      setShowNotInstalledBadge(false);
+      return;
+    }
+    const t = setTimeout(() => setShowNotInstalledBadge(true), 120);
+    return () => clearTimeout(t);
+  }, [installed, previewFamily, state.fontName]);
 
   const loadFont = useCallback(
     async (file: File) => {
@@ -138,14 +154,6 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   );
 
   const renderedFamily = previewFamily ?? state.fontName ?? "system-ui";
-  const sampleText = useMemo(
-    () =>
-      SAMPLE_OPTIONS.find((o) => o.id === sampleId)?.text ?? SAMPLE_OPTIONS[0].text,
-    [sampleId],
-  );
-
-  const showNotInstalled =
-    !previewFamily && installed === false && state.fontName.trim().length > 0;
 
   return (
     <section
@@ -157,22 +165,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
         <h3 id="preview-heading" className="text-sm font-medium uppercase tracking-wide text-muted">
           Live preview
         </h3>
-        <div className="flex items-center gap-2 text-xs text-muted">
-          <label className="sr-only" htmlFor="sample-select">
-            Sample text
-          </label>
-          <select
-            id="sample-select"
-            value={sampleId}
-            onChange={(e) => setSampleId(e.target.value as SampleId)}
-            className="min-h-[var(--spacing-touch)] px-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal text-xs"
-          >
-            {SAMPLE_OPTIONS.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.label}
-              </option>
-            ))}
-          </select>
+        <div className="flex items-center gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -184,7 +177,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 hover:border-electric"
+            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 text-xs hover:border-electric"
           >
             {isTouch ? "Choose file" : "Upload file"}
           </button>
@@ -216,10 +209,10 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
             : undefined
         }
         className={
-          "rounded-md border-2 border-dashed p-4 transition-colors " +
+          "rounded-md p-4 transition-colors ring-1 ring-inset " +
           (isDragOver
-            ? "border-electric bg-electric/5"
-            : "border-charcoal-line/40") +
+            ? "ring-2 ring-electric bg-electric/5"
+            : "ring-charcoal-line/30 bg-paper-dim/40 hover:ring-charcoal-line/50") +
           (isTouch ? " cursor-pointer" : "")
         }
       >
@@ -229,10 +222,14 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
             fontFamily: `"${renderedFamily}", system-ui, sans-serif`,
             fontWeight: state.weight,
             fontStyle: state.style,
+            fontFeatureSettings: '"kern", "liga"',
           }}
         >
-          {sampleText}
+          {sampleTextFor(sampleId)}
         </p>
+
+        <SampleChipStrip sampleId={sampleId} onSelect={setSampleId} />
+
         {!previewFamily ? (
           <p className="mt-3 text-xs text-muted">
             {isTouch
@@ -244,9 +241,9 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
             Previewing locally-loaded font. Refresh to clear.
           </p>
         )}
-        {showNotInstalled ? (
+        {showNotInstalledBadge ? (
           <p
-            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-paper-dim px-2 py-1 text-xs text-warn"
+            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-paper-dim px-2 py-1 text-xs"
             style={{ color: "var(--color-warn)" }}
           >
             <span aria-hidden>!</span>
@@ -268,5 +265,48 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
         ) : null}
       </div>
     </section>
+  );
+}
+
+function sampleTextFor(id: SampleId): string {
+  return SAMPLE_OPTIONS.find((o) => o.id === id)?.text ?? SAMPLE_OPTIONS[0].text;
+}
+
+function SampleChipStrip({
+  sampleId,
+  onSelect,
+}: {
+  sampleId: SampleId;
+  onSelect: (id: SampleId) => void;
+}) {
+  const groupId = useMemo(() => "sample-strip", []);
+  return (
+    <div
+      role="radiogroup"
+      aria-label="Sample text"
+      id={groupId}
+      className="mt-3 flex flex-wrap gap-1.5"
+    >
+      {SAMPLE_OPTIONS.map((o) => {
+        const active = o.id === sampleId;
+        return (
+          <button
+            key={o.id}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onSelect(o.id)}
+            className={
+              "min-h-[2rem] px-2.5 rounded-full text-[11px] font-medium transition-colors border " +
+              (active
+                ? "bg-charcoal text-paper border-charcoal"
+                : "bg-paper text-muted border-charcoal-line/40 hover:border-electric hover:text-electric")
+            }
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }

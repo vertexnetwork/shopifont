@@ -2,17 +2,21 @@
 
 /*
  * Brand tokens. Charcoal / White / Electric Blue per PLAN.md §6.
- * Defined as @theme so Tailwind v4 emits utilities (bg-charcoal, text-electric, etc.).
+ * Defined as @theme so Tailwind v4 emits utilities (bg-charcoal,
+ * text-electric, etc.).
+ *
+ * Palette discipline: 9 tokens covering the entire surface — three
+ * brand colors (charcoal/paper/electric), two paper/charcoal tints,
+ * three semantic alerts (success folds into electric since "copied"
+ * is an electric-blue confirmation per PLAN.md §6), and muted.
  */
 @theme {
   --color-charcoal: #1a1a1a;
-  --color-charcoal-soft: #2a2a2a;
   --color-charcoal-line: #333333;
   --color-paper: #ffffff;
   --color-paper-dim: #f5f5f5;
   --color-electric: #0066ff;
   --color-electric-hover: #0052cc;
-  --color-success: #0066ff; /* copy-success uses electric blue per PLAN.md */
   --color-error: #d92d20;
   --color-warn: #b54708;
   --color-muted: #6b6b6b;
@@ -40,6 +44,15 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+}
+
+/*
+ * Smooth scroll only for explicitly-marked anchor links. Site-wide
+ * `scroll-behavior: smooth` makes long pSEO pages take ~800ms to scroll
+ * to the generator anchor — promote-to-jump links already target a
+ * specific element, so we scope the smooth behavior with a data attr.
+ */
+:root[data-smooth-scroll="true"] {
   scroll-behavior: smooth;
 }
 
@@ -77,6 +90,25 @@ body {
   padding: 0.5rem 0.75rem;
   background: var(--color-charcoal);
   color: var(--color-paper);
+}
+
+/*
+ * 150ms scale-and-fade for transient confirmation states (Copied ✓,
+ * tab switch). Honors prefers-reduced-motion via the global override
+ * below. Cheaper and lighter than Framer Motion for a static export.
+ */
+@keyframes shopifont-pulse {
+  from {
+    transform: scale(0.94);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.shopifont-pulse {
+  animation: shopifont-pulse 150ms ease-out both;
 }
 
 /* Reduced motion */

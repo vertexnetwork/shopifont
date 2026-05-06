@@ -20,11 +20,31 @@ export function absoluteUrl(path: string): string {
   return `${getSiteUrl()}${path}`;
 }
 
-export const SOCIAL_HANDLES = {
-  x: "shopifont",
-  pinterest: "shopifont",
-  tiktok: "shopifont",
-} as const;
+/**
+ * Verified social URLs only. Each handle is gated on a build-time env
+ * var so the site never claims a profile that hasn't been registered.
+ * Empty array is fine — schemas drop the `sameAs` field gracefully.
+ */
+export const SOCIAL_LINKS: ReadonlyArray<string> = (() => {
+  const out: string[] = [];
+  const x = process.env.NEXT_PUBLIC_SOCIAL_X?.trim();
+  const tiktok = process.env.NEXT_PUBLIC_SOCIAL_TIKTOK?.trim();
+  const pinterest = process.env.NEXT_PUBLIC_SOCIAL_PINTEREST?.trim();
+  if (x) out.push(x.startsWith("http") ? x : `https://twitter.com/${x.replace(/^@/, "")}`);
+  if (tiktok)
+    out.push(
+      tiktok.startsWith("http")
+        ? tiktok
+        : `https://www.tiktok.com/@${tiktok.replace(/^@/, "")}`,
+    );
+  if (pinterest)
+    out.push(
+      pinterest.startsWith("http")
+        ? pinterest
+        : `https://pinterest.com/${pinterest.replace(/^@/, "")}`,
+    );
+  return out;
+})();
 
 /**
  * Build-time timestamp baked into the bundle. Surfaced on every pSEO

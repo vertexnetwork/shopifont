@@ -25,13 +25,18 @@ type Props = {
   state: GeneratorState;
 };
 
+/**
+ * Generator input panel. The outer fieldset/legend was removed in favor
+ * of a plain card — the section heading on the parent already labels
+ * the surface, and stripping the floating legend cuts visual debt next
+ * to the Live Preview pane sitting alongside.
+ */
 export function GeneratorInputs({ state }: Props) {
   return (
-    <fieldset className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper">
-      <legend className="px-2 text-xs uppercase tracking-wide text-muted">
-        Configure font
-      </legend>
-
+    <section
+      aria-label="Configure font"
+      className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper"
+    >
       <label className="flex flex-col gap-2 text-sm font-medium">
         <span>Custom font name</span>
         <input
@@ -118,7 +123,32 @@ export function GeneratorInputs({ state }: Props) {
           Controls which Dawn typography roots the CSS variable block overrides.
         </span>
       </fieldset>
-    </fieldset>
+    </section>
+  );
+}
+
+/**
+ * 14×14px check icon. Rendered conditionally so unchecked toggles
+ * don't show a half-transparent placeholder. Width slot is reserved
+ * via a 14px-wide span on the unchecked path so toggling doesn't shift
+ * the label.
+ */
+function CheckIcon() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 16 16"
+      width="14"
+      height="14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0"
+    >
+      <path d="M3.5 8.5l3 3 6-6.5" />
+    </svg>
   );
 }
 
@@ -138,15 +168,13 @@ function FormatToggle({
       aria-checked={checked}
       onClick={onToggle}
       className={
-        "min-h-[var(--spacing-touch)] min-w-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+        "min-h-[var(--spacing-touch)] min-w-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-2 " +
         (checked
           ? "bg-electric text-paper border-electric"
           : "bg-paper text-charcoal border-charcoal-line/60 hover:border-electric")
       }
     >
-      <span aria-hidden className={checked ? "opacity-100" : "opacity-0"}>
-        ✓
-      </span>
+      {checked ? <CheckIcon /> : <span aria-hidden className="w-[14px] shrink-0" />}
       <span>{FORMAT_LABEL[format]}</span>
     </button>
   );
@@ -168,15 +196,13 @@ function ApplyToggle({
       aria-checked={checked}
       onClick={onToggle}
       className={
-        "min-h-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-1.5 " +
+        "min-h-[var(--spacing-touch)] px-4 rounded-md border text-sm font-medium transition-colors inline-flex items-center gap-2 " +
         (checked
           ? "bg-electric text-paper border-electric"
           : "bg-paper text-charcoal border-charcoal-line/60 hover:border-electric")
       }
     >
-      <span aria-hidden className={checked ? "opacity-100" : "opacity-0"}>
-        ✓
-      </span>
+      {checked ? <CheckIcon /> : <span aria-hidden className="w-[14px] shrink-0" />}
       <span>{label}</span>
     </button>
   );

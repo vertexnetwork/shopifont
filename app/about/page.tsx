@@ -77,7 +77,7 @@ export default function AboutPage() {
           >
             Why this site exists
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             Installing a custom font on a Shopify theme is one of those tasks
             that&apos;s simple in theory and consistently painful in practice.
             The merchant has the font file, knows roughly which CSS file to
@@ -85,7 +85,7 @@ export default function AboutPage() {
             don&apos;t match Dawn&apos;s OS 2.0 token system, or paying for an
             app that does what amounts to a string substitution.
           </p>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             {SITE_NAME} replaces both options with a single page: type the
             font name, tick the formats you have, and copy the three blocks
             Shopify actually expects — an <code className="font-mono text-sm">@font-face</code>{" "}
@@ -108,7 +108,7 @@ export default function AboutPage() {
           >
             How the tool is built
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             {SITE_NAME} is a static Next.js site exported to plain HTML and
             CSS. The generator runs entirely in the browser via string
             interpolation — there is no server, no database, no API. The
@@ -117,7 +117,7 @@ export default function AboutPage() {
             this on every page because trust is the only reason a developer
             would paste generated code into a production storefront.
           </p>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             We maintain a typed metadata file for every free Shopify OS 2.0
             theme — Dawn, Sense, Refresh, Crave, Origin, Studio, Taste,
             Spotlight, Colorblock, Craft, Ride, Publisher, and Trade — and
@@ -139,7 +139,7 @@ export default function AboutPage() {
           >
             How {SITE_NAME} stays free
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             The site is funded by display advertising. We work with Mediavine
             so that ad density stays inside the bounds Mediavine sets for its
             partners — that means no interstitials, no auto-playing video
@@ -148,7 +148,7 @@ export default function AboutPage() {
             advertising ever conflicts with the developer-tool experience,
             the experience wins.
           </p>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             We take no affiliate commission for any Shopify theme, app, or
             service mentioned on the site. The theme metadata is sourced
             directly from Shopify&apos;s public Theme Store and from each
@@ -166,7 +166,7 @@ export default function AboutPage() {
           >
             Privacy and data
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             {SITE_NAME} uses two analytics tools. Plausible Analytics, when
             enabled, is cookie-free and reports only aggregate page views
             and country — no individual tracking. Microsoft Clarity is also
@@ -178,7 +178,7 @@ export default function AboutPage() {
             memory only, and there is no upload endpoint for it to
             intercept.
           </p>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             The optional file-preview feature loads your font in your
             browser only — there is no upload endpoint and no telemetry
             attached to the file itself. Display advertising, when active,
@@ -198,7 +198,7 @@ export default function AboutPage() {
           >
             Who maintains {SITE_NAME}
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             {SITE_NAME} is built and maintained by an independent developer
             who works with Shopify themes day-to-day. The generators on this
             site are pure client-side string interpolation — what you copy is
@@ -225,7 +225,7 @@ export default function AboutPage() {
           >
             Contact
           </h2>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             Questions, theme-specific bug reports, or requests for additional
             generators are welcome at{" "}
             <a
@@ -237,7 +237,7 @@ export default function AboutPage() {
             . If a theme update breaks the generated code, that&apos;s the
             email to send — correctness regressions are priority work.
           </p>
-          <p className="text-charcoal/85 leading-relaxed">
+          <p className="text-charcoal/80 leading-relaxed">
             {SITE_NAME} is not affiliated with Shopify Inc. &quot;Shopify&quot;
             and &quot;Dawn&quot; are trademarks of Shopify Inc. and are used
             here for compatibility reference only.

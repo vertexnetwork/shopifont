@@ -12,6 +12,20 @@ import {
   VALID_WEIGHTS,
 } from "@/lib/generators";
 
+/**
+ * Stable identifiers for the three generated code blocks. Used to
+ * sequence the primary/secondary CTA visual hierarchy and to mark each
+ * block as copied so the generator can guide the user one paste at a
+ * time instead of presenting three identical-priority Copy buttons.
+ */
+export type CopyTarget = "fontFace" | "settings" | "cssVars";
+
+export const COPY_ORDER: ReadonlyArray<CopyTarget> = [
+  "fontFace",
+  "settings",
+  "cssVars",
+];
+
 export type GeneratorState = {
   fontName: string;
   setFontName: (v: string) => void;
@@ -40,6 +54,9 @@ export type GeneratorState = {
     settings: string | null;
     cssVars: string | null;
   };
+  /** Steps the user has successfully copied this session. */
+  copiedSteps: ReadonlySet<CopyTarget>;
+  markCopied: (id: CopyTarget) => void;
 };
 
 const DEFAULT_FONT_NAME = "My Brand Sans";
@@ -54,6 +71,9 @@ export function useGenerator(): GeneratorState {
   const [style, setStyle] = useState<FontStyle>(DEFAULT_STYLE);
   const [applyToHeading, setApplyToHeading] = useState<boolean>(true);
   const [applyToBody, setApplyToBody] = useState<boolean>(true);
+  const [copiedSteps, setCopiedSteps] = useState<ReadonlySet<CopyTarget>>(
+    () => new Set(),
+  );
 
   const toggleFormat = useCallback((f: FontFormat) => {
     setFormats((prev) =>
@@ -63,6 +83,15 @@ export function useGenerator(): GeneratorState {
 
   const setWeightSafe = useCallback((w: FontWeight) => {
     if (VALID_WEIGHTS.includes(w)) setWeight(w);
+  }, []);
+
+  const markCopied = useCallback((id: CopyTarget) => {
+    setCopiedSteps((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
   }, []);
 
   const input = useMemo<GeneratorInput>(() => {
@@ -118,5 +147,23 @@ export function useGenerator(): GeneratorState {
     settingsSchemaJson,
     cssVariableOverrides,
     warnings,
+    copiedSteps,
+    markCopied,
   };
+}
+
+/**
+ * Variant for a given step's primary action.
+ *  - "primary"   — fill with brand-blue, the next thing the user should do
+ *  - "secondary" — outlined, available but not primary
+ *  - "done"      — already copied this session; muted but still re-copyable
+ */
+export function variantFor(
+  id: CopyTarget,
+  copiedSteps: ReadonlySet<CopyTarget>,
+): "primary" | "secondary" | "done" {
+  if (copiedSteps.has(id)) return "done";
+  const idx = COPY_ORDER.indexOf(id);
+  if (idx <= 0) return "primary";
+  return copiedSteps.has(COPY_ORDER[idx - 1]!) ? "primary" : "secondary";
 }

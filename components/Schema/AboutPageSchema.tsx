@@ -1,11 +1,11 @@
 import { JsonLd } from "./JsonLd";
-import { SITE_NAME, absoluteUrl } from "@/lib/site";
+import { SITE_NAME, SOCIAL_LINKS, absoluteUrl } from "@/lib/site";
 
 /**
  * AboutPage + Organization JSON-LD pair. Mediavine's Journey approval
  * leans on structured data when scoring authorship and identity, so we
  * emit both: AboutPage points at the URL, Organization fills in name +
- * contact + social handles.
+ * contact + social handles. `sameAs` is gated — see SiteSchema.
  */
 export function AboutPageSchema({
   description,
@@ -15,6 +15,22 @@ export function AboutPageSchema({
   contactEmail: string;
 }) {
   const url = absoluteUrl("/about");
+  const organization: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: absoluteUrl("/"),
+    logo: absoluteUrl("/favicon.svg"),
+    description,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: contactEmail,
+      contactType: "customer support",
+      availableLanguage: ["English"],
+    },
+  };
+  if (SOCIAL_LINKS.length > 0) organization.sameAs = SOCIAL_LINKS;
+
   const data = [
     {
       "@context": "https://schema.org",
@@ -28,25 +44,7 @@ export function AboutPageSchema({
         url: absoluteUrl("/"),
       },
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: absoluteUrl("/"),
-      logo: absoluteUrl("/favicon.svg"),
-      description,
-      contactPoint: {
-        "@type": "ContactPoint",
-        email: contactEmail,
-        contactType: "customer support",
-        availableLanguage: ["English"],
-      },
-      sameAs: [
-        "https://twitter.com/shopifont",
-        "https://www.tiktok.com/@shopifont",
-        "https://pinterest.com/shopifont",
-      ],
-    },
+    organization,
   ];
   return <JsonLd id="about-schema" data={data} />;
 }

@@ -119,7 +119,7 @@ export default async function PseoPage({ params }: PageProps) {
           >
             How to use this on {entry.theme}
           </h2>
-          <p className="mt-3 text-sm sm:text-base leading-relaxed text-charcoal/85 whitespace-pre-line">
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-charcoal/80 whitespace-pre-line">
             {entry.useCase}
           </p>
         </section>
@@ -139,7 +139,7 @@ export default async function PseoPage({ params }: PageProps) {
                 <h3 className="text-base font-semibold tracking-tight">
                   {f.q}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-charcoal/85">
+                <p className="mt-2 text-sm leading-relaxed text-charcoal/80">
                   {f.a}
                 </p>
               </li>

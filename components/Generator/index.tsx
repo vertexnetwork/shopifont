@@ -4,14 +4,13 @@ import { useState } from "react";
 import { GeneratorInputs } from "./Inputs";
 import { GeneratorPreview } from "./Preview";
 import { CodeBlock } from "./CodeBlock";
-import { useGenerator } from "./state";
-
-type BlockId = "fontFace" | "settings" | "cssVars";
+import { useGenerator, variantFor, type CopyTarget } from "./state";
 
 const BLOCKS: ReadonlyArray<{
-  id: BlockId;
+  id: CopyTarget;
   step: number;
   title: string;
+  /** Long descriptor for desktop and aria-label. */
   short: string;
   description: string;
   language: "css" | "json";
@@ -52,14 +51,14 @@ const BLOCKS: ReadonlyArray<{
  */
 export function ShopifontGenerator() {
   const state = useGenerator();
-  const [activeMobile, setActiveMobile] = useState<BlockId>("fontFace");
+  const [activeMobile, setActiveMobile] = useState<CopyTarget>("fontFace");
 
-  const codeFor = (id: BlockId): string => {
+  const codeFor = (id: CopyTarget): string => {
     if (id === "fontFace") return state.fontFaceCss;
     if (id === "settings") return state.settingsSchemaJson;
     return state.cssVariableOverrides;
   };
-  const warnFor = (id: BlockId): string | null => {
+  const warnFor = (id: CopyTarget): string | null => {
     if (id === "fontFace") return state.warnings.fontFace;
     if (id === "settings") return state.warnings.settings;
     return state.warnings.cssVars;
@@ -79,7 +78,9 @@ export function ShopifontGenerator() {
 
       {/*
        * Mobile (< lg): tabbed switcher to cut ~⅔ of vertical scroll on
-       * the output. Desktop: all three side-by-side.
+       * the output. Desktop: all three side-by-side. Tab labels are
+       * Step 1/2/3 on small viewports so three pills don't wrap to a
+       * second row at 360px; the long technical name lives on the card.
        */}
       <div className="lg:hidden">
         <div
@@ -90,6 +91,7 @@ export function ShopifontGenerator() {
           {BLOCKS.map((b) => {
             const active = activeMobile === b.id;
             const w = warnFor(b.id);
+            const isDone = state.copiedSteps.has(b.id);
             return (
               <button
                 key={b.id}
@@ -97,6 +99,7 @@ export function ShopifontGenerator() {
                 role="tab"
                 aria-selected={active}
                 aria-controls={`mobile-panel-${b.id}`}
+                aria-label={`Step ${b.step}: ${b.short}`}
                 id={`mobile-tab-${b.id}`}
                 onClick={() => setActiveMobile(b.id)}
                 className={
@@ -112,12 +115,14 @@ export function ShopifontGenerator() {
                     "inline-flex items-center justify-center w-5 h-5 rounded-full font-mono text-[11px] " +
                     (active
                       ? "bg-paper text-electric"
-                      : "bg-charcoal text-paper")
+                      : isDone
+                        ? "bg-paper-dim text-muted border border-charcoal-line/40"
+                        : "bg-charcoal text-paper")
                   }
                 >
-                  {b.step}
+                  {isDone ? "✓" : b.step}
                 </span>
-                <span>{b.short}</span>
+                <span>Step {b.step}</span>
                 {w ? (
                   <span
                     aria-label="needs attention"
@@ -146,6 +151,8 @@ export function ShopifontGenerator() {
                 code={codeFor(b.id)}
                 language={b.language}
                 warning={warnFor(b.id)}
+                variant={variantFor(b.id, state.copiedSteps)}
+                onCopySuccess={() => state.markCopied(b.id)}
               />
             ) : null}
           </div>
@@ -162,6 +169,8 @@ export function ShopifontGenerator() {
             code={codeFor(b.id)}
             language={b.language}
             warning={warnFor(b.id)}
+            variant={variantFor(b.id, state.copiedSteps)}
+            onCopySuccess={() => state.markCopied(b.id)}
           />
         ))}
       </div>
