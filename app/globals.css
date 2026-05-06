@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/*
+ * Brand tokens. Charcoal / White / Electric Blue per PLAN.md §6.
+ * Defined as @theme so Tailwind v4 emits utilities (bg-charcoal, text-electric, etc.).
+ */
+@theme {
+  --color-charcoal: #1a1a1a;
+  --color-charcoal-soft: #2a2a2a;
+  --color-charcoal-line: #333333;
+  --color-paper: #ffffff;
+  --color-paper-dim: #f5f5f5;
+  --color-electric: #0066ff;
+  --color-electric-hover: #0052cc;
+  --color-success: #0066ff; /* copy-success uses electric blue per PLAN.md */
+  --color-muted: #6b6b6b;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Mobile-first content rhythm */
+  --spacing-touch: 2.75rem; /* 44px minimum touch target */
+}
+
+/*
+ * Reserve space for ad slots and code-block cards from the start so the
+ * page never reflows when ads or generated text mount. Zero CLS budget
+ * per PLAN.md §5.
+ */
+:root {
+  --ad-slot-leaderboard-h: 90px;
+  --ad-slot-incontent-h: 280px;
+  --ad-slot-sidebar-h: 600px;
+  --code-card-min-h: 280px;
+  --preview-min-h: 220px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Focus ring uses brand electric blue; visible on dark and light surfaces */
+:where(a, button, input, textarea, select, [role="button"]):focus-visible {
+  outline: 2px solid var(--color-electric);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Code blocks: momentum scrolling on iOS */
+.code-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* Skip-link helper for keyboard users */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.skip-link:focus {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-charcoal);
+  color: var(--color-paper);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

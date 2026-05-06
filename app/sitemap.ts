@@ -1,0 +1,26 @@
+import type { MetadataRoute } from "next";
+import { PSEO_ENTRIES } from "@/content/pseo";
+import { getSiteUrl } from "@/lib/site";
+
+export const dynamic = "force-static";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const base = getSiteUrl();
+  const today = new Date();
+
+  const home = {
+    url: `${base}/`,
+    lastModified: today,
+    changeFrequency: "weekly" as const,
+    priority: 1.0,
+  };
+
+  const pages = PSEO_ENTRIES.map((entry) => ({
+    url: `${base}/${entry.slug}`,
+    lastModified: today,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [home, ...pages];
+}

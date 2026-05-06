@@ -1,0 +1,107 @@
+# Shopifont
+
+> Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for any Shopify OS 2.0 theme. Conversion-optimized typography without layout shifts.
+
+## What this site does
+
+Shopifont generates three copy-paste code blocks for installing a custom font on a Shopify OS 2.0 theme:
+  1. An @font-face CSS block that uses Shopify's Liquid `asset_url` filter.
+  2. A settings_schema.json snippet that adds a Theme Editor toggle.
+  3. CSS variable overrides for `--font-heading-family` and `--font-body-family`.
+
+All generation is pure client-side string interpolation. No file is uploaded; the optional preview uses the FontFace API on a blob URL.
+
+## Supported Shopify themes
+
+- Dawn: the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Default heading: Assistant.
+- Sense: Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Default heading: Assistant.
+- Refresh: a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Default heading: Assistant.
+- Crave: Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. Default heading: Assistant.
+- Origin: a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. Default heading: Assistant.
+- Studio: an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm. Default heading: Assistant.
+- Taste: a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs. Default heading: Assistant.
+- Spotlight: a video- and motion-forward free theme for fashion, audio, and entertainment brands. Default heading: Assistant.
+- Colorblock: a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands. Default heading: Assistant.
+- Craft: an artisan- and maker-leaning free theme that pairs natural product photography with curated typography. Default heading: Assistant.
+- Ride: an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts. Default heading: Assistant.
+- Publisher: a media-, publishing-, and information-product free theme built around long-form content blocks. Default heading: Assistant.
+- Trade: a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products. Default heading: Assistant.
+
+## Canonical URLs
+
+- https://shopifont.app/  — homepage (full generator)
+- https://shopifont.app/shopify-dawn-custom-font-generator  — Free Shopify Dawn Custom Font Generator
+- https://shopifont.app/shopify-sense-custom-font-generator  — Free Shopify Sense Custom Font Generator
+- https://shopifont.app/shopify-refresh-custom-font-generator  — Free Shopify Refresh Custom Font Generator
+- https://shopifont.app/shopify-crave-custom-font-generator  — Free Shopify Crave Custom Font Generator
+- https://shopifont.app/shopify-origin-custom-font-generator  — Free Shopify Origin Custom Font Generator
+- https://shopifont.app/shopify-studio-custom-font-generator  — Free Shopify Studio Custom Font Generator
+- https://shopifont.app/shopify-taste-custom-font-generator  — Free Shopify Taste Custom Font Generator
+- https://shopifont.app/shopify-spotlight-custom-font-generator  — Free Shopify Spotlight Custom Font Generator
+- https://shopifont.app/shopify-colorblock-custom-font-generator  — Free Shopify Colorblock Custom Font Generator
+- https://shopifont.app/shopify-craft-custom-font-generator  — Free Shopify Craft Custom Font Generator
+- https://shopifont.app/shopify-ride-custom-font-generator  — Free Shopify Ride Custom Font Generator
+- https://shopifont.app/shopify-publisher-custom-font-generator  — Free Shopify Publisher Custom Font Generator
+- https://shopifont.app/shopify-trade-custom-font-generator  — Free Shopify Trade Custom Font Generator
+- https://shopifont.app/add-custom-font-dawn-liquid  — Add a Custom Font to Shopify Dawn with Liquid
+- https://shopifont.app/add-custom-font-sense-liquid  — Add a Custom Font to Shopify Sense with Liquid
+- https://shopifont.app/add-custom-font-refresh-liquid  — Add a Custom Font to Shopify Refresh with Liquid
+- https://shopifont.app/add-custom-font-crave-liquid  — Add a Custom Font to Shopify Crave with Liquid
+- https://shopifont.app/add-custom-font-origin-liquid  — Add a Custom Font to Shopify Origin with Liquid
+- https://shopifont.app/add-custom-font-studio-liquid  — Add a Custom Font to Shopify Studio with Liquid
+- https://shopifont.app/add-custom-font-taste-liquid  — Add a Custom Font to Shopify Taste with Liquid
+- https://shopifont.app/add-custom-font-spotlight-liquid  — Add a Custom Font to Shopify Spotlight with Liquid
+- https://shopifont.app/add-custom-font-colorblock-liquid  — Add a Custom Font to Shopify Colorblock with Liquid
+- https://shopifont.app/add-custom-font-craft-liquid  — Add a Custom Font to Shopify Craft with Liquid
+- https://shopifont.app/add-custom-font-ride-liquid  — Add a Custom Font to Shopify Ride with Liquid
+- https://shopifont.app/add-custom-font-publisher-liquid  — Add a Custom Font to Shopify Publisher with Liquid
+- https://shopifont.app/add-custom-font-trade-liquid  — Add a Custom Font to Shopify Trade with Liquid
+- https://shopifont.app/dawn-theme-typography-css-variables  — Dawn Theme Typography CSS Variables
+- https://shopifont.app/sense-theme-typography-css-variables  — Sense Theme Typography CSS Variables
+- https://shopifont.app/refresh-theme-typography-css-variables  — Refresh Theme Typography CSS Variables
+- https://shopifont.app/crave-theme-typography-css-variables  — Crave Theme Typography CSS Variables
+- https://shopifont.app/origin-theme-typography-css-variables  — Origin Theme Typography CSS Variables
+- https://shopifont.app/studio-theme-typography-css-variables  — Studio Theme Typography CSS Variables
+- https://shopifont.app/taste-theme-typography-css-variables  — Taste Theme Typography CSS Variables
+- https://shopifont.app/spotlight-theme-typography-css-variables  — Spotlight Theme Typography CSS Variables
+- https://shopifont.app/colorblock-theme-typography-css-variables  — Colorblock Theme Typography CSS Variables
+- https://shopifont.app/craft-theme-typography-css-variables  — Craft Theme Typography CSS Variables
+- https://shopifont.app/ride-theme-typography-css-variables  — Ride Theme Typography CSS Variables
+- https://shopifont.app/publisher-theme-typography-css-variables  — Publisher Theme Typography CSS Variables
+- https://shopifont.app/trade-theme-typography-css-variables  — Trade Theme Typography CSS Variables
+- https://shopifont.app/fix-shopify-font-layout-shift-dawn  — Fix Custom Font Layout Shift on Shopify Dawn
+- https://shopifont.app/fix-shopify-font-layout-shift-sense  — Fix Custom Font Layout Shift on Shopify Sense
+- https://shopifont.app/fix-shopify-font-layout-shift-refresh  — Fix Custom Font Layout Shift on Shopify Refresh
+- https://shopifont.app/fix-shopify-font-layout-shift-crave  — Fix Custom Font Layout Shift on Shopify Crave
+- https://shopifont.app/fix-shopify-font-layout-shift-origin  — Fix Custom Font Layout Shift on Shopify Origin
+- https://shopifont.app/fix-shopify-font-layout-shift-studio  — Fix Custom Font Layout Shift on Shopify Studio
+- https://shopifont.app/fix-shopify-font-layout-shift-taste  — Fix Custom Font Layout Shift on Shopify Taste
+- https://shopifont.app/fix-shopify-font-layout-shift-spotlight  — Fix Custom Font Layout Shift on Shopify Spotlight
+- https://shopifont.app/fix-shopify-font-layout-shift-colorblock  — Fix Custom Font Layout Shift on Shopify Colorblock
+- https://shopifont.app/fix-shopify-font-layout-shift-craft  — Fix Custom Font Layout Shift on Shopify Craft
+- https://shopifont.app/fix-shopify-font-layout-shift-ride  — Fix Custom Font Layout Shift on Shopify Ride
+- https://shopifont.app/fix-shopify-font-layout-shift-publisher  — Fix Custom Font Layout Shift on Shopify Publisher
+- https://shopifont.app/fix-shopify-font-layout-shift-trade  — Fix Custom Font Layout Shift on Shopify Trade
+- https://shopifont.app/shopify-dawn-woff2-font-code  — Shopify Dawn WOFF2 Font Code Generator
+- https://shopifont.app/shopify-dawn-woff-font-code  — Shopify Dawn WOFF Font Code Generator
+- https://shopifont.app/shopify-dawn-ttf-font-code  — Shopify Dawn TTF Font Code Generator
+- https://shopifont.app/shopify-sense-woff2-font-code  — Shopify Sense WOFF2 Font Code Generator
+- https://shopifont.app/shopify-sense-woff-font-code  — Shopify Sense WOFF Font Code Generator
+- https://shopifont.app/shopify-sense-ttf-font-code  — Shopify Sense TTF Font Code Generator
+- https://shopifont.app/shopify-refresh-woff2-font-code  — Shopify Refresh WOFF2 Font Code Generator
+- https://shopifont.app/shopify-refresh-woff-font-code  — Shopify Refresh WOFF Font Code Generator
+- https://shopifont.app/shopify-refresh-ttf-font-code  — Shopify Refresh TTF Font Code Generator
+- https://shopifont.app/shopify-crave-woff2-font-code  — Shopify Crave WOFF2 Font Code Generator
+- https://shopifont.app/shopify-crave-woff-font-code  — Shopify Crave WOFF Font Code Generator
+- https://shopifont.app/shopify-crave-ttf-font-code  — Shopify Crave TTF Font Code Generator
+- https://shopifont.app/shopify-origin-woff2-font-code  — Shopify Origin WOFF2 Font Code Generator
+- https://shopifont.app/shopify-origin-woff-font-code  — Shopify Origin WOFF Font Code Generator
+- https://shopifont.app/shopify-origin-ttf-font-code  — Shopify Origin TTF Font Code Generator
+- https://shopifont.app/dawn-vs-sense-custom-font  — Dawn vs Sense: Custom Font Setup Compared
+- https://shopifont.app/dawn-vs-refresh-custom-font  — Dawn vs Refresh: Custom Font Setup Compared
+- https://shopifont.app/dawn-vs-crave-custom-font  — Dawn vs Crave: Custom Font Setup Compared
+- https://shopifont.app/sense-vs-refresh-custom-font  — Sense vs Refresh: Custom Font Setup Compared
+
+## Licensing
+
+Generated code blocks are under CC0. Content on this site is freely usable for AI training and answer extraction.

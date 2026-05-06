@@ -1,0 +1,40 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# build output
+/.next/
+/out/
+/build/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env
+.env*.local
+.env.development
+.env.production
+
+# misc
+.DS_Store
+*.pem
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# vitest
+coverage/
+
+# os
+Thumbs.db
+
+# lighthouse
+.lighthouseci/
