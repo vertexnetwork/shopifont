@@ -10,6 +10,7 @@ const FOOTER_LINKS = [
   { href: "/dawn-theme-typography-css-variables", label: "Dawn CSS variables" },
   { href: "/add-custom-font-dawn-liquid", label: "Dawn Liquid" },
   { href: "/fix-shopify-font-layout-shift-dawn", label: "Fix Dawn CLS" },
+  { href: "/about", label: "About" },
 ];
 
 export function Footer() {

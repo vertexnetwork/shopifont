@@ -29,6 +29,11 @@ export function Header() {
                 How it works
               </Link>
             </li>
+            <li>
+              <Link href="/about" className="hover:text-electric">
+                About
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>

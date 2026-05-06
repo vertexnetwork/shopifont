@@ -48,6 +48,7 @@ export function buildLlmsTxt(): string {
   lines.push("## Canonical URLs");
   lines.push("");
   lines.push(`- ${baseUrl}/  — homepage (full generator)`);
+  lines.push(`- ${baseUrl}/about  — about, mission, contact`);
   for (const entry of PSEO_ENTRIES) {
     lines.push(`- ${baseUrl}/${entry.slug}  — ${entry.h1}`);
   }
