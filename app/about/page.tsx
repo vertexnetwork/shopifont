@@ -7,8 +7,6 @@ import { SITE_NAME } from "@/lib/site";
 export const dynamic = "force-static";
 
 const CONTACT_EMAIL = "hello@shopifont.app";
-const GITHUB_REPO_URL = "https://github.com/shopifont/shopifont";
-const MAINTAINER_NAME = "Josh Hickman";
 
 const ABOUT_DESCRIPTION =
   `${SITE_NAME} is a free, independently-built tool that generates the exact code Shopify merchants need to install custom fonts on Dawn and other OS 2.0 themes — without layout shifts, without uploads, and without paid plans.`;
@@ -169,11 +167,22 @@ export default function AboutPage() {
             Privacy and data
           </h2>
           <p className="text-charcoal/85 leading-relaxed">
-            We use Plausible Analytics, which is cookie-free and does not
-            track individuals. The optional file-preview feature loads your
-            font in your browser only — there is no upload endpoint and no
-            telemetry attached to the file itself. Display advertising is
-            served by Mediavine and follows Mediavine&apos;s own privacy
+            {SITE_NAME} uses two analytics tools. Plausible Analytics, when
+            enabled, is cookie-free and reports only aggregate page views
+            and country — no individual tracking. Microsoft Clarity is also
+            loaded to capture heatmaps and session recordings so we can
+            see where the tool is hard to use; Clarity sets first-party
+            cookies and masks sensitive form fields by default. Clarity
+            never has access to the contents of any font file you load
+            locally — the preview reads the file in your browser&apos;s
+            memory only, and there is no upload endpoint for it to
+            intercept.
+          </p>
+          <p className="text-charcoal/85 leading-relaxed">
+            The optional file-preview feature loads your font in your
+            browser only — there is no upload endpoint and no telemetry
+            attached to the file itself. Display advertising, when active,
+            is served by Mediavine and follows Mediavine&apos;s own privacy
             controls; users in regulated jurisdictions see Mediavine&apos;s
             consent flow before personalized ads load.
           </p>
@@ -190,20 +199,19 @@ export default function AboutPage() {
             Who maintains {SITE_NAME}
           </h2>
           <p className="text-charcoal/85 leading-relaxed">
-            {SITE_NAME} is built and maintained by {MAINTAINER_NAME}, an
-            independent developer who works with Shopify themes day-to-day.
-            The full source is open and viewable on{" "}
+            {SITE_NAME} is built and maintained by an independent developer
+            who works with Shopify themes day-to-day. The generators on this
+            site are pure client-side string interpolation — what you copy is
+            what runs in your browser, with no server round-trip and no
+            obfuscation. If a theme update breaks the generated code or
+            something looks off, email{" "}
             <a
-              href={GITHUB_REPO_URL}
+              href={`mailto:${CONTACT_EMAIL}`}
               className="text-electric hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
             >
-              GitHub
+              {CONTACT_EMAIL}
             </a>{" "}
-            — every code generator on this site is a function in that repo
-            you can read in under a minute. If something looks off, file an
-            issue and it&apos;ll get a real human reply.
+            and you&apos;ll get a real reply.
           </p>
         </section>
 
