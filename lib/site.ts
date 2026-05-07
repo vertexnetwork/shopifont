@@ -63,3 +63,21 @@ const BUILD_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
 export function getBuildDateLabel(): string {
   return BUILD_DATE_FORMATTER.format(new Date(BUILD_DATE_ISO));
 }
+
+/**
+ * Creative Fabrica affiliate referral URL. Single source of truth so
+ * we can swap the partner ID in one place and propagate everywhere.
+ *
+ * The `/ref/<id>/` segment is Creative Fabrica's own attribution
+ * mechanism — DO NOT append UTM parameters before it, that breaks the
+ * affiliate cookie. Plausible captures the outbound click on our
+ * side via its outbound-links script (already enabled in the (site)
+ * layout), so we don't need our own attribution params here.
+ *
+ * Every link rendered with this URL must carry rel="sponsored"
+ * (Google's link-relationship signal for paid placements) and
+ * target="_blank" + rel="noopener" so we don't get back-button stuck
+ * on the affiliate page if the user wants to return.
+ */
+export const CREATIVE_FABRICA_REF =
+  "https://www.creativefabrica.com/ref/24727168/";

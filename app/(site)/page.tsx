@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -91,6 +92,18 @@ export default function HomePage() {
           </h2>
           <ShopifontGenerator />
         </section>
+
+        {/*
+         * Creative Fabrica affiliate. Placed here intentionally —
+         * directly after the generator. Users who arrived needing a
+         * font (not just the code that installs one) just got the
+         * value they came for and are at peak receptivity for "where
+         * do I get a font" prompts. Placing the card *before* the
+         * "How it works" educational section captures intent before
+         * the user scrolls into instructional content and starts
+         * thinking about leaving.
+         */}
+        <CreativeFabricaCard />
 
         <Reveal>
           <section

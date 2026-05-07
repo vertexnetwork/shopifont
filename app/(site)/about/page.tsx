@@ -154,6 +154,20 @@ export default function AboutPage() {
             directly from Shopify&apos;s public Theme Store and from each
             theme&apos;s own documentation.
           </p>
+          <p className="text-charcoal/80 leading-relaxed">
+            We do work with one font marketplace as an affiliate:{" "}
+            <strong>Creative Fabrica</strong>. When you click a Creative
+            Fabrica link from anywhere on the site and end up buying a font,
+            we receive a small commission at no extra cost to you. We picked
+            Creative Fabrica because their web fonts ship with commercial
+            licenses included — the merchant doesn&apos;t need a separate
+            license to use the font in a Shopify storefront. Affiliate links
+            carry{" "}
+            <code className="font-mono text-sm">rel=&quot;sponsored&quot;</code>{" "}
+            per Google&apos;s webmaster guidelines. The partnership does not
+            influence which themes we cover, the order they appear in, or
+            anything else about the editorial content of the site.
+          </p>
         </section>
 
         <section

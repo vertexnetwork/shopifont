@@ -88,6 +88,15 @@ export function Footer() {
             trademarks of Shopify Inc.
           </p>
         </div>
+        <p className="text-[11px] text-muted/80 leading-relaxed">
+          Creative Fabrica links pay us a commission at no cost to you.
+          Mediavine display ads keep the rest of the lights on. Full
+          disclosure on the{" "}
+          <Link href="/about" className="underline hover:text-electric">
+            About page
+          </Link>
+          .
+        </p>
       </div>
     </footer>
   );
