@@ -60,6 +60,54 @@ console.log(
   `[build-store-assets] source popup: ${POPUP_META.width}×${POPUP_META.height}`,
 );
 
+/*
+ * Source captures (especially full-size DevTools screenshots in tab
+ * mode) often include the entire scrollable popup body, which can run
+ * 1700+ source px tall. None of the marketing canvases are that tall,
+ * so we crop the popup to its "above the fold" portion and apply a
+ * soft fade-to-charcoal gradient at the bottom edge — the popup then
+ * blends into the canvas charcoal background and the cutoff reads as
+ * "scrolls" rather than as a hard cropline.
+ *
+ * If the source happens to already be short enough (≤ POPUP_CROP_HEIGHT
+ * source px), the crop is a no-op and the fade still applies, which
+ * is harmless visually.
+ */
+const POPUP_CROP_HEIGHT = 1200; // source pixels; ≈ 600 device px at 2× DPR
+const POPUP_FADE_HEIGHT = 80; // bottom fade band, source pixels
+
+async function popupCroppedWithFade() {
+  const cropH = Math.min(POPUP_META.height, POPUP_CROP_HEIGHT);
+  const cropped = await sharp(POPUP_BUFFER)
+    .extract({
+      left: 0,
+      top: 0,
+      width: POPUP_META.width,
+      height: cropH,
+    })
+    .png()
+    .toBuffer();
+  const fadeSvg = `<svg width="${POPUP_META.width}" height="${cropH}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fade" x1="0" y1="${cropH - POPUP_FADE_HEIGHT}" x2="0" y2="${cropH}" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="rgba(26,26,26,0)"/>
+        <stop offset="100%" stop-color="rgba(26,26,26,1)"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="${cropH - POPUP_FADE_HEIGHT}" width="${POPUP_META.width}" height="${POPUP_FADE_HEIGHT}" fill="url(#fade)"/>
+  </svg>`;
+  return sharp(cropped)
+    .composite([{ input: Buffer.from(fadeSvg), top: 0, left: 0 }])
+    .png()
+    .toBuffer();
+}
+
+const POPUP_PRESENTABLE = await popupCroppedWithFade();
+const POPUP_PRESENTABLE_META = await sharp(POPUP_PRESENTABLE).metadata();
+console.log(
+  `[build-store-assets] presentable popup: ${POPUP_PRESENTABLE_META.width}×${POPUP_PRESENTABLE_META.height} (cropped + faded)`,
+);
+
 // --- helpers ---------------------------------------------------------
 
 function charcoalBgSvg(width, height) {
@@ -89,7 +137,7 @@ async function logoBuffer(size, strokeColor = PAPER) {
 }
 
 async function popupAtWidth(targetWidth) {
-  return sharp(POPUP_BUFFER)
+  return sharp(POPUP_PRESENTABLE)
     .resize({ width: targetWidth, kernel: "lanczos3" })
     .png()
     .toBuffer();
@@ -100,12 +148,14 @@ async function popupAtWidth(targetWidth) {
 async function screenshot1() {
   const W = 1280;
   const H = 800;
-  const popupTargetWidth = 480;
+  // Width 380 against the cropped 760×1200 popup gives a 380×600
+  // footprint that fits below the tagline area without overflow.
+  const popupTargetWidth = 380;
   const popup = await popupAtWidth(popupTargetWidth);
   const popupMeta = await sharp(popup).metadata();
 
   const popupLeft = Math.round((W - popupMeta.width) / 2);
-  const popupTop = 230;
+  const popupTop = Math.max(195, H - popupMeta.height - 10);
 
   const overlay = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <text x="${W / 2}" y="125" font-family="${FONT_STACK}" font-size="64" font-weight="700" fill="${PAPER}" text-anchor="middle" letter-spacing="-1.5">
@@ -132,7 +182,10 @@ async function screenshot1() {
 async function screenshot2() {
   const W = 1280;
   const H = 800;
-  const popupTargetWidth = 460;
+  // Width 440 against the 760×1200 cropped popup gives a 440×695
+  // footprint — leaves the full canvas height for visual breathing
+  // room while keeping the popup readable from a distance.
+  const popupTargetWidth = 440;
   const popup = await popupAtWidth(popupTargetWidth);
   const popupMeta = await sharp(popup).metadata();
 
@@ -211,7 +264,9 @@ async function marqueeTile() {
   const W = 1400;
   const H = 560;
   const logoSize = 64;
-  const popupTargetWidth = 380;
+  // Width 340 against the cropped 760×1200 popup gives 340×537 —
+  // fits the 560 tile height with margin on both sides.
+  const popupTargetWidth = 340;
 
   const logo = await logoBuffer(logoSize);
   const popup = await popupAtWidth(popupTargetWidth);
