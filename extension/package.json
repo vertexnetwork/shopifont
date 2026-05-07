@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "node ./scripts/build-icons.mjs && vite build",
     "icons": "node ./scripts/build-icons.mjs",
+    "assets:store": "node ./scripts/build-store-assets.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

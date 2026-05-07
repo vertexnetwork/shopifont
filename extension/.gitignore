@@ -9,3 +9,9 @@ public/icons/icon-*.png
 # Submission archives produced by `Compress-Archive` — rebuild from
 # source instead of committing.
 *.zip
+
+# Web Store asset pipeline. The source popup screenshot is local-only
+# (different captures per developer state) and the generated tiles
+# are derived from it. Script + README are in git; PNGs aren't.
+store-assets/source/
+store-assets/dist/
