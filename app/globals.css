@@ -89,6 +89,26 @@ body {
   font-family: var(--font-sans);
   font-synthesis-weight: none;
   -webkit-font-smoothing: antialiased;
+  /*
+   * Mobile horizontal-overflow guard. Real users on 360 px devices
+   * hit a "page loaded zoomed out" symptom because some descendants
+   * (HeroCodePreview's <pre>, occasional unbreakable strings) had
+   * intrinsic min-content widths > viewport. Each individual offender
+   * is also being fixed at the source (overflow-x: auto on the code
+   * containers, min-w-0 on flex wrappers) but this is the catch-all
+   * so a future component can never re-introduce the symptom.
+   *
+   * `overflow-x: clip` is preferred over `hidden` because it doesn't
+   * create a scrollable formatting context that would break sticky
+   * descendants (the CodeBlock's sticky Copy button, the mobile CTA).
+   * Safari 15 falls back to hidden via the @supports check.
+   */
+  overflow-x: hidden;
+}
+@supports (overflow-x: clip) {
+  body {
+    overflow-x: clip;
+  }
 }
 
 /* Focus ring uses brand electric blue; visible on dark and light surfaces */

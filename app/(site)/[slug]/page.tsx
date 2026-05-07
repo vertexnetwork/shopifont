@@ -83,8 +83,8 @@ export default async function PseoPage({ params }: PageProps) {
           </ol>
         </nav>
 
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="flex flex-col gap-4">
+        <section className="grid gap-6 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0 flex flex-col gap-4">
             <p className="text-xs uppercase tracking-wide text-muted">
               Shopify {entry.theme} · Free, no signup ·{" "}
               <span className="normal-case tracking-normal">

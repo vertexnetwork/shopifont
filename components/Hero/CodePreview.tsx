@@ -53,7 +53,17 @@ export function HeroCodePreview() {
           assets/base.css
         </span>
       </header>
-      <div className="p-4 min-h-[10.5rem]">
+      {/*
+       * overflow-x: auto on the code container is structurally
+       * critical: without it the <pre>'s ~60-char `src: url(...)`
+       * line gives this figure a min-content width of ~432 px, which
+       * cascades up through the hero's grid track and pushes the
+       * homepage past the mobile viewport. Real users hit this on
+       * 360 px devices and had to pinch-out before they could read
+       * the page. The container scrolls horizontally if the line is
+       * still too wide, but the layout never blows out.
+       */}
+      <div className="p-4 min-h-[10.5rem] overflow-x-auto code-scroll">
         <Highlight code={FULL_CODE} language="css" theme={CHARCOAL_THEME}>
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <pre

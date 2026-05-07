@@ -30,9 +30,9 @@ export default function HomePage() {
          * desktop only — Mediavine's standard above-the-fold
          * placement; mobile keeps the column undivided.
          */}
-        <section className="relative isolate grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <section className="relative isolate grid gap-6 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_320px]">
           <div aria-hidden className="hero-radial" />
-          <div className="flex flex-col gap-5">
+          <div className="min-w-0 flex flex-col gap-5">
             <SignupChip />
             <h1
               id="hero-anchor"
