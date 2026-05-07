@@ -1,5 +1,47 @@
 [
   {
+    "hash": "e9044e23e693dfb61201f91bef3d5711625f2297",
+    "shortHash": "e9044e2",
+    "date": "2026-05-06T18:17:40-06:00",
+    "subject": "Tune Web Store asset pipeline: crop popup + fade-to-charcoal"
+  },
+  {
+    "hash": "b23a3939e13d762b453606faf49753931ffc6917",
+    "shortHash": "b23a393",
+    "date": "2026-05-06T18:04:58-06:00",
+    "subject": "Add Web Store asset pipeline (sharp-driven)"
+  },
+  {
+    "hash": "22e81c9fde718fb180e5968e0bc57b97227c178c",
+    "shortHash": "22e81c9",
+    "date": "2026-05-06T17:55:16-06:00",
+    "subject": "Rebuild Chrome extension popup as a popup-native UI (v0.2.0)"
+  },
+  {
+    "hash": "687e2b0b08b6552da3fc98301dcc8b776e2a535f",
+    "shortHash": "687e2b0",
+    "date": "2026-05-06T17:15:46-06:00",
+    "subject": "Trim extension manifest description to fit Chrome's 132-char limit"
+  },
+  {
+    "hash": "1bf4903aa0cb01fedeae257f06543a22309a3bb5",
+    "shortHash": "1bf4903",
+    "date": "2026-05-06T17:10:03-06:00",
+    "subject": "Gitignore extension submission zips"
+  },
+  {
+    "hash": "6faf9c87838d672baee4b7ae15ab3620dad81e12",
+    "shortHash": "6faf9c8",
+    "date": "2026-05-06T15:53:29-06:00",
+    "subject": "Exclude extension/ from parent typecheck and lint"
+  },
+  {
+    "hash": "277f77e4120a56a13efb02332cd022cbc7c11ea7",
+    "shortHash": "277f77e",
+    "date": "2026-05-06T15:50:08-06:00",
+    "subject": "Add iframe embed (/embed + /embed-this) and Chrome extension popup"
+  },
+  {
     "hash": "4f79b8faac9e9615db886914ba2d0bda38cf619f",
     "shortHash": "4f79b8f",
     "date": "2026-05-06T15:07:20-06:00",
