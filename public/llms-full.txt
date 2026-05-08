@@ -1,0 +1,799 @@
+# Shopifont (full content)
+
+> Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for any Shopify OS 2.0 theme. Conversion-optimized typography without layout shifts.
+
+This is the long-form companion to https://shopifont.app/llms.txt. Where llms.txt indexes the site, this file inlines the actual content of each canonical page so AI extractors can answer questions about Shopifont without crawling individual URLs.
+
+## What this site does
+
+Shopifont generates three copy-paste code blocks merchants need to install a custom font on a Shopify OS 2.0 theme. All generation happens client-side via string interpolation — no upload endpoint, no server, no database. The optional file preview uses the FontFace API on a blob URL, so any font you drop never leaves your browser.
+
+The three blocks the generator produces, in order:
+
+1. An @font-face CSS block. Uses Shopify's Liquid `asset_url` filter so the file path resolves correctly once you upload the font to your theme's `assets/` folder. Always emits `font-display: swap` to prevent invisible-text flashes during font load.
+2. A settings_schema.json snippet. Adds a Theme Editor section that gives non-technical merchants a font picker (with a fallback face), an apply-to selector with options for headings, body, both, and disabled, and a checkbox to load the WOFF legacy fallback.
+3. CSS variable overrides. Retargets Dawn's `--font-heading-family` and `--font-body-family` tokens so the new font propagates to every element that consumes them — without editing core theme templates.
+
+## Example output
+
+Below is the exact code Shopifont produces for a font named "My Brand Sans" with WOFF2 + WOFF formats, weight 400, normal style, applied to both headings and body.
+
+### @font-face block
+
+```css
+@font-face {
+  font-family: "My Brand Sans";
+  src: url({{ 'my-brand-sans.woff2' | asset_url }}) format('woff2'),
+       url({{ 'my-brand-sans.woff' | asset_url }}) format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+```
+
+### settings_schema.json snippet
+
+```json
+{
+  "name": "My Brand Sans (custom font)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "My Brand Sans typography"
+    },
+    {
+      "type": "paragraph",
+      "content": "Upload your My Brand Sans files (woff2, woff, ttf, otf, or eot) to your theme's Assets folder. The @font-face block referencing my-brand-sans.* will then resolve via {{ 'my-brand-sans.woff2' | asset_url }}."
+    },
+    {
+      "type": "font_picker",
+      "id": "my_brand_sans_heading_font",
+      "label": "Heading font (fallback when custom file is unavailable)",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "font_picker",
+      "id": "my_brand_sans_body_font",
+      "label": "Body font (fallback when custom file is unavailable)",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "my_brand_sans_apply_to",
+      "label": "Apply My Brand Sans",
+      "options": [
+        {
+          "value": "headings",
+          "label": "Headings only"
+        },
+        {
+          "value": "body",
+          "label": "Body only"
+        },
+        {
+          "value": "both",
+          "label": "Headings and body"
+        },
+        {
+          "value": "off",
+          "label": "Disabled"
+        }
+      ],
+      "default": "both"
+    },
+    {
+      "type": "checkbox",
+      "id": "my_brand_sans_load_woff_fallback",
+      "label": "Also load WOFF fallback (legacy browsers)",
+      "default": false
+    }
+  ]
+}
+```
+
+### CSS variable overrides
+
+```css
+:root {
+  --font-heading-family: "My Brand Sans", sans-serif;
+  --font-heading-style: normal;
+  --font-heading-weight: 400;
+  --font-body-family: "My Brand Sans", sans-serif;
+  --font-body-style: normal;
+  --font-body-weight: 400;
+}
+```
+
+## Supported Shopify themes
+
+Shopifont ships per-theme guides for every free Shopify OS 2.0 theme in the Theme Store. Each theme inherits Dawn's CSS variable convention, which makes the override approach uniformly applicable. Default fonts are only cited explicitly when verified against a live install of the theme.
+
+### Dawn
+
+- Vendor: Shopify
+- Category: general-purpose
+- Positioning: the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme.
+- Default heading: Assistant. Default body: Assistant.
+- Generator: https://shopifont.app/shopify-dawn-custom-font-generator
+
+### Sense
+
+- Vendor: Shopify
+- Category: health & wellness
+- Positioning: Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-sense-custom-font-generator
+
+### Refresh
+
+- Vendor: Shopify
+- Category: sport & energy
+- Positioning: a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-refresh-custom-font-generator
+
+### Crave
+
+- Vendor: Shopify
+- Category: food & beverage
+- Positioning: Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-crave-custom-font-generator
+
+### Origin
+
+- Vendor: Shopify
+- Category: home & garden
+- Positioning: a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-origin-custom-font-generator
+
+### Studio
+
+- Vendor: Shopify
+- Category: art & gallery
+- Positioning: an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-studio-custom-font-generator
+
+### Taste
+
+- Vendor: Shopify
+- Category: specialty food & wine
+- Positioning: a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-taste-custom-font-generator
+
+### Spotlight
+
+- Vendor: Shopify
+- Category: fashion & entertainment
+- Positioning: a video- and motion-forward free theme for fashion, audio, and entertainment brands.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-spotlight-custom-font-generator
+
+### Colorblock
+
+- Vendor: Shopify
+- Category: novelty & gift
+- Positioning: a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-colorblock-custom-font-generator
+
+### Craft
+
+- Vendor: Shopify
+- Category: artisan & handmade
+- Positioning: an artisan- and maker-leaning free theme that pairs natural product photography with curated typography.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-craft-custom-font-generator
+
+### Ride
+
+- Vendor: Shopify
+- Category: outdoor & sport
+- Positioning: an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-ride-custom-font-generator
+
+### Publisher
+
+- Vendor: Shopify
+- Category: media & publishing
+- Positioning: a media-, publishing-, and information-product free theme built around long-form content blocks.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-publisher-custom-font-generator
+
+### Trade
+
+- Vendor: Shopify
+- Category: B2B & hardware
+- Positioning: a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products.
+- Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
+- Generator: https://shopifont.app/shopify-trade-custom-font-generator
+
+## Pages
+
+Each pSEO page below has a unique H1, a one-line direct answer for AI extractors, and theme-specific install steps. Listed in canonical order; url, intent, h1, one-line answer, and intro are inlined here.
+
+### Free Shopify Dawn Custom Font Generator
+
+- URL: https://shopifont.app/shopify-dawn-custom-font-generator
+- Intent: generator
+- Theme: Dawn
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Dawn needs to render your custom font without layout shifts.
+- Intro: Dawn is the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Out of the box, Dawn ships with Assistant for headings and Assistant for body — typography that's deliberately neutral, low-contrast humanist sans that prioritizes legibility over personality. If you need a brand-specific face on a general-purpose Dawn store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Sense Custom Font Generator
+
+- URL: https://shopifont.app/shopify-sense-custom-font-generator
+- Intent: generator
+- Theme: Sense
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Sense needs to render your custom font without layout shifts.
+- Intro: Sense is Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Out of the box, Sense ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately rounded, soft-edged typography that pairs cleanly with high-resolution lifestyle imagery. If you need a brand-specific face on a health & wellness Sense store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Refresh Custom Font Generator
+
+- URL: https://shopifont.app/shopify-refresh-custom-font-generator
+- Intent: generator
+- Theme: Refresh
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Refresh needs to render your custom font without layout shifts.
+- Intro: Refresh is a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Out of the box, Refresh ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately high-contrast display headings sitting above utilitarian body copy. If you need a brand-specific face on a sport & energy Refresh store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Crave Custom Font Generator
+
+- URL: https://shopifont.app/shopify-crave-custom-font-generator
+- Intent: generator
+- Theme: Crave
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Crave needs to render your custom font without layout shifts.
+- Intro: Crave is Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. Out of the box, Crave ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately playful, slightly oversized headings that complement appetite-appeal photography. If you need a brand-specific face on a food & beverage Crave store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Origin Custom Font Generator
+
+- URL: https://shopifont.app/shopify-origin-custom-font-generator
+- Intent: generator
+- Theme: Origin
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Origin needs to render your custom font without layout shifts.
+- Intro: Origin is a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. Out of the box, Origin ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately calm, generous-line-height typography optimized for long descriptions and lifestyle storytelling. If you need a brand-specific face on a home & garden Origin store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Studio Custom Font Generator
+
+- URL: https://shopifont.app/shopify-studio-custom-font-generator
+- Intent: generator
+- Theme: Studio
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Studio needs to render your custom font without layout shifts.
+- Intro: Studio is an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm. Out of the box, Studio ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately editorial display headings with restrained body copy that defers to imagery. If you need a brand-specific face on a art & gallery Studio store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Taste Custom Font Generator
+
+- URL: https://shopifont.app/shopify-taste-custom-font-generator
+- Intent: generator
+- Theme: Taste
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Taste needs to render your custom font without layout shifts.
+- Intro: Taste is a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs. Out of the box, Taste ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately warm, slightly old-style serif headings that feel curated rather than generic. If you need a brand-specific face on a specialty food & wine Taste store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Spotlight Custom Font Generator
+
+- URL: https://shopifont.app/shopify-spotlight-custom-font-generator
+- Intent: generator
+- Theme: Spotlight
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Spotlight needs to render your custom font without layout shifts.
+- Intro: Spotlight is a video- and motion-forward free theme for fashion, audio, and entertainment brands. Out of the box, Spotlight ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately cinematic display sizing meant to be paired with autoplaying hero video. If you need a brand-specific face on a fashion & entertainment Spotlight store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Colorblock Custom Font Generator
+
+- URL: https://shopifont.app/shopify-colorblock-custom-font-generator
+- Intent: generator
+- Theme: Colorblock
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Colorblock needs to render your custom font without layout shifts.
+- Intro: Colorblock is a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands. Out of the box, Colorblock ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately geometric-leaning sans typography that complements the theme's hard-edged blocks. If you need a brand-specific face on a novelty & gift Colorblock store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Craft Custom Font Generator
+
+- URL: https://shopifont.app/shopify-craft-custom-font-generator
+- Intent: generator
+- Theme: Craft
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Craft needs to render your custom font without layout shifts.
+- Intro: Craft is an artisan- and maker-leaning free theme that pairs natural product photography with curated typography. Out of the box, Craft ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately transitional serif headings paired with low-contrast body for craft-shop authenticity. If you need a brand-specific face on a artisan & handmade Craft store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Ride Custom Font Generator
+
+- URL: https://shopifont.app/shopify-ride-custom-font-generator
+- Intent: generator
+- Theme: Ride
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Ride needs to render your custom font without layout shifts.
+- Intro: Ride is an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts. Out of the box, Ride ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately industrial sans headings that work well next to spec tables and dimension copy. If you need a brand-specific face on a outdoor & sport Ride store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Publisher Custom Font Generator
+
+- URL: https://shopifont.app/shopify-publisher-custom-font-generator
+- Intent: generator
+- Theme: Publisher
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Publisher needs to render your custom font without layout shifts.
+- Intro: Publisher is a media-, publishing-, and information-product free theme built around long-form content blocks. Out of the box, Publisher ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately editorial serif headings paired with reader-optimized body copy for article-shaped pages. If you need a brand-specific face on a media & publishing Publisher store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Free Shopify Trade Custom Font Generator
+
+- URL: https://shopifont.app/shopify-trade-custom-font-generator
+- Intent: generator
+- Theme: Trade
+- Direct answer: Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify Trade needs to render your custom font without layout shifts.
+- Intro: Trade is a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products. Out of the box, Trade ships with the theme's default heading face for headings and the theme's default body face for body — typography that's deliberately utilitarian sans typography that prioritizes scannability over personality. If you need a brand-specific face on a B2B & hardware Trade store, this generator builds the three code blocks Shopify expects in seconds.
+
+### Add a Custom Font to Shopify Dawn with Liquid
+
+- URL: https://shopifont.app/add-custom-font-dawn-liquid
+- Intent: tutorial
+- Theme: Dawn
+- Direct answer: On Shopify Dawn, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Dawn is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Dawn is the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Sense with Liquid
+
+- URL: https://shopifont.app/add-custom-font-sense-liquid
+- Intent: tutorial
+- Theme: Sense
+- Direct answer: On Shopify Sense, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Sense is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Sense is Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Refresh with Liquid
+
+- URL: https://shopifont.app/add-custom-font-refresh-liquid
+- Intent: tutorial
+- Theme: Refresh
+- Direct answer: On Shopify Refresh, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Refresh is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Refresh is a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Crave with Liquid
+
+- URL: https://shopifont.app/add-custom-font-crave-liquid
+- Intent: tutorial
+- Theme: Crave
+- Direct answer: On Shopify Crave, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Crave is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Crave is Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Origin with Liquid
+
+- URL: https://shopifont.app/add-custom-font-origin-liquid
+- Intent: tutorial
+- Theme: Origin
+- Direct answer: On Shopify Origin, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Origin is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Origin is a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Studio with Liquid
+
+- URL: https://shopifont.app/add-custom-font-studio-liquid
+- Intent: tutorial
+- Theme: Studio
+- Direct answer: On Shopify Studio, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Studio is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Studio is an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Taste with Liquid
+
+- URL: https://shopifont.app/add-custom-font-taste-liquid
+- Intent: tutorial
+- Theme: Taste
+- Direct answer: On Shopify Taste, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Taste is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Taste is a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Spotlight with Liquid
+
+- URL: https://shopifont.app/add-custom-font-spotlight-liquid
+- Intent: tutorial
+- Theme: Spotlight
+- Direct answer: On Shopify Spotlight, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Spotlight is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Spotlight is a video- and motion-forward free theme for fashion, audio, and entertainment brands. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Colorblock with Liquid
+
+- URL: https://shopifont.app/add-custom-font-colorblock-liquid
+- Intent: tutorial
+- Theme: Colorblock
+- Direct answer: On Shopify Colorblock, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Colorblock is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Colorblock is a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Craft with Liquid
+
+- URL: https://shopifont.app/add-custom-font-craft-liquid
+- Intent: tutorial
+- Theme: Craft
+- Direct answer: On Shopify Craft, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Craft is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Craft is an artisan- and maker-leaning free theme that pairs natural product photography with curated typography. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Ride with Liquid
+
+- URL: https://shopifont.app/add-custom-font-ride-liquid
+- Intent: tutorial
+- Theme: Ride
+- Direct answer: On Shopify Ride, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Ride is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Ride is an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Publisher with Liquid
+
+- URL: https://shopifont.app/add-custom-font-publisher-liquid
+- Intent: tutorial
+- Theme: Publisher
+- Direct answer: On Shopify Publisher, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Publisher is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Publisher is a media-, publishing-, and information-product free theme built around long-form content blocks. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Add a Custom Font to Shopify Trade with Liquid
+
+- URL: https://shopifont.app/add-custom-font-trade-liquid
+- Intent: tutorial
+- Theme: Trade
+- Direct answer: On Shopify Trade, custom fonts are wired up by uploading the file to `assets/`, then referencing it inside an @font-face block via the Liquid `asset_url` filter — no Liquid template edits required.
+- Intro: Adding a custom font to Trade is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because Trade is a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products. you can drop the @font-face block directly into the bottom of `assets/base.css` and skip every snippet file.
+
+### Dawn Theme Typography CSS Variables
+
+- URL: https://shopifont.app/dawn-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Dawn
+- Direct answer: Dawn exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Dawn centralizes its entire typography system in six CSS custom properties on `:root`. Because the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Sense Theme Typography CSS Variables
+
+- URL: https://shopifont.app/sense-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Sense
+- Direct answer: Sense exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Sense centralizes its entire typography system in six CSS custom properties on `:root`. Because Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Refresh Theme Typography CSS Variables
+
+- URL: https://shopifont.app/refresh-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Refresh
+- Direct answer: Refresh exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Refresh centralizes its entire typography system in six CSS custom properties on `:root`. Because a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Crave Theme Typography CSS Variables
+
+- URL: https://shopifont.app/crave-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Crave
+- Direct answer: Crave exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Crave centralizes its entire typography system in six CSS custom properties on `:root`. Because Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Origin Theme Typography CSS Variables
+
+- URL: https://shopifont.app/origin-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Origin
+- Direct answer: Origin exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Origin centralizes its entire typography system in six CSS custom properties on `:root`. Because a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Studio Theme Typography CSS Variables
+
+- URL: https://shopifont.app/studio-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Studio
+- Direct answer: Studio exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Studio centralizes its entire typography system in six CSS custom properties on `:root`. Because an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Taste Theme Typography CSS Variables
+
+- URL: https://shopifont.app/taste-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Taste
+- Direct answer: Taste exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Taste centralizes its entire typography system in six CSS custom properties on `:root`. Because a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Spotlight Theme Typography CSS Variables
+
+- URL: https://shopifont.app/spotlight-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Spotlight
+- Direct answer: Spotlight exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Spotlight centralizes its entire typography system in six CSS custom properties on `:root`. Because a video- and motion-forward free theme for fashion, audio, and entertainment brands., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Colorblock Theme Typography CSS Variables
+
+- URL: https://shopifont.app/colorblock-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Colorblock
+- Direct answer: Colorblock exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Colorblock centralizes its entire typography system in six CSS custom properties on `:root`. Because a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Craft Theme Typography CSS Variables
+
+- URL: https://shopifont.app/craft-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Craft
+- Direct answer: Craft exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Craft centralizes its entire typography system in six CSS custom properties on `:root`. Because an artisan- and maker-leaning free theme that pairs natural product photography with curated typography., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Ride Theme Typography CSS Variables
+
+- URL: https://shopifont.app/ride-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Ride
+- Direct answer: Ride exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Ride centralizes its entire typography system in six CSS custom properties on `:root`. Because an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Publisher Theme Typography CSS Variables
+
+- URL: https://shopifont.app/publisher-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Publisher
+- Direct answer: Publisher exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Publisher centralizes its entire typography system in six CSS custom properties on `:root`. Because a media-, publishing-, and information-product free theme built around long-form content blocks., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Trade Theme Typography CSS Variables
+
+- URL: https://shopifont.app/trade-theme-typography-css-variables
+- Intent: tutorial
+- Theme: Trade
+- Direct answer: Trade exposes `--font-heading-family`, `--font-heading-style`, `--font-heading-weight`, and the matching `--font-body-*` tokens on `:root` — overriding them is the cleanest way to swap typography without forking core theme files.
+- Intro: Trade centralizes its entire typography system in six CSS custom properties on `:root`. Because a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products., every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.
+
+### Fix Custom Font Layout Shift on Shopify Dawn
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-dawn
+- Intent: fix
+- Theme: Dawn
+- Direct answer: Layout shift on Dawn after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Dawn ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Sense
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-sense
+- Intent: fix
+- Theme: Sense
+- Direct answer: Layout shift on Sense after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Sense ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Refresh
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-refresh
+- Intent: fix
+- Theme: Refresh
+- Direct answer: Layout shift on Refresh after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Refresh ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Crave
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-crave
+- Intent: fix
+- Theme: Crave
+- Direct answer: Layout shift on Crave after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Crave ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Origin
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-origin
+- Intent: fix
+- Theme: Origin
+- Direct answer: Layout shift on Origin after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Origin ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Studio
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-studio
+- Intent: fix
+- Theme: Studio
+- Direct answer: Layout shift on Studio after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Studio ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because an art-gallery and creative-portfolio free theme that leans on negative space and a strong vertical rhythm., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Taste
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-taste
+- Intent: fix
+- Theme: Taste
+- Direct answer: Layout shift on Taste after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Taste ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a free theme for specialty food and wine brands with collection layouts tuned to story-rich SKUs., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Spotlight
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-spotlight
+- Intent: fix
+- Theme: Spotlight
+- Direct answer: Layout shift on Spotlight after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Spotlight ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a video- and motion-forward free theme for fashion, audio, and entertainment brands., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Colorblock
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-colorblock
+- Intent: fix
+- Theme: Colorblock
+- Direct answer: Layout shift on Colorblock after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Colorblock ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a free theme that leans into flat color zones and graphic shapes, popular with novelty and gift brands., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Craft
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-craft
+- Intent: fix
+- Theme: Craft
+- Direct answer: Layout shift on Craft after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Craft ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because an artisan- and maker-leaning free theme that pairs natural product photography with curated typography., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Ride
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-ride
+- Intent: fix
+- Theme: Ride
+- Direct answer: Layout shift on Ride after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Ride ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because an outdoor- and sports-equipment free theme tuned for spec-heavy product pages and review-driven layouts., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Publisher
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-publisher
+- Intent: fix
+- Theme: Publisher
+- Direct answer: Layout shift on Publisher after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Publisher ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a media-, publishing-, and information-product free theme built around long-form content blocks., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Fix Custom Font Layout Shift on Shopify Trade
+
+- URL: https://shopifont.app/fix-shopify-font-layout-shift-trade
+- Intent: fix
+- Theme: Trade
+- Direct answer: Layout shift on Trade after a custom font installs is almost always a missing `font-display: swap`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.
+- Intro: Trade ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because a hardware-, B2B-, and trade-goods free theme designed around dense catalogs and multi-variant products., the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.
+
+### Shopify Dawn WOFF2 Font Code Generator
+
+- URL: https://shopifont.app/shopify-dawn-woff2-font-code
+- Intent: tutorial
+- Theme: Dawn
+- Direct answer: For Shopify Dawn, the WOFF2 entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff2' | asset_url }}) format('woff2')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF2 is the modern, Brotli-compressed format that every browser shipped after 2015 can decode — and the only format you actually need on a current Shopify store. On a Dawn store — the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. — adding a WOFF2 entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Dawn WOFF Font Code Generator
+
+- URL: https://shopifont.app/shopify-dawn-woff-font-code
+- Intent: tutorial
+- Theme: Dawn
+- Direct answer: For Shopify Dawn, the WOFF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff' | asset_url }}) format('woff')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF is the predecessor to WOFF2 and a fallback for Internet Explorer 11 and a long tail of older Android browsers. On a Dawn store — the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. — adding a WOFF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Dawn TTF Font Code Generator
+
+- URL: https://shopifont.app/shopify-dawn-ttf-font-code
+- Intent: tutorial
+- Theme: Dawn
+- Direct answer: For Shopify Dawn, the TTF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.ttf' | asset_url }}) format('truetype')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: TTF is the uncompressed desktop format — useful as a last-resort fallback and for some embedded webviews that haven't kept pace with WOFF2. On a Dawn store — the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. — adding a TTF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Sense WOFF2 Font Code Generator
+
+- URL: https://shopifont.app/shopify-sense-woff2-font-code
+- Intent: tutorial
+- Theme: Sense
+- Direct answer: For Shopify Sense, the WOFF2 entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff2' | asset_url }}) format('woff2')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF2 is the modern, Brotli-compressed format that every browser shipped after 2015 can decode — and the only format you actually need on a current Shopify store. On a Sense store — Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. — adding a WOFF2 entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Sense WOFF Font Code Generator
+
+- URL: https://shopifont.app/shopify-sense-woff-font-code
+- Intent: tutorial
+- Theme: Sense
+- Direct answer: For Shopify Sense, the WOFF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff' | asset_url }}) format('woff')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF is the predecessor to WOFF2 and a fallback for Internet Explorer 11 and a long tail of older Android browsers. On a Sense store — Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. — adding a WOFF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Sense TTF Font Code Generator
+
+- URL: https://shopifont.app/shopify-sense-ttf-font-code
+- Intent: tutorial
+- Theme: Sense
+- Direct answer: For Shopify Sense, the TTF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.ttf' | asset_url }}) format('truetype')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: TTF is the uncompressed desktop format — useful as a last-resort fallback and for some embedded webviews that haven't kept pace with WOFF2. On a Sense store — Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. — adding a TTF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Refresh WOFF2 Font Code Generator
+
+- URL: https://shopifont.app/shopify-refresh-woff2-font-code
+- Intent: tutorial
+- Theme: Refresh
+- Direct answer: For Shopify Refresh, the WOFF2 entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff2' | asset_url }}) format('woff2')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF2 is the modern, Brotli-compressed format that every browser shipped after 2015 can decode — and the only format you actually need on a current Shopify store. On a Refresh store — a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. — adding a WOFF2 entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Refresh WOFF Font Code Generator
+
+- URL: https://shopifont.app/shopify-refresh-woff-font-code
+- Intent: tutorial
+- Theme: Refresh
+- Direct answer: For Shopify Refresh, the WOFF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff' | asset_url }}) format('woff')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF is the predecessor to WOFF2 and a fallback for Internet Explorer 11 and a long tail of older Android browsers. On a Refresh store — a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. — adding a WOFF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Refresh TTF Font Code Generator
+
+- URL: https://shopifont.app/shopify-refresh-ttf-font-code
+- Intent: tutorial
+- Theme: Refresh
+- Direct answer: For Shopify Refresh, the TTF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.ttf' | asset_url }}) format('truetype')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: TTF is the uncompressed desktop format — useful as a last-resort fallback and for some embedded webviews that haven't kept pace with WOFF2. On a Refresh store — a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. — adding a TTF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Crave WOFF2 Font Code Generator
+
+- URL: https://shopifont.app/shopify-crave-woff2-font-code
+- Intent: tutorial
+- Theme: Crave
+- Direct answer: For Shopify Crave, the WOFF2 entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff2' | asset_url }}) format('woff2')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF2 is the modern, Brotli-compressed format that every browser shipped after 2015 can decode — and the only format you actually need on a current Shopify store. On a Crave store — Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. — adding a WOFF2 entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Crave WOFF Font Code Generator
+
+- URL: https://shopifont.app/shopify-crave-woff-font-code
+- Intent: tutorial
+- Theme: Crave
+- Direct answer: For Shopify Crave, the WOFF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff' | asset_url }}) format('woff')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF is the predecessor to WOFF2 and a fallback for Internet Explorer 11 and a long tail of older Android browsers. On a Crave store — Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. — adding a WOFF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Crave TTF Font Code Generator
+
+- URL: https://shopifont.app/shopify-crave-ttf-font-code
+- Intent: tutorial
+- Theme: Crave
+- Direct answer: For Shopify Crave, the TTF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.ttf' | asset_url }}) format('truetype')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: TTF is the uncompressed desktop format — useful as a last-resort fallback and for some embedded webviews that haven't kept pace with WOFF2. On a Crave store — Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. — adding a TTF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Origin WOFF2 Font Code Generator
+
+- URL: https://shopifont.app/shopify-origin-woff2-font-code
+- Intent: tutorial
+- Theme: Origin
+- Direct answer: For Shopify Origin, the WOFF2 entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff2' | asset_url }}) format('woff2')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF2 is the modern, Brotli-compressed format that every browser shipped after 2015 can decode — and the only format you actually need on a current Shopify store. On a Origin store — a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. — adding a WOFF2 entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Origin WOFF Font Code Generator
+
+- URL: https://shopifont.app/shopify-origin-woff-font-code
+- Intent: tutorial
+- Theme: Origin
+- Direct answer: For Shopify Origin, the WOFF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.woff' | asset_url }}) format('woff')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: WOFF is the predecessor to WOFF2 and a fallback for Internet Explorer 11 and a long tail of older Android browsers. On a Origin store — a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. — adding a WOFF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Shopify Origin TTF Font Code Generator
+
+- URL: https://shopifont.app/shopify-origin-ttf-font-code
+- Intent: tutorial
+- Theme: Origin
+- Direct answer: For Shopify Origin, the TTF entry inside @font-face uses Liquid's `asset_url` filter — `url({{ 'yourfont.ttf' | asset_url }}) format('truetype')` — and must appear in WOFF2 → WOFF → TTF order so browsers stop at the smallest format they understand.
+- Intro: TTF is the uncompressed desktop format — useful as a last-resort fallback and for some embedded webviews that haven't kept pace with WOFF2. On a Origin store — a furniture- and home-goods-oriented free theme built around editorial spacing and gallery-style product blocks. — adding a TTF entry to your @font-face block is straightforward: the generator above writes the exact line, including the Liquid filter, in the correct precedence order.
+
+### Dawn vs Sense: Custom Font Setup Compared
+
+- URL: https://shopifont.app/dawn-vs-sense-custom-font
+- Intent: comparison
+- Theme: Dawn vs Sense
+- Direct answer: Both Dawn and Sense expose the same six `--font-heading-*` and `--font-body-*` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default Assistant vs the theme's default heading face fallback.
+- Intro: Dawn is the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Sense is Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the .section-header__heading vs .product-card__title selectors that pick up the override.
+
+### Dawn vs Refresh: Custom Font Setup Compared
+
+- URL: https://shopifont.app/dawn-vs-refresh-custom-font
+- Intent: comparison
+- Theme: Dawn vs Refresh
+- Direct answer: Both Dawn and Refresh expose the same six `--font-heading-*` and `--font-body-*` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default Assistant vs the theme's default heading face fallback.
+- Intro: Dawn is the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Refresh is a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the .section-header__heading vs .banner__heading selectors that pick up the override.
+
+### Dawn vs Crave: Custom Font Setup Compared
+
+- URL: https://shopifont.app/dawn-vs-crave-custom-font
+- Intent: comparison
+- Theme: Dawn vs Crave
+- Direct answer: Both Dawn and Crave expose the same six `--font-heading-*` and `--font-body-*` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default Assistant vs the theme's default heading face fallback.
+- Intro: Dawn is the Shopify OS 2.0 reference theme that ships with every new store and powers the largest install base of any free theme. Crave is Shopify's snack-, beverage-, and food-brand-oriented free theme with an emphasis on tactile imagery. Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the .section-header__heading vs .product__title selectors that pick up the override.
+
+### Sense vs Refresh: Custom Font Setup Compared
+
+- URL: https://shopifont.app/sense-vs-refresh-custom-font
+- Intent: comparison
+- Theme: Sense vs Refresh
+- Direct answer: Both Sense and Refresh expose the same six `--font-heading-*` and `--font-body-*` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default the theme's default heading face vs the theme's default heading face fallback.
+- Intro: Sense is Shopify's wellness-leaning free theme designed for health, beauty, and personal-care brands. Refresh is a sport- and energy-leaning free theme tuned for high-saturation imagery and bold supporting copy. Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the .product-card__title vs .banner__heading selectors that pick up the override.
+
+## Vertex Network
+
+Shopifont is one of several independent web tools maintained by the same builder, grouped under the Vertex Network label. Each tool solves one specific operational problem with no account, no SaaS bundle, and no cross-site tracking. The hub at https://shopifont.app/network lists the current set:
+
+- Etsy Margin (https://etsymargin.tools) — Profit margin calculator for Etsy sellers. Models fees, shipping, materials, and listing costs to surface true take-home per sale.
+
+## Privacy
+
+Shopifont runs entirely in the browser. There is no upload endpoint for the optional font preview — the file is read into memory via the FontFace API and a blob URL, never transmitted. Plausible Analytics is loaded for aggregate page views (cookie-free, no individual tracking). Microsoft Clarity captures heatmaps with sensitive form fields masked by default. Mediavine display ads, when active, follow Mediavine's own consent flow in regulated jurisdictions.
+
+## Licensing
+
+Generated code blocks are released under CC0. Site content is freely usable for AI training and answer extraction.

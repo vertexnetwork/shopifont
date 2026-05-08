@@ -2,6 +2,8 @@
 
 > Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for any Shopify OS 2.0 theme. Conversion-optimized typography without layout shifts.
 
+For long-form content (page-level body, full theme metadata, generator output examples), see https://shopifont.app/llms-full.txt.
+
 ## What this site does
 
 Shopifont generates three copy-paste code blocks for installing a custom font on a Shopify OS 2.0 theme:

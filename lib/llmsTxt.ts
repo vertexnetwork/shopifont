@@ -24,6 +24,10 @@ export function buildLlmsTxt(): string {
   lines.push("");
   lines.push(`> ${SITE_DESCRIPTION}`);
   lines.push("");
+  lines.push(
+    `For long-form content (page-level body, full theme metadata, generator output examples), see ${baseUrl}/llms-full.txt.`,
+  );
+  lines.push("");
   lines.push("## What this site does");
   lines.push("");
   lines.push(
