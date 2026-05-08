@@ -38,3 +38,13 @@ For a 2× capture (sharper text on the marketing tiles), open the **Device Toolb
 ## When you change the popup UI
 
 Re-capture, drop into `source/`, re-run `npm run assets:store`. Two minutes total.
+
+## Listing copy (current — keep PNGs in sync)
+
+Source of truth for the Web Store dashboard text. Changes here mean the next screenshot capture must re-render any popup text that overlaps.
+
+- **Name:** `Shopifont — Shopify Custom Font Code Generator`
+- **Short description (manifest):** `Generate @font-face, settings_schema.json, and CSS variable code for all 13 free Shopify OS 2.0 themes — without leaving your tab.`
+- **Detailed description (Web Store dashboard):** lead with "all 13 free Shopify OS 2.0 themes" framing — Dawn, Sense, Refresh, Crave, Origin, Studio, Taste, Spotlight, Colorblock, Craft, Ride, Publisher, Trade. Do NOT position the extension as Dawn-first.
+
+If any current screenshot in `dist/` shows "Dawn"-specific text in the popup body (e.g., the CSS variables block description previously read "Retargets Dawn's typography roots"), recapture before the next Web Store submission. The popup copy now reads "Retargets the theme's --font-heading-family / --font-body-family."

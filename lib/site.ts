@@ -21,32 +21,6 @@ export function absoluteUrl(path: string): string {
 }
 
 /**
- * Verified social URLs only. Each handle is gated on a build-time env
- * var so the site never claims a profile that hasn't been registered.
- * Empty array is fine — schemas drop the `sameAs` field gracefully.
- */
-export const SOCIAL_LINKS: ReadonlyArray<string> = (() => {
-  const out: string[] = [];
-  const x = process.env.NEXT_PUBLIC_SOCIAL_X?.trim();
-  const tiktok = process.env.NEXT_PUBLIC_SOCIAL_TIKTOK?.trim();
-  const pinterest = process.env.NEXT_PUBLIC_SOCIAL_PINTEREST?.trim();
-  if (x) out.push(x.startsWith("http") ? x : `https://twitter.com/${x.replace(/^@/, "")}`);
-  if (tiktok)
-    out.push(
-      tiktok.startsWith("http")
-        ? tiktok
-        : `https://www.tiktok.com/@${tiktok.replace(/^@/, "")}`,
-    );
-  if (pinterest)
-    out.push(
-      pinterest.startsWith("http")
-        ? pinterest
-        : `https://pinterest.com/${pinterest.replace(/^@/, "")}`,
-    );
-  return out;
-})();
-
-/**
  * Build-time timestamp baked into the bundle. Surfaced on every pSEO
  * page as a "last updated" signal so visitors can see the guides are
  * actively maintained — important trust gate for paste-into-production
@@ -81,6 +55,24 @@ export function getBuildDateLabel(): string {
  */
 export const CREATIVE_FABRICA_REF =
   "https://www.creativefabrica.com/ref/24727168/";
+
+/**
+ * Printify affiliate referral URL. Single source of truth for the
+ * Shopify print-on-demand recommendation across the generator-intent
+ * pSEO pages, the homepage, the /recommendations hub, and the embed
+ * widget CTA target.
+ *
+ * The `try.printify.com/<id>` segment is Printify's own attribution
+ * mechanism — DO NOT append UTM parameters before it, that breaks
+ * the affiliate cookie. Plausible's outbound-links script (already
+ * loaded in the (site) layout) auto-tracks clicks on our side.
+ *
+ * Every link rendered with this URL must carry rel="sponsored"
+ * (Google's link-relationship signal for paid placements) and
+ * target="_blank" + rel="noopener" so we don't get back-button stuck
+ * on the affiliate page if the user wants to return.
+ */
+export const PRINTIFY_REF = "https://try.printify.com/j8xm11chwojf";
 
 /**
  * Chrome Web Store listing URL for the Shopifont extension.

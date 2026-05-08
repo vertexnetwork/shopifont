@@ -6,7 +6,7 @@ import { CHROME_WEB_STORE_URL, SITE_NAME } from "@/lib/site";
 export const dynamic = "force-static";
 
 const EXTENSION_DESCRIPTION =
-  `The ${SITE_NAME} Chrome extension generates Shopify @font-face CSS, settings_schema.json, and CSS variable overrides directly from a popup — no tab switch, no upload, no telemetry. Built for Dawn and every other OS 2.0 theme.`;
+  `The ${SITE_NAME} Chrome extension generates Shopify @font-face CSS, settings_schema.json, and CSS variable overrides directly from a popup — no tab switch, no upload, no telemetry. Built for all 13 free Shopify OS 2.0 themes.`;
 
 export const metadata: Metadata = {
   title: `Chrome Extension — ${SITE_NAME}`,
@@ -146,16 +146,19 @@ export default function ExtensionPage() {
           <ul className="grid gap-3 sm:grid-cols-2">
             <Feature title="Same generator, popup-sized">
               The extension reuses the website&apos;s generator code one-to-one
-              — same output, same formatting, same Dawn-compatible{" "}
-              <code className="font-mono text-sm">@font-face</code> block.
-              Nothing diverges between web and extension.
+              — same{" "}
+              <code className="font-mono text-sm">@font-face</code>,{" "}
+              <code className="font-mono text-sm">settings_schema.json</code>,
+              and CSS variable output the website ships. Nothing diverges
+              between web and extension.
             </Feature>
-            <Feature title="All formats, all OS 2.0 themes">
+            <Feature title="All formats, all 13 OS 2.0 themes">
               WOFF2, WOFF, TTF, OTF, EOT — tick what your foundry sent you and
               the generator writes the cross-format{" "}
               <code className="font-mono text-sm">src</code> stack. The output
-              works on Dawn, Sense, Refresh, Crave, Origin, and every other
-              free Shopify OS 2.0 theme.
+              works on all 13 free Shopify OS 2.0 themes: Dawn, Sense, Refresh,
+              Crave, Origin, Studio, Taste, Spotlight, Colorblock, Craft, Ride,
+              Publisher, and Trade.
             </Feature>
             <Feature title="Three copy-ready blocks">
               The popup outputs the{" "}
@@ -222,15 +225,15 @@ export default function ExtensionPage() {
                 website
               </Link>
             </strong>{" "}
-            when you want the longer-form material: the{" "}
+            when you want the longer-form material: the per-theme generators
+            for all 13 free OS 2.0 themes (including the{" "}
             <Link
               href="/shopify-dawn-custom-font-generator"
               className="text-electric hover:underline"
             >
-              Dawn-specific guide
+              Dawn generator
             </Link>
-            , the per-theme generators for the other twelve free OS 2.0
-            themes, the live font preview that lets you drop a file and see it
+            ), the live font preview that lets you drop a file and see it
             render before you paste anything into production, and{" "}
             <Link href="/about" className="text-electric hover:underline">
               the background on how the tool is built

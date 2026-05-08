@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
+import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -104,6 +105,14 @@ export default function HomePage() {
          * thinking about leaving.
          */}
         <CreativeFabricaCard />
+
+        {/*
+         * Printify affiliate. Stacked under the font card so a
+         * Shopify merchant who arrived for typography sees the merch-
+         * fulfillment vertical without a second click. Same surface
+         * pattern, complementary intent — different commission line.
+         */}
+        <PrintifyCard />
 
         {/*
          * Chrome extension promo. Placed adjacent to the affiliate

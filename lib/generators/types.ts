@@ -37,6 +37,15 @@ export type GeneratorInput = {
    * only body if they prefer.
    */
   applyTo?: ReadonlyArray<"heading" | "body">;
+  /**
+   * Additional weights of the same family the merchant wants to ship.
+   * When non-empty, the @font-face generator emits one block per
+   * `[weight, ...additionalWeights]` and switches every block's
+   * filename to `{baseName}-{weight}.{ext}` so each weight resolves
+   * to a distinct asset_url. When absent or empty, the primary weight
+   * keeps the bare `{baseName}.{ext}` filename for backwards compat.
+   */
+  additionalWeights?: ReadonlyArray<FontWeight>;
 };
 
 export const FORMAT_LABEL: Record<FontFormat, string> = {
@@ -72,3 +81,16 @@ export const FORMAT_CSS_TOKEN: Record<FontFormat, string> = {
 export const VALID_WEIGHTS: ReadonlyArray<FontWeight> = [
   100, 200, 300, 400, 500, 600, 700, 800, 900,
 ];
+
+/**
+ * Filter + sort the user's selected formats into the canonical
+ * precedence order. Shared between fontFace.ts (writes the src stack)
+ * and settingsSchema.ts (writes the merchant-facing instruction
+ * text), so both surfaces describe the same set in the same order.
+ */
+export function sortFormats(
+  formats: ReadonlyArray<FontFormat>,
+): ReadonlyArray<FontFormat> {
+  const set = new Set(formats);
+  return FORMAT_ORDER.filter((f) => set.has(f));
+}

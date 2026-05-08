@@ -6,7 +6,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const emptyModule = path.resolve(__dirname, "lib/empty.js");
 
 const config: NextConfig = {
-  output: "export",
   images: { unoptimized: true },
   trailingSlash: false,
   reactStrictMode: true,

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CreativeFabricaInline } from "@/components/Affiliate/CreativeFabricaInline";
+import { PrintifyInline } from "@/components/Affiliate/PrintifyInline";
 import { ShopifontGenerator } from "@/components/Generator";
 import { AdSlot } from "@/components/Layout/AdSlot";
 import { RelatedLinks } from "@/components/Layout/RelatedLinks";
@@ -146,8 +147,14 @@ export default async function PseoPage({ params }: PageProps) {
              * workflow and is in "ok now I need a font" mode if they
              * weren't already. Single sentence, "(affiliate)" tag
              * inline, rel="sponsored" on the link.
+             *
+             * Printify is gated to generator-intent pSEO only — those
+             * are the 13 highest-commercial-intent pages where the
+             * merchant most likely sells physical products. Tutorial /
+             * fix / comparison pages skip it to avoid topical drift.
              */}
             <CreativeFabricaInline />
+            {entry.intent === "generator" ? <PrintifyInline /> : null}
           </section>
         </Reveal>
 

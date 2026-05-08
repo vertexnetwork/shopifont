@@ -57,4 +57,14 @@ describe("buildCssVariableOverrides", () => {
     expect(css).toContain("--font-heading-weight: 700;");
     expect(css).toContain("--font-body-weight: 700;");
   });
+
+  it("widens the selector to :root, [data-shopify-section], and .shopify-section", () => {
+    const css = buildCssVariableOverrides(base);
+    expect(css).toContain(":root,");
+    expect(css).toContain("[data-shopify-section],");
+    expect(css).toContain(".shopify-section {");
+    // Single rule body (one opening brace, one closing).
+    expect(css.match(/\{/g)?.length ?? 0).toBe(1);
+    expect(css.match(/\}/g)?.length ?? 0).toBe(1);
+  });
 });

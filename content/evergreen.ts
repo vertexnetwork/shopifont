@@ -44,4 +44,18 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
       "Curated list of free, commercially-licensed web fonts that work well on Shopify Dawn and other OS 2.0 themes. Each entry covers what the font is good for, weight availability, file size, and which kind of brand it fits. Includes a section on premium options for stores that need something more distinctive.",
     priority: 0.5,
   },
+  {
+    slug: "font-pairing-checklist",
+    title: "Free Shopify font-pairing checklist",
+    summary:
+      "Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Delivered as a PDF after a one-field email signup; no account, no spam.",
+    priority: 0.5,
+  },
+  {
+    slug: "recommendations",
+    title: "Recommended Shopify tools",
+    summary:
+      "The print-on-demand, font marketplace, and operational utilities we recommend for Shopify merchants. Affiliate-tagged where applicable; commission disclosed inline.",
+    priority: 0.5,
+  },
 ];

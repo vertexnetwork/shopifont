@@ -43,19 +43,17 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
     },
     {
       "type": "paragraph",
-      "content": "Upload your My Brand Sans files (woff2, woff, ttf, otf, or eot) to your theme's Assets folder. The @font-face block referencing my-brand-sans.* will then resolve via {{ 'my-brand-sans.woff2' | asset_url }}."
+      "content": "Upload your My Brand Sans files (woff2, woff) to your theme's Assets folder. The @font-face block will resolve them via {{ 'my-brand-sans.woff2' | asset_url }}."
     },
     {
       "type": "font_picker",
       "id": "my_brand_sans_heading_font",
-      "label": "Heading font (fallback when custom file is unavailable)",
-      "default": "assistant_n4"
+      "label": "Native Theme Editor heading fallback (only used if you don't upload custom files)"
     },
     {
       "type": "font_picker",
       "id": "my_brand_sans_body_font",
-      "label": "Body font (fallback when custom file is unavailable)",
-      "default": "assistant_n4"
+      "label": "Native Theme Editor body fallback (only used if you don't upload custom files)"
     },
     {
       "type": "select",
@@ -94,7 +92,9 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
 ### CSS variable overrides
 
 ```css
-:root {
+:root,
+[data-shopify-section],
+.shopify-section {
   --font-heading-family: "My Brand Sans", sans-serif;
   --font-heading-style: normal;
   --font-heading-weight: 400;
@@ -259,6 +259,16 @@ Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover
 
 - URL: https://shopifont.app/best-free-fonts-for-shopify
 - Summary: Curated list of free, commercially-licensed web fonts that work well on Shopify Dawn and other OS 2.0 themes. Each entry covers what the font is good for, weight availability, file size, and which kind of brand it fits. Includes a section on premium options for stores that need something more distinctive.
+
+### Free Shopify font-pairing checklist
+
+- URL: https://shopifont.app/font-pairing-checklist
+- Summary: Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Delivered as a PDF after a one-field email signup; no account, no spam.
+
+### Recommended Shopify tools
+
+- URL: https://shopifont.app/recommendations
+- Summary: The print-on-demand, font marketplace, and operational utilities we recommend for Shopify merchants. Affiliate-tagged where applicable; commission disclosed inline.
 
 ## Theme-specific pages
 

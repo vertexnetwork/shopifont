@@ -1,5 +1,17 @@
 [
   {
+    "hash": "42f95a277fe9013346c6112e21595ff7af4e6dd0",
+    "shortHash": "42f95a2",
+    "date": "2026-05-07T21:06:26-06:00",
+    "subject": "Refresh changelog to include recent commits"
+  },
+  {
+    "hash": "54438e661e8dd42ad9ec98ff1fa07c7d247d20ad",
+    "shortHash": "54438e6",
+    "date": "2026-05-07T21:05:47-06:00",
+    "subject": "Align SEO/GEO surfaces with recently-added pages"
+  },
+  {
     "hash": "78d668abeff10087d947c7cc8bea105fb863ceaf",
     "shortHash": "78d668a",
     "date": "2026-05-07T20:59:28-06:00",

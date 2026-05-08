@@ -226,6 +226,8 @@ export function GeneratorInputs({ state }: Props) {
         </label>
       </div>
 
+      <AdditionalWeights state={state} />
+
       <fieldset className="flex flex-col gap-2">
         <legend className="text-sm font-medium">Apply to</legend>
         <div className="flex flex-wrap gap-3">
@@ -298,6 +300,71 @@ function FormatToggle({
       {checked ? <CheckIcon /> : <span aria-hidden className="w-[14px] shrink-0" />}
       <span>{FORMAT_LABEL[format]}</span>
     </button>
+  );
+}
+
+/**
+ * Multi-weight composer. The merchant's primary weight is set in the
+ * Weight select above; this row collects additional weights that the
+ * @font-face generator emits as separate blocks. When ≥1 additional
+ * weight is set, the filename pattern switches to
+ * `{baseName}-{weight}.{ext}` so each weight resolves to a distinct
+ * uploaded asset — this is non-obvious so we surface a hint inline.
+ */
+function AdditionalWeights({ state }: { state: GeneratorState }) {
+  const availableWeights = VALID_WEIGHTS.filter(
+    (w) => w !== state.weight && !state.additionalWeights.includes(w),
+  );
+  return (
+    <fieldset className="flex flex-col gap-2">
+      <legend className="text-sm font-medium">Additional weights</legend>
+      <div className="flex flex-wrap items-center gap-2">
+        {state.additionalWeights.map((w) => (
+          <span
+            key={w}
+            className="inline-flex items-center gap-1.5 min-h-[var(--spacing-touch)] pl-3 pr-1 rounded-md border border-electric/40 bg-electric/[0.06] text-sm text-charcoal"
+          >
+            <span className="font-medium">{w}</span>
+            <button
+              type="button"
+              onClick={() => state.removeWeight(w)}
+              aria-label={`Remove weight ${w}`}
+              className="inline-flex items-center justify-center w-7 h-7 rounded text-muted hover:text-error hover:bg-error/5"
+            >
+              ×
+            </button>
+          </span>
+        ))}
+        {availableWeights.length > 0 ? (
+          <label className="inline-flex items-center gap-2 text-sm">
+            <span className="sr-only">Add another weight</span>
+            <select
+              value=""
+              onChange={(e) => {
+                const v = Number(e.target.value);
+                if (Number.isFinite(v) && v > 0) {
+                  state.addWeight(v as FontWeight);
+                }
+              }}
+              className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal hover:border-electric"
+            >
+              <option value="">+ Add another weight</option>
+              {availableWeights.map((w) => (
+                <option key={w} value={w}>
+                  {WEIGHT_LABEL[w]}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+      </div>
+      <span className="text-xs text-muted">
+        {state.additionalWeights.length > 0
+          ? "Filenames switch to {name}-{weight}.{ext} so each weight resolves to its own upload — e.g. " +
+            "calibre-400.woff2, calibre-700.woff2."
+          : "Optional. Add 700 if you need bold, 300 for light, etc. Each weight emits its own @font-face block."}
+      </span>
+    </fieldset>
   );
 }
 

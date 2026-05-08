@@ -32,6 +32,9 @@ export default function EmbedPage() {
   // visible when a visitor clicks through.
   const homeHref = absoluteUrl("/?utm_source=embed&utm_medium=iframe");
   const aboutHref = absoluteUrl("/about?utm_source=embed&utm_medium=iframe");
+  const recommendationsHref = absoluteUrl(
+    "/recommendations?utm_source=embed&utm_medium=iframe",
+  );
 
   return (
     <>
@@ -86,6 +89,21 @@ export default function EmbedPage() {
               </a>
               . Free, no signup, no upload.
             </p>
+            {/*
+             * Recommendations CTA — every embed becomes a free
+             * affiliate distribution channel. utm_source=embed lets
+             * /recommendations attribute clicks back to this iframe
+             * surface in Plausible / GSC. opens in new tab so the
+             * partner page never loses focus.
+             */}
+            <a
+              href={recommendationsHref}
+              target="_blank"
+              rel="noopener"
+              className="hover:text-electric"
+            >
+              Recommended Shopify tools →
+            </a>
             <Link
               href={aboutHref}
               target="_blank"

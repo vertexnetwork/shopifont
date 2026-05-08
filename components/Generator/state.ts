@@ -40,6 +40,9 @@ export type GeneratorState = {
   setApplyToHeading: (v: boolean) => void;
   applyToBody: boolean;
   setApplyToBody: (v: boolean) => void;
+  additionalWeights: FontWeight[];
+  addWeight: (w: FontWeight) => void;
+  removeWeight: (w: FontWeight) => void;
   /** Snapshot of the current input for downstream generators. */
   input: GeneratorInput;
   fontFaceCss: string;
@@ -85,6 +88,7 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
   const [style, setStyle] = useState<FontStyle>(DEFAULT_STYLE);
   const [applyToHeading, setApplyToHeading] = useState<boolean>(true);
   const [applyToBody, setApplyToBody] = useState<boolean>(true);
+  const [additionalWeights, setAdditionalWeights] = useState<FontWeight[]>([]);
   const [copiedSteps, setCopiedSteps] = useState<ReadonlySet<CopyTarget>>(
     () => new Set(),
   );
@@ -132,6 +136,27 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
       setApplyToBody(true);
     }
 
+    const extraRaw = p.get("weights");
+    if (extraRaw) {
+      const validExtras = extraRaw
+        .split(",")
+        .map((s) => Number(s.trim()))
+        .filter((n): n is FontWeight =>
+          VALID_WEIGHTS.includes(n as FontWeight),
+        );
+      if (validExtras.length > 0) {
+        const seen = new Set<FontWeight>();
+        const deduped: FontWeight[] = [];
+        for (const v of validExtras) {
+          if (!seen.has(v)) {
+            seen.add(v);
+            deduped.push(v);
+          }
+        }
+        setAdditionalWeights(deduped);
+      }
+    }
+
     hydratedFromUrl.current = true;
   }, [syncToUrl]);
 
@@ -161,6 +186,9 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
             ? "body"
             : "none";
     if (applyKey) p.set("apply", applyKey);
+    if (additionalWeights.length > 0) {
+      p.set("weights", additionalWeights.join(","));
+    }
 
     const search = p.toString();
     const url = new URL(window.location.href);
@@ -174,6 +202,7 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     style,
     applyToHeading,
     applyToBody,
+    additionalWeights,
   ]);
 
   const toggleFormat = useCallback((f: FontFormat) => {
@@ -184,6 +213,20 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
 
   const setWeightSafe = useCallback((w: FontWeight) => {
     if (VALID_WEIGHTS.includes(w)) setWeight(w);
+  }, []);
+
+  const addWeight = useCallback(
+    (w: FontWeight) => {
+      if (!VALID_WEIGHTS.includes(w)) return;
+      // Don't allow adding the primary weight as a duplicate.
+      if (w === weight) return;
+      setAdditionalWeights((prev) => (prev.includes(w) ? prev : [...prev, w]));
+    },
+    [weight],
+  );
+
+  const removeWeight = useCallback((w: FontWeight) => {
+    setAdditionalWeights((prev) => prev.filter((x) => x !== w));
   }, []);
 
   const markCopied = useCallback((id: CopyTarget) => {
@@ -199,8 +242,24 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     const applyTo: Array<"heading" | "body"> = [];
     if (applyToHeading) applyTo.push("heading");
     if (applyToBody) applyTo.push("body");
-    return { fontName, formats, weight, style, applyTo };
-  }, [fontName, formats, weight, style, applyToHeading, applyToBody]);
+    return {
+      fontName,
+      formats,
+      weight,
+      style,
+      applyTo,
+      additionalWeights:
+        additionalWeights.length > 0 ? additionalWeights : undefined,
+    };
+  }, [
+    fontName,
+    formats,
+    weight,
+    style,
+    applyToHeading,
+    applyToBody,
+    additionalWeights,
+  ]);
 
   const fontFaceCss = useMemo(() => buildFontFaceCss(input), [input]);
   const settingsSchemaJson = useMemo(
@@ -243,6 +302,9 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     setApplyToHeading,
     applyToBody,
     setApplyToBody,
+    additionalWeights,
+    addWeight,
+    removeWeight,
     input,
     fontFaceCss,
     settingsSchemaJson,

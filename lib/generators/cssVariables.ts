@@ -5,7 +5,7 @@ import type { GeneratorInput } from "./types";
  * theme's typography roots to the user's custom font.
  *
  * Dawn (and Sense, Refresh, Crave, etc., which all derive from Dawn)
- * exposes typography tokens on `:root` like:
+ * exposes typography tokens like:
  *
  *   --font-heading-family
  *   --font-heading-style
@@ -14,8 +14,14 @@ import type { GeneratorInput } from "./types";
  *   --font-body-style
  *   --font-body-weight
  *
- * Overriding these in a stylesheet that loads after `base.css` is the
- * cleanest way to swap typography without editing core theme files.
+ * Selector strategy: only Dawn's defaults are verified against a live
+ * install (see content/themes.ts `defaultsVerified`). For the other 12
+ * free OS 2.0 themes the safest move is to apply the overrides at
+ * three plausible scopes — `:root` (Dawn convention), `[data-shopify-section]`
+ * (themes that scope tokens to section wrappers), and `.shopify-section`
+ * (legacy section-level scope). Overriding at all three levels costs
+ * nothing in browser cost (CSS specificity unchanged for `:root`) and
+ * rescues the merchant when their theme deviates from Dawn's pattern.
  *
  * The `applyTo` input narrows the override scope so a merchant who
  * only wants a custom heading face doesn't accidentally override body.
@@ -27,7 +33,11 @@ export function buildCssVariableOverrides(input: GeneratorInput): string {
   if (targets.size === 0) return "";
 
   const familyValue = `${JSON.stringify(input.fontName)}, sans-serif`;
-  const lines: string[] = [":root {"];
+  const lines: string[] = [
+    ":root,",
+    "[data-shopify-section],",
+    ".shopify-section {",
+  ];
 
   if (targets.has("heading")) {
     lines.push(`  --font-heading-family: ${familyValue};`);

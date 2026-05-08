@@ -88,4 +88,53 @@ describe("buildFontFaceCss", () => {
     const woff2Hits = out.match(/format\('woff2'\)/g) ?? [];
     expect(woff2Hits.length).toBe(1);
   });
+
+  it("emits a single block with bare baseName when no additionalWeights", () => {
+    const out = buildFontFaceCss(base);
+    const blocks = out.match(/@font-face/g) ?? [];
+    expect(blocks.length).toBe(1);
+    expect(out).toContain("'calibre.woff2'");
+    expect(out).not.toContain("calibre-400.woff2");
+  });
+
+  it("emits one @font-face block per weight when additionalWeights is set", () => {
+    const out = buildFontFaceCss({ ...base, additionalWeights: [700] });
+    const blocks = out.match(/@font-face/g) ?? [];
+    expect(blocks.length).toBe(2);
+    expect(out).toContain("font-weight: 400;");
+    expect(out).toContain("font-weight: 700;");
+  });
+
+  it("switches to {baseName}-{weight}.{ext} filenames when multiple weights are emitted", () => {
+    const out = buildFontFaceCss({
+      ...base,
+      formats: ["woff2", "woff"],
+      additionalWeights: [700],
+    });
+    expect(out).toContain("'calibre-400.woff2'");
+    expect(out).toContain("'calibre-400.woff'");
+    expect(out).toContain("'calibre-700.woff2'");
+    expect(out).toContain("'calibre-700.woff'");
+    expect(out).not.toContain("'calibre.woff2'");
+  });
+
+  it("dedupes a primary weight repeated in additionalWeights", () => {
+    const out = buildFontFaceCss({ ...base, additionalWeights: [400, 700] });
+    const blocks = out.match(/@font-face/g) ?? [];
+    expect(blocks.length).toBe(2);
+  });
+
+  it("preserves insertion order: primary first, additionalWeights after", () => {
+    const out = buildFontFaceCss({
+      ...base,
+      weight: 500,
+      additionalWeights: [300, 700],
+    });
+    const idx500 = out.indexOf("font-weight: 500;");
+    const idx300 = out.indexOf("font-weight: 300;");
+    const idx700 = out.indexOf("font-weight: 700;");
+    expect(idx500).toBeGreaterThan(-1);
+    expect(idx500).toBeLessThan(idx300);
+    expect(idx300).toBeLessThan(idx700);
+  });
 });

@@ -21,7 +21,16 @@ import { SiteSchema } from "@/components/Schema/SiteSchema";
  * pageviews without leaking our other scripts onto partner sites.
  */
 
+const adNetwork = process.env.NEXT_PUBLIC_AD_NETWORK?.trim().toLowerCase();
 const mediavineSiteId = process.env.NEXT_PUBLIC_MEDIAVINE_SITE_ID?.trim();
+const adsenseClientId =
+  process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID?.trim();
+// Only load Mediavine when the network is explicitly selected AND the site
+// ID is set. Same gating for AdSense. The two never load simultaneously —
+// network policies forbid double-monetization, and Mediavine Journey
+// approval can be revoked if Mediavine detects competing scripts.
+const useMediavine = adNetwork === "mediavine" && Boolean(mediavineSiteId);
+const useAdsense = adNetwork === "adsense" && Boolean(adsenseClientId);
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim();
 const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID?.trim();
 const clarityProjectIdSafe =
@@ -39,15 +48,25 @@ export default function SiteLayout({
       <SiteSchema />
 
       {/*
-        Mediavine Grow Faves bootstrapper. PLAN.md §7 needs this
-        firing on every site page so the 30-day Journey authentication
-        window opens from launch. Skipped on /embed by virtue of
-        living in this (site) layout, not the root layout.
+        Ad-network bootstrap. NEXT_PUBLIC_AD_NETWORK selects which
+        network's script loads — manual swap, never both. The
+        Mediavine wiring stays intact for the Journey-approval swap;
+        flip the env var to "mediavine" once approval lands.
       */}
-      {mediavineSiteId ? (
+      {useMediavine ? (
         <Script id="mediavine-grow" strategy="lazyOnload">
           {`!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id",${JSON.stringify(mediavineSiteId)});var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();`}
         </Script>
+      ) : null}
+
+      {useAdsense ? (
+        <Script
+          id="adsbygoogle-bootstrap"
+          strategy="lazyOnload"
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossOrigin="anonymous"
+        />
       ) : null}
 
       {plausibleDomain ? (

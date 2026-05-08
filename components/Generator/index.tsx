@@ -6,6 +6,7 @@ import { GeneratorInputs } from "./Inputs";
 import { GeneratorPreview } from "./Preview";
 import { CodeBlock } from "./CodeBlock";
 import { useGenerator, variantFor, type CopyTarget } from "./state";
+import { slugify } from "@/lib/generators/slugify";
 
 const BLOCKS: ReadonlyArray<{
   id: CopyTarget;
@@ -40,7 +41,7 @@ const BLOCKS: ReadonlyArray<{
     title: "CSS variable overrides",
     short: "CSS variables",
     description:
-      "Retargets Dawn's --font-heading-family / --font-body-family. Survives theme updates.",
+      "Retargets the theme's --font-heading-family / --font-body-family. Survives theme updates.",
     language: "css",
   },
 ];
@@ -92,6 +93,11 @@ export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = 
         </p>
         <GeneratorActions state={state} hideShare={isEmbed} />
       </div>
+
+      <AssetsUploadCallout
+        fontName={state.fontName}
+        hasMultipleWeights={state.additionalWeights.length > 0}
+      />
 
       {/*
        * Mobile (< lg): tabbed switcher to cut ~⅔ of vertical scroll on
@@ -194,5 +200,55 @@ export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = 
         ))}
       </div>
     </div>
+  );
+}
+
+/**
+ * Step 0 — explicit "upload your font files first" reminder. The
+ * three code blocks all assume the merchant has already uploaded the
+ * matching files to the theme's `assets/` folder; without that the
+ * @font-face block silently 404s in production. This banner is the
+ * only place that says it explicitly. Shown only after the merchant
+ * has typed a font name so the empty-state surface stays uncluttered.
+ */
+function AssetsUploadCallout({
+  fontName,
+  hasMultipleWeights,
+}: {
+  fontName: string;
+  hasMultipleWeights: boolean;
+}) {
+  const trimmed = fontName.trim();
+  if (trimmed.length === 0) return null;
+  const baseName = slugify(trimmed) || "your-font";
+  const filenameExample = hasMultipleWeights
+    ? `${baseName}-400.woff2`
+    : `${baseName}.woff2`;
+
+  return (
+    <aside
+      role="note"
+      className="rounded-md border-l-4 border-amber bg-amber-soft/40 p-3 text-sm text-charcoal/90"
+    >
+      <strong className="block mb-1">Step 0 — Upload your font files first.</strong>
+      Drop your{" "}
+      <code className="font-mono text-xs">.woff2</code> /{" "}
+      <code className="font-mono text-xs">.woff</code> /{" "}
+      <code className="font-mono text-xs">.ttf</code> files into your theme&apos;s{" "}
+      <code className="font-mono text-xs">assets/</code> folder before pasting
+      any of the code below. Filenames must match{" "}
+      <code className="font-mono text-xs">{filenameExample}</code>
+      {hasMultipleWeights ? (
+        <>
+          {" "}— one file per weight, the{" "}
+          <code className="font-mono text-xs">{`-{weight}`}</code> suffix is how
+          Shopify resolves each face.
+        </>
+      ) : (
+        <>
+          {" "}or the @font-face block will 404 silently.
+        </>
+      )}
+    </aside>
   );
 }

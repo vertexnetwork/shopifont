@@ -2,11 +2,11 @@
 
 ## Context
 
-[PLAN.md](PLAN.md) is a strategy doc that mixes engineering requirements with internal business material (RPM math, ad-network ranking rationale, market sizing, subreddit/Pinterest/TikTok marketing tactics, B2B directory launch lists). This plan extracts only what engineering needs to ship the site and explicitly notes what is out of scope.
+[PLAN.md](PLAN.md) is a strategy doc that mixes engineering requirements with internal business material (RPM math, ad-network ranking rationale, market sizing, B2B directory launch lists). This plan extracts only what engineering needs to ship the site and explicitly notes what is out of scope.
 
 The repository is currently empty except for [PLAN.md](PLAN.md). Goal: one-shot a deploy of the production site to **GitHub + Vercel only**. **Supabase is intentionally not used** — the tool is pure client-side string interpolation with no persistence, auth, or server logic, so adding Supabase would be unjustified surface area.
 
-Brand: **shopifont.app** (domain) / **@shopifont** (socials).
+Brand: **shopifont.app** (domain).
 
 ---
 
@@ -206,9 +206,7 @@ End-to-end before declaring shipped:
 Surfacing these so the team can ignore them confidently — they're tracked elsewhere by the business / marketing side:
 
 - RPM projections, earnings targets, ad-network rationale, and the Mediavine vs. Raptive vs. AdSense comparison
-- Reddit (`/r/shopify`, `/r/shopifyDev`), Pinterest, and TikTok organic-distribution tactics
 - Product Hunt, G2, Capterra, GetApp, TrustRadius, AppSumo, SaaSHub, etc. directory launches
-- Cross-platform social handle registration (`@shopifont` on TikTok/Pinterest/X/Instagram)
 - Domain purchase and DNS — assumed handled before code lands; engineering only needs the domain pointed at Vercel
 
 The team should optimize for code quality and the verification checklist above. Anything in this section that surfaces in a ticket should be redirected to marketing/ops.

@@ -28,16 +28,12 @@ export default defineConfig({
    * module-load time. Next.js inlines those at build; Vite leaves
    * `process` undefined in the browser, which crashes the popup
    * before React mounts. Define them as string literals here so Vite
-   * does the same substitution Next.js does. The four keys cover
-   * everything the extension's import graph touches; SITE_URL is
-   * filled in so the "Open full site" link in the popup header
-   * resolves to the real domain instead of localhost.
+   * does the same substitution Next.js does. SITE_URL is filled in
+   * so the "Open full site" link in the popup header resolves to the
+   * real domain instead of localhost.
    */
   define: {
     "process.env.NEXT_PUBLIC_SITE_URL": JSON.stringify("https://shopifont.app"),
-    "process.env.NEXT_PUBLIC_SOCIAL_X": JSON.stringify(""),
-    "process.env.NEXT_PUBLIC_SOCIAL_TIKTOK": JSON.stringify(""),
-    "process.env.NEXT_PUBLIC_SOCIAL_PINTEREST": JSON.stringify(""),
   },
   build: {
     outDir: "dist",

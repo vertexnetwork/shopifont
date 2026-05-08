@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Brand/Logo";
+import { EmailCaptureForm } from "@/components/EmailCapture/EmailCaptureForm";
 import { NETWORK_BRAND, SITE_NAME } from "@/lib/site";
 
 type FooterLink = { href: string; label: string };
@@ -23,15 +24,16 @@ const COLUMNS: ReadonlyArray<{
     links: [
       { href: "/how-to-choose-a-font-for-shopify", label: "Choose a font" },
       { href: "/best-free-fonts-for-shopify", label: "Best free fonts" },
+      { href: "/font-pairing-checklist", label: "Font pairing checklist" },
       { href: "/uninstall-custom-font-shopify", label: "Uninstall guide" },
       { href: "/dawn-theme-typography-css-variables", label: "Dawn CSS variables" },
-      { href: "/fix-shopify-font-layout-shift-dawn", label: "Fix Dawn CLS" },
     ],
   },
   {
     heading: "Site",
     links: [
       { href: "/about", label: "About" },
+      { href: "/recommendations", label: "Recommended tools" },
       { href: "/changelog", label: "Changelog" },
       { href: "/embed-this", label: "Embed on your site" },
     ],
@@ -42,6 +44,28 @@ export function Footer() {
   return (
     <footer className="mt-12 border-t border-charcoal-line/30 bg-paper-dim">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 flex flex-col gap-8">
+        <section
+          aria-labelledby="footer-signup-heading"
+          className="flex flex-col gap-3 rounded-lg border border-electric/25 bg-paper p-5 sm:p-6 shadow-card"
+        >
+          <div className="flex flex-col gap-1">
+            <h2
+              id="footer-signup-heading"
+              className="text-base sm:text-lg font-semibold tracking-tight"
+            >
+              The Shopify font-pairing checklist
+            </h2>
+            <p className="text-sm text-muted leading-relaxed">
+              Six-axis PDF. One email, then it&apos;s in your inbox. No
+              account, no spam. Already have it? Skip to the{" "}
+              <Link href="/" className="text-electric hover:underline">
+                generator
+              </Link>
+              .
+            </p>
+          </div>
+          <EmailCaptureForm variant="footer" source="site-footer" />
+        </section>
         <div className="grid gap-8 sm:grid-cols-[minmax(0,1fr)_repeat(3,minmax(0,auto))] sm:items-start">
           <div className="flex flex-col gap-3 max-w-xs">
             <Link
@@ -95,9 +119,9 @@ export function Footer() {
           </p>
         </div>
         <p className="text-[11px] text-muted/80 leading-relaxed">
-          Creative Fabrica links pay us a commission at no cost to you.
-          Mediavine display ads keep the rest of the lights on. Full
-          disclosure on the{" "}
+          Creative Fabrica and Printify links pay us a commission at no cost
+          to you. Display ads keep the rest of the lights on. Full disclosure
+          on the{" "}
           <Link href="/about" className="underline hover:text-electric">
             About page
           </Link>

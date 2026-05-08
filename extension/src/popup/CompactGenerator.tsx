@@ -5,6 +5,7 @@ import {
   variantFor,
   type CopyTarget,
 } from "@/components/Generator/state";
+import { CREATIVE_FABRICA_REF } from "@/lib/site";
 import { CompactInputs } from "./CompactInputs";
 import { CompactPreview } from "./CompactPreview";
 
@@ -33,7 +34,8 @@ const BLOCKS: ReadonlyArray<{
     id: "cssVars",
     step: 3,
     title: "CSS variables",
-    description: "Retargets Dawn's typography roots.",
+    description:
+      "Retargets the theme's --font-heading-family / --font-body-family.",
     language: "css",
   },
 ];
@@ -166,6 +168,28 @@ export function CompactGenerator() {
           </div>
         ) : null,
       )}
+
+      {/*
+       * One contextual affiliate line — font-relevant since the popup
+       * IS a font-code generator. The extension stays a free SEO/
+       * backlink lever (Web Store listings index); this is a single
+       * passive line, not a monetization product. rel="sponsored" per
+       * the FTC + Google enforcement note on CREATIVE_FABRICA_REF in
+       * lib/site.ts.
+       */}
+      <a
+        href={CREATIVE_FABRICA_REF}
+        target="_blank"
+        rel="sponsored noopener"
+        className="flex items-center justify-between min-h-7 px-2 text-[11px] text-muted hover:text-electric"
+      >
+        <span>
+          Need a font?{" "}
+          <strong className="text-charcoal">Creative Fabrica</strong>
+        </span>
+        <span aria-hidden>→</span>
+        <span className="sr-only">(affiliate link, opens in new tab)</span>
+      </a>
 
       <button
         type="button"
