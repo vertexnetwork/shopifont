@@ -1,0 +1,47 @@
+# Shopify App config. The Shopify CLI links a real client_id here when
+# you run `npm run config:link` against an app you've created in your
+# Partners dashboard. The placeholder values below let TypeScript/Remix
+# build cleanly; they MUST be replaced before submitting to the App
+# Store or running `shopify app dev`.
+#
+# After Partners-dashboard setup:
+#   1. cd shopify-app
+#   2. npm run config:link   # picks the app from your Partners account
+#   3. npm run dev           # starts the embedded preview against a dev store
+#
+# The CLI will rewrite this file with the real client_id and dev_store_url.
+
+client_id = "REPLACE_WITH_PARTNERS_CLIENT_ID"
+name = "Shopifont"
+handle = "shopifont"
+application_url = "https://shopifont-app.vercel.app"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "REPLACE_WITH_YOUR_DEV_STORE.myshopify.com"
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2025-01"
+
+  [[webhooks.subscriptions]]
+  topics = ["app/uninstalled", "app/scopes_update"]
+  uri = "/webhooks"
+
+[access_scopes]
+# write_themes is the load-bearing scope — without it the Theme Asset
+# API write that auto-installs the @font-face block fails. read_themes
+# alone is insufficient. Keep this list minimal so merchants don't see
+# alarming permission requests on install.
+scopes = "write_themes"
+
+[auth]
+redirect_urls = [
+  "https://shopifont-app.vercel.app/auth/callback",
+  "https://shopifont-app.vercel.app/auth/shopify/callback",
+  "https://shopifont-app.vercel.app/api/auth/callback"
+]
+
+[pos]
+embedded = false

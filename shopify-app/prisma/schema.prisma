@@ -1,0 +1,40 @@
+// Prisma schema for the Shopify App's session storage.
+//
+// The Session model is the canonical shape that
+// @shopify/shopify-app-session-storage-prisma expects — DO NOT rename
+// fields or add NOT NULL columns without checking the adapter's source.
+// Anything beyond Session is fair game for our own product state, but
+// PR-2 keeps this minimal: sessions are the only persisted row type
+// the App requires to work.
+//
+// Provider: postgresql. Set DATABASE_URL in .env / Vercel env vars to
+// point at your Neon / Supabase / Vercel Postgres connection string.
+// SQLite is also supported by the adapter but doesn't run on Vercel
+// serverless, so postgres is the only realistic production target.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+}

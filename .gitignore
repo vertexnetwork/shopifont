@@ -16,6 +16,16 @@ extension/dist/
 extension/node_modules/
 extension/public/icons/icon-*.png
 
+# shopify-app build artifacts. Same reasoning as extension/ — the
+# sibling has its own .gitignore but listing them here keeps the
+# top-level safe.
+shopify-app/node_modules/
+shopify-app/build/
+shopify-app/.cache/
+shopify-app/.shopify/
+shopify-app/app/generated/
+shopify-app/.vite/
+
 # Local image uploads — screenshots / mockups not intended for the repo.
 image-uploads/
 
