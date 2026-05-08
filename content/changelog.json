@@ -1,5 +1,29 @@
 [
   {
+    "hash": "f293ad2044990f95695f4c2c2e98718ef11f9675",
+    "shortHash": "f293ad2",
+    "date": "2026-05-07T20:00:39-06:00",
+    "subject": "Promote Chrome extension on site (landing page, nav, homepage card)"
+  },
+  {
+    "hash": "d9e01080eab0d6bbaa2f77bd061274936d443a3b",
+    "shortHash": "d9e0108",
+    "date": "2026-05-07T10:35:02-06:00",
+    "subject": "Add Creative Fabrica affiliate (3 touchpoints + disclosure)"
+  },
+  {
+    "hash": "fc5a1d03634ef6213752f2cb52ea3517e78eb505",
+    "shortHash": "fc5a1d0",
+    "date": "2026-05-07T10:15:49-06:00",
+    "subject": "Refresh changelog to include recent commits"
+  },
+  {
+    "hash": "9483170a82411749bcebcf39d81bd509bb1b71f4",
+    "shortHash": "9483170",
+    "date": "2026-05-07T10:10:08-06:00",
+    "subject": "Fix mobile horizontal overflow: page no longer loads zoomed out"
+  },
+  {
     "hash": "e9044e23e693dfb61201f91bef3d5711625f2297",
     "shortHash": "e9044e2",
     "date": "2026-05-06T18:17:40-06:00",
