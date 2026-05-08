@@ -209,10 +209,10 @@ async function screenshot2() {
 
   const overlay = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <text x="80" y="160" font-family="${FONT_STACK}" font-size="56" font-weight="700" fill="${PAPER}" letter-spacing="-1.5">
-      Built for Shopify Dawn
+      Built for every free
     </text>
-    <text x="80" y="210" font-family="${FONT_STACK}" font-size="24" font-weight="400" fill="${MUTED_ON_DARK}">
-      and every other free OS 2.0 theme
+    <text x="80" y="220" font-family="${FONT_STACK}" font-size="56" font-weight="700" fill="${PAPER}" letter-spacing="-1.5">
+      Shopify OS 2.0 theme
     </text>
     ${featureRows}
   </svg>`;
@@ -242,7 +242,7 @@ async function promoTileSmall() {
   const overlay = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
     <text x="76" y="58" font-family="${FONT_STACK}" font-size="30" font-weight="700" fill="${PAPER}" letter-spacing="-1">Shopifont</text>
     <text x="32" y="158" font-family="${FONT_STACK}" font-size="22" font-weight="600" fill="${PAPER}">Custom fonts for</text>
-    <text x="32" y="186" font-family="${FONT_STACK}" font-size="22" font-weight="600" fill="${ELECTRIC}">Shopify Dawn</text>
+    <text x="32" y="186" font-family="${FONT_STACK}" font-size="22" font-weight="600" fill="${ELECTRIC}">all Shopify themes</text>
     <text x="32" y="232" font-family="${FONT_STACK}" font-size="13" fill="${MUTED_ON_DARK}">@font-face · settings_schema.json · CSS vars.</text>
     <text x="32" y="252" font-family="${FONT_STACK}" font-size="13" fill="${MUTED_ON_DARK}">Free. No signup. No upload.</text>
   </svg>`;

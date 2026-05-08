@@ -1,5 +1,17 @@
 [
   {
+    "hash": "2f94de63cf1f050fae6ac7621f119e39db6a39a9",
+    "shortHash": "2f94de6",
+    "date": "2026-05-08T15:21:45-06:00",
+    "subject": "Scaffold Shopify App for auto-installing custom fonts via Theme Asset API"
+  },
+  {
+    "hash": "c50960a5bbb0b8d771b608fda8bde912f736b09c",
+    "shortHash": "c50960a",
+    "date": "2026-05-08T15:04:28-06:00",
+    "subject": "Add affiliate revenue stack, AdSense gating, email capture, and generator robustness fixes"
+  },
+  {
     "hash": "42f95a277fe9013346c6112e21595ff7af4e6dd0",
     "shortHash": "42f95a2",
     "date": "2026-05-07T21:06:26-06:00",

@@ -7,21 +7,28 @@ import { useId, useState } from "react";
  * Function which proxies to Resend Audiences. No DB on our side; the
  * audience itself is the contact list.
  *
- * Three render contexts:
+ * Two render contexts:
  *
- *  - "footer" — compact horizontal layout under the per-page Footer
- *  - "landing" — vertical, larger inputs, used on the lead-magnet page
+ *  - "footer" — sits in the global footer card. Heading + subhead are
+ *    rendered by the parent, so the form itself is bare: input +
+ *    button + small disclosure line.
+ *  - "landing" — same minimum surface, slightly larger type. The
+ *    /font-pairing-checklist page provides its own surrounding copy.
  *
- * Both share submission logic. Status is announced via aria-live so
- * screen readers hear the success/error transition without a focus
- * jump.
+ * No internal `<label>` element — both contexts have a heading right
+ * above the form that tells the user what they're signing up for.
+ * `aria-label` on the input keeps screen readers covered.
+ *
+ * Layout: input + button on one row (or stacked on the narrowest
+ * mobile widths), disclosure / error text on the row below. Avoids
+ * the basis-full / flex-wrap dance that broke the previous version.
  */
 export function EmailCaptureForm({
   variant = "footer",
   source,
 }: {
   variant?: "footer" | "landing";
-  /** Optional analytics tag — currently surfaced in the success copy. */
+  /** Optional analytics tag — passed through to /api/subscribe. */
   source?: string;
 }) {
   const inputId = useId();
@@ -77,29 +84,22 @@ export function EmailCaptureForm({
     );
   }
 
+  const inputClass =
+    "w-full min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/40 bg-paper text-charcoal placeholder:text-muted focus:outline-none focus:border-electric focus:ring-2 focus:ring-electric/30 " +
+    (isCompact ? "text-sm" : "text-base");
+
+  const buttonClass =
+    "min-h-[var(--spacing-touch)] px-5 rounded-md bg-electric text-paper font-semibold whitespace-nowrap shadow-cta hover:bg-electric-hover disabled:opacity-50 disabled:cursor-not-allowed " +
+    (isCompact ? "text-sm" : "text-base");
+
   return (
     <form
       onSubmit={onSubmit}
       noValidate
-      className={
-        isCompact
-          ? "flex flex-col sm:flex-row gap-2 items-stretch sm:items-end"
-          : "flex flex-col gap-3"
-      }
+      className="flex flex-col gap-2"
+      aria-describedby={statusId}
     >
-      <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-        <label
-          htmlFor={inputId}
-          className={
-            isCompact
-              ? "text-xs uppercase tracking-wide text-muted font-semibold"
-              : "text-sm font-semibold text-charcoal"
-          }
-        >
-          {isCompact
-            ? "Get the font-pairing checklist"
-            : "Email me the checklist"}
-        </label>
+      <div className="flex flex-col xs:flex-row sm:flex-row gap-2">
         <input
           id={inputId}
           name="email"
@@ -109,34 +109,28 @@ export function EmailCaptureForm({
           required
           maxLength={254}
           placeholder="you@store.com"
+          aria-label={
+            isCompact
+              ? "Email for the font-pairing checklist"
+              : "Email me the checklist"
+          }
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          aria-describedby={status === "error" ? statusId : undefined}
-          className={
-            "min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/40 bg-paper text-charcoal placeholder:text-muted focus:outline-none focus:border-electric focus:ring-2 focus:ring-electric/30 " +
-            (isCompact ? "text-sm" : "text-base")
-          }
+          className={inputClass}
         />
+        <button
+          type="submit"
+          disabled={status === "loading" || email.length === 0}
+          className={buttonClass}
+        >
+          {status === "loading" ? "Sending…" : "Send it"}
+        </button>
       </div>
-      <button
-        type="submit"
-        disabled={status === "loading" || email.length === 0}
-        className={
-          "min-h-[var(--spacing-touch)] px-5 rounded-md bg-electric text-paper font-semibold shadow-cta hover:bg-electric-hover disabled:opacity-50 disabled:cursor-not-allowed " +
-          (isCompact ? "text-sm" : "text-base")
-        }
-      >
-        {status === "loading" ? "Sending…" : "Send it"}
-      </button>
       <p
         id={statusId}
         role="status"
         aria-live="polite"
-        className={
-          "text-xs " +
-          (status === "error" ? "text-error" : "text-muted") +
-          (isCompact ? " sm:basis-full" : "")
-        }
+        className={"text-xs " + (status === "error" ? "text-error" : "text-muted")}
       >
         {status === "error"
           ? errorMessage(errorCode)
