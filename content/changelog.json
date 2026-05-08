@@ -1,5 +1,23 @@
 [
   {
+    "hash": "7424fe939bd391c5ea7755e904b939d8a8253403",
+    "shortHash": "7424fe9",
+    "date": "2026-05-07T20:36:31-06:00",
+    "subject": "Generate llms-full.txt with page-level content for AI extractors"
+  },
+  {
+    "hash": "b76a4ba43f5abbf438b059a3f45f0eda67c7342b",
+    "shortHash": "b76a4ba",
+    "date": "2026-05-07T20:16:15-06:00",
+    "subject": "Refresh changelog to include recent commits"
+  },
+  {
+    "hash": "9099765a9d716a47e348676756d498858ef7569d",
+    "shortHash": "9099765",
+    "date": "2026-05-07T20:16:10-06:00",
+    "subject": "Add Vertex Network footer link, /network hub, and llms.txt entry"
+  },
+  {
     "hash": "f293ad2044990f95695f4c2c2e98718ef11f9675",
     "shortHash": "f293ad2",
     "date": "2026-05-07T20:00:39-06:00",
