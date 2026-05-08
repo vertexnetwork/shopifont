@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { GeneratorState } from "@/components/Generator/state";
 
-const SAMPLE_TEXT = "The quick brown fox 0123";
+const DEFAULT_SAMPLE_TEXT = "The quick brown fox 0123";
 
 /**
  * Popup-tight live preview. Same FontFace + blob-URL pattern as the
@@ -19,6 +19,7 @@ export function CompactPreview({ state }: { state: GeneratorState }) {
   const [previewFamily, setPreviewFamily] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [installed, setInstalled] = useState<boolean | null>(null);
+  const [sampleText, setSampleText] = useState<string>(DEFAULT_SAMPLE_TEXT);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
 
@@ -133,8 +134,24 @@ export function CompactPreview({ state }: { state: GeneratorState }) {
           fontFeatureSettings: '"kern", "liga"',
         }}
       >
-        {SAMPLE_TEXT}
+        {sampleText || DEFAULT_SAMPLE_TEXT}
       </p>
+
+      <input
+        type="text"
+        value={sampleText}
+        onChange={(e) => setSampleText(e.target.value)}
+        onFocus={(e) => {
+          if (e.currentTarget.value === DEFAULT_SAMPLE_TEXT) {
+            e.currentTarget.select();
+          }
+        }}
+        maxLength={120}
+        spellCheck={false}
+        aria-label="Preview text"
+        placeholder={DEFAULT_SAMPLE_TEXT}
+        className="w-full h-7 px-2 rounded border border-charcoal-line/30 bg-paper text-charcoal text-[11px] placeholder:text-muted focus:border-electric"
+      />
 
       {showNotInstalled ? (
         <p

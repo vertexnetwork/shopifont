@@ -24,9 +24,17 @@ const SAMPLE_OPTIONS = [
     label: "Pangram",
     text: "The quick brown fox jumps over the lazy dog 0123456789",
   },
+  {
+    id: "custom",
+    label: "Custom",
+    text: "",
+  },
 ] as const;
 
 type SampleId = (typeof SAMPLE_OPTIONS)[number]["id"];
+
+const DEFAULT_CUSTOM_TEXT =
+  "Type any text here — your real product names, headlines, or a multilingual sample. The preview updates live.";
 
 /**
  * Live preview pane. Drag-and-drop a font file (WOFF2/WOFF/TTF) to
@@ -47,6 +55,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const [previewFamily, setPreviewFamily] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sampleId, setSampleId] = useState<SampleId>("storefront");
+  const [customText, setCustomText] = useState<string>(DEFAULT_CUSTOM_TEXT);
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [showNotInstalledBadge, setShowNotInstalledBadge] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
@@ -225,10 +234,34 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
             fontFeatureSettings: '"kern", "liga"',
           }}
         >
-          {sampleTextFor(sampleId)}
+          {sampleId === "custom" ? customText : sampleTextFor(sampleId)}
         </p>
 
         <SampleChipStrip sampleId={sampleId} onSelect={setSampleId} />
+
+        {sampleId === "custom" ? (
+          <label className="mt-3 flex flex-col gap-1.5 text-xs">
+            <span className="sr-only">Custom preview text</span>
+            <textarea
+              value={customText}
+              onChange={(e) => setCustomText(e.target.value)}
+              onFocus={(e) => {
+                if (e.currentTarget.value === DEFAULT_CUSTOM_TEXT) {
+                  e.currentTarget.select();
+                }
+              }}
+              rows={2}
+              maxLength={500}
+              spellCheck={false}
+              className="w-full px-3 py-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal text-sm placeholder:text-muted focus:border-electric resize-y"
+              placeholder="Your custom preview text…"
+              aria-label="Custom preview text"
+            />
+            <span className="text-muted">
+              Edits live above. Switch chips to compare against the presets — your text is preserved.
+            </span>
+          </label>
+        ) : null}
 
         {!previewFamily ? (
           <p className="mt-3 text-xs text-muted">
