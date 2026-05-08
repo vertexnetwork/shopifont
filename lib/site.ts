@@ -81,3 +81,14 @@ export function getBuildDateLabel(): string {
  */
 export const CREATIVE_FABRICA_REF =
   "https://www.creativefabrica.com/ref/24727168/";
+
+/**
+ * Chrome Web Store listing URL for the Shopifont extension.
+ * Single source of truth — all "Add to Chrome" / "Install extension"
+ * CTAs across the site import this so a relisting / ID change is one
+ * edit. Plausible's outbound-links script (loaded in the (site)
+ * layout) auto-tracks clicks to this domain when rendered with
+ * target="_blank".
+ */
+export const CHROME_WEB_STORE_URL =
+  "https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa";

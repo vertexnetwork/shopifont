@@ -105,6 +105,58 @@ export default function HomePage() {
          */}
         <CreativeFabricaCard />
 
+        {/*
+         * Chrome extension promo. Placed adjacent to the affiliate
+         * card because both target the same "user just generated code
+         * and is at peak engagement" moment, but the extension is the
+         * higher-intent ask: it asks for an install, not just a
+         * click-out. Routing through /extension (not directly to the
+         * Web Store) gives users context, lets the landing page do
+         * the conversion work, and accrues SEO equity to the site.
+         */}
+        <Reveal>
+          <section
+            aria-labelledby="ext-card-heading"
+            className="rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-5 sm:p-6 shadow-card"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 flex flex-col gap-2">
+                <p className="inline-flex items-center gap-1.5 self-start rounded-full bg-electric/15 text-electric px-2 py-0.5 text-[10px] uppercase tracking-wide font-semibold">
+                  <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-electric" />
+                  New · Free Chrome extension
+                </p>
+                <h2
+                  id="ext-card-heading"
+                  className="text-xl sm:text-2xl font-bold tracking-tight"
+                >
+                  Use the generator without leaving your tab
+                </h2>
+                <p className="text-sm sm:text-base text-charcoal/80 max-w-2xl">
+                  The {""}
+                  <Link href="/extension" className="text-electric hover:underline">
+                    Shopifont Chrome extension
+                  </Link>{" "}
+                  generates the same three code blocks from a popup — built
+                  for the moment you&apos;re already in the Shopify admin
+                  and don&apos;t want to tab-switch.
+                </p>
+              </div>
+              <Link
+                href="/extension"
+                className="group inline-flex items-center justify-center self-start sm:self-center min-h-[2.75rem] px-5 rounded-md bg-electric text-paper font-semibold text-sm shadow-cta hover:bg-electric-hover whitespace-nowrap"
+              >
+                Get the extension
+                <span
+                  aria-hidden
+                  className="ml-1.5 transition-transform group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
+              </Link>
+            </div>
+          </section>
+        </Reveal>
+
         <Reveal>
           <section
             id="how-it-works"

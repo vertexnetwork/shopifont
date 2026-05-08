@@ -35,6 +35,11 @@ export function Header() {
               </Link>
             </li>
             <li>
+              <Link href="/extension" className={NAV_LINK_CLASS}>
+                Extension
+              </Link>
+            </li>
+            <li>
               <Link href="/about" className={NAV_LINK_CLASS}>
                 About
               </Link>
