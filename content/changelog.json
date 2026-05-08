@@ -1,5 +1,23 @@
 [
   {
+    "hash": "78d668abeff10087d947c7cc8bea105fb863ceaf",
+    "shortHash": "78d668a",
+    "date": "2026-05-07T20:59:28-06:00",
+    "subject": "Refresh changelog to include recent commits"
+  },
+  {
+    "hash": "c2ab3f55a5c5d979d990ba8765658b1295d79562",
+    "shortHash": "c2ab3f5",
+    "date": "2026-05-07T20:59:20-06:00",
+    "subject": "Add uninstall guide and two evergreen marketing pages"
+  },
+  {
+    "hash": "3b02bbcbfd2d2bcef1d8630fe2a16c481125da0b",
+    "shortHash": "3b02bbc",
+    "date": "2026-05-07T20:59:13-06:00",
+    "subject": "Add custom preview text to web generator and extension popup"
+  },
+  {
     "hash": "7424fe939bd391c5ea7755e904b939d8a8253403",
     "shortHash": "7424fe9",
     "date": "2026-05-07T20:36:31-06:00",
