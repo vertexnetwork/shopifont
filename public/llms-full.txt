@@ -212,7 +212,26 @@ Shopifont ships per-theme guides for every free Shopify OS 2.0 theme in the Them
 - Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
 - Generator: https://shopifont.app/shopify-trade-custom-font-generator
 
-## Pages
+## Evergreen guides
+
+Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.
+
+### How to uninstall a custom font from a Shopify theme
+
+- URL: https://shopifont.app/uninstall-custom-font-shopify
+- Summary: Step-by-step guide to reversing a custom font install on a Shopify OS 2.0 theme. Covers removing the @font-face block, deleting the CSS variable overrides, removing the settings_schema.json entry, and cleaning up font files in the assets/ folder. Works for Dawn and every other free Shopify OS 2.0 theme.
+
+### How to choose a font for your Shopify store
+
+- URL: https://shopifont.app/how-to-choose-a-font-for-shopify
+- Summary: Decision framework for picking a custom font that fits a Shopify storefront. Covers brand fit, performance budget (file size, FOIT/CLS), licensing for ecommerce, weight selection, heading-and-body pairing, and multilingual support — with concrete examples and pitfall callouts.
+
+### The best free fonts for Shopify (2026 edition)
+
+- URL: https://shopifont.app/best-free-fonts-for-shopify
+- Summary: Curated list of free, commercially-licensed web fonts that work well on Shopify Dawn and other OS 2.0 themes. Each entry covers what the font is good for, weight availability, file size, and which kind of brand it fits. Includes a section on premium options for stores that need something more distinctive.
+
+## Theme-specific pages
 
 Each pSEO page below has a unique H1, a one-line direct answer for AI extractors, and theme-specific install steps. Listed in canonical order; url, intent, h1, one-line answer, and intro are inlined here.
 

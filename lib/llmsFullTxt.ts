@@ -9,6 +9,7 @@
  * surface without manual editing.
  */
 
+import { EVERGREEN_ENTRIES } from "../content/evergreen";
 import { PSEO_ENTRIES } from "../content/pseo";
 import { THEMES } from "../content/themes";
 import { buildCssVariableOverrides } from "./generators/cssVariables";
@@ -131,9 +132,26 @@ export function buildLlmsFullTxt(): string {
   }
 
   /* ------------------------------------------------------------ */
+  /* Evergreen guides                                             */
+  /* ------------------------------------------------------------ */
+  lines.push("## Evergreen guides");
+  lines.push("");
+  lines.push(
+    `Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.`,
+  );
+  lines.push("");
+  for (const entry of EVERGREEN_ENTRIES) {
+    lines.push(`### ${entry.title}`);
+    lines.push("");
+    lines.push(`- URL: ${baseUrl}/${entry.slug}`);
+    lines.push(`- Summary: ${entry.summary}`);
+    lines.push("");
+  }
+
+  /* ------------------------------------------------------------ */
   /* Page-level content                                           */
   /* ------------------------------------------------------------ */
-  lines.push("## Pages");
+  lines.push("## Theme-specific pages");
   lines.push("");
   lines.push(
     `Each pSEO page below has a unique H1, a one-line direct answer for AI extractors, and theme-specific install steps. Listed in canonical order; url, intent, h1, one-line answer, and intro are inlined here.`,

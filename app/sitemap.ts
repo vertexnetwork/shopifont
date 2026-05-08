@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 import { PSEO_ENTRIES } from "@/content/pseo";
 import { getSiteUrl } from "@/lib/site";
 
@@ -63,5 +64,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [home, about, changelog, embedThis, extension, network, ...pages];
+  // Hand-crafted evergreen guides (uninstall guide, decision framework,
+  // best-fonts listicle). Single source of truth lives in
+  // content/evergreen.ts; sitemap and llms.txt iterate the same array
+  // so adding a new entry propagates everywhere.
+  const evergreen = EVERGREEN_ENTRIES.map((entry) => ({
+    url: `${base}/${entry.slug}`,
+    lastModified: today,
+    changeFrequency: "monthly" as const,
+    priority: entry.priority,
+  }));
+
+  return [
+    home,
+    about,
+    changelog,
+    embedThis,
+    extension,
+    network,
+    ...evergreen,
+    ...pages,
+  ];
 }

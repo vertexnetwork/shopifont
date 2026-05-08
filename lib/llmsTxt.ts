@@ -6,6 +6,7 @@
  * build time.
  */
 
+import { EVERGREEN_ENTRIES } from "../content/evergreen";
 import { PSEO_ENTRIES } from "../content/pseo";
 import { THEMES } from "../content/themes";
 import {
@@ -72,6 +73,9 @@ export function buildLlmsTxt(): string {
   lines.push(
     `- ${baseUrl}/network  — ${NETWORK_BRAND} hub listing sister tools by the same maker`,
   );
+  for (const entry of EVERGREEN_ENTRIES) {
+    lines.push(`- ${baseUrl}/${entry.slug}  — ${entry.title}`);
+  }
   for (const entry of PSEO_ENTRIES) {
     lines.push(`- ${baseUrl}/${entry.slug}  — ${entry.h1}`);
   }

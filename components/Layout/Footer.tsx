@@ -21,8 +21,10 @@ const COLUMNS: ReadonlyArray<{
   {
     heading: "Guides",
     links: [
+      { href: "/how-to-choose-a-font-for-shopify", label: "Choose a font" },
+      { href: "/best-free-fonts-for-shopify", label: "Best free fonts" },
+      { href: "/uninstall-custom-font-shopify", label: "Uninstall guide" },
       { href: "/dawn-theme-typography-css-variables", label: "Dawn CSS variables" },
-      { href: "/add-custom-font-dawn-liquid", label: "Dawn Liquid" },
       { href: "/fix-shopify-font-layout-shift-dawn", label: "Fix Dawn CLS" },
     ],
   },
