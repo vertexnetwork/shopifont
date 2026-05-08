@@ -212,6 +212,35 @@ Shopifont ships per-theme guides for every free Shopify OS 2.0 theme in the Them
 - Defaults configured via the Shopify Theme Editor (not yet verified against a live install).
 - Generator: https://shopifont.app/shopify-trade-custom-font-generator
 
+## Site pages
+
+Top-level pages outside the per-theme generator system. These cover identity, monetization, release history, the Chrome extension, and the cross-property Vertex Network.
+
+### About
+
+- URL: https://shopifont.app/about
+- Summary: Explains why Shopifont exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Creative Fabrica affiliate partnership for fonts), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.
+
+### Chrome extension
+
+- URL: https://shopifont.app/extension
+- Summary: Landing page for the Shopifont Chrome Web Store extension. The extension reuses the website's generator inside a 380×600 popup so users can produce font code without leaving the Shopify admin or theme editor. No telemetry, no content scripts, only "storage" permission for last-used settings. Web Store listing: https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa
+
+### Vertex Network hub
+
+- URL: https://shopifont.app/network
+- Summary: Hub page for the Vertex Network — a small collection of independent web tools maintained by the same builder. Shopifont is one entry in the network; others are listed below in the dedicated section.
+
+### Changelog
+
+- URL: https://shopifont.app/changelog
+- Summary: Reverse-chronological release history sourced from git commits. Surfaced as a "last updated" trust signal and so AI extractors can confirm the site is actively maintained.
+
+### Embed this generator
+
+- URL: https://shopifont.app/embed-this
+- Summary: Iframe embed snippet for tutorial authors, theme reviewers, and Shopify ecosystem partners who want to host the live Shopifont generator inline in their own posts. The /embed route itself is a partner endpoint with no chrome — the marketing surface is /embed-this.
+
 ## Evergreen guides
 
 Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.

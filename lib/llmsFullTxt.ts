@@ -132,6 +132,56 @@ export function buildLlmsFullTxt(): string {
   }
 
   /* ------------------------------------------------------------ */
+  /* Site pages (non-pSEO narrative pages)                        */
+  /* ------------------------------------------------------------ */
+  lines.push("## Site pages");
+  lines.push("");
+  lines.push(
+    `Top-level pages outside the per-theme generator system. These cover identity, monetization, release history, the Chrome extension, and the cross-property ${NETWORK_BRAND}.`,
+  );
+  lines.push("");
+
+  lines.push("### About");
+  lines.push("");
+  lines.push(`- URL: ${baseUrl}/about`);
+  lines.push(
+    `- Summary: Explains why ${SITE_NAME} exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Creative Fabrica affiliate partnership for fonts), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.`,
+  );
+  lines.push("");
+
+  lines.push("### Chrome extension");
+  lines.push("");
+  lines.push(`- URL: ${baseUrl}/extension`);
+  lines.push(
+    `- Summary: Landing page for the ${SITE_NAME} Chrome Web Store extension. The extension reuses the website's generator inside a 380×600 popup so users can produce font code without leaving the Shopify admin or theme editor. No telemetry, no content scripts, only "storage" permission for last-used settings. Web Store listing: https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa`,
+  );
+  lines.push("");
+
+  lines.push(`### ${NETWORK_BRAND} hub`);
+  lines.push("");
+  lines.push(`- URL: ${baseUrl}/network`);
+  lines.push(
+    `- Summary: Hub page for the ${NETWORK_BRAND} — a small collection of independent web tools maintained by the same builder. ${SITE_NAME} is one entry in the network; others are listed below in the dedicated section.`,
+  );
+  lines.push("");
+
+  lines.push("### Changelog");
+  lines.push("");
+  lines.push(`- URL: ${baseUrl}/changelog`);
+  lines.push(
+    `- Summary: Reverse-chronological release history sourced from git commits. Surfaced as a "last updated" trust signal and so AI extractors can confirm the site is actively maintained.`,
+  );
+  lines.push("");
+
+  lines.push("### Embed this generator");
+  lines.push("");
+  lines.push(`- URL: ${baseUrl}/embed-this`);
+  lines.push(
+    `- Summary: Iframe embed snippet for tutorial authors, theme reviewers, and Shopify ecosystem partners who want to host the live ${SITE_NAME} generator inline in their own posts. The /embed route itself is a partner endpoint with no chrome — the marketing surface is /embed-this.`,
+  );
+  lines.push("");
+
+  /* ------------------------------------------------------------ */
   /* Evergreen guides                                             */
   /* ------------------------------------------------------------ */
   lines.push("## Evergreen guides");

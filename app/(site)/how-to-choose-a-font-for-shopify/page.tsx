@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CreativeFabricaInline } from "@/components/Affiliate/CreativeFabricaInline";
+import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { SITE_NAME } from "@/lib/site";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
@@ -24,6 +25,11 @@ export const metadata: Metadata = {
     url: `/${ENTRY.slug}`,
     type: "article",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: ENTRY.title,
+    description: META_DESCRIPTION,
+  },
 };
 
 export default function ChooseFontPage() {
@@ -34,6 +40,12 @@ export default function ChooseFontPage() {
 
   return (
     <>
+      <ArticleSchema
+        id="choose-font-article-schema"
+        title={ENTRY.title}
+        description={META_DESCRIPTION}
+        path={`/${ENTRY.slug}`}
+      />
       <BreadcrumbSchema id="choose-font-breadcrumb-schema" crumbs={crumbs} />
 
       <article className="mx-auto max-w-3xl px-4 sm:px-6 py-10 sm:py-14 flex flex-col gap-10">

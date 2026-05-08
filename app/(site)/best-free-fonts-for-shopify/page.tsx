@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
+import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { SITE_NAME } from "@/lib/site";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
@@ -23,6 +24,11 @@ export const metadata: Metadata = {
     description: META_DESCRIPTION,
     url: `/${ENTRY.slug}`,
     type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: ENTRY.title,
+    description: META_DESCRIPTION,
   },
 };
 
@@ -100,6 +106,12 @@ export default function BestFontsPage() {
 
   return (
     <>
+      <ArticleSchema
+        id="best-fonts-article-schema"
+        title={ENTRY.title}
+        description={META_DESCRIPTION}
+        path={`/${ENTRY.slug}`}
+      />
       <BreadcrumbSchema id="best-fonts-breadcrumb-schema" crumbs={crumbs} />
 
       <article className="mx-auto max-w-3xl px-4 sm:px-6 py-10 sm:py-14 flex flex-col gap-10">

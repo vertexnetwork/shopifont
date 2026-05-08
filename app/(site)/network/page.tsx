@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     url: "/network",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: NETWORK_BRAND,
+    description: NETWORK_DESCRIPTION,
+  },
 };
 
 export default function NetworkPage() {

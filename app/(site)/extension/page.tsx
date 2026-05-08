@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     url: "/extension",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME} Chrome Extension`,
+    description: EXTENSION_DESCRIPTION,
+  },
 };
 
 export default function ExtensionPage() {
