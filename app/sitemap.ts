@@ -46,6 +46,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   };
 
+  // Vertex Network hub. Linked from every page's footer; adding it
+  // here makes sure Google indexes it as a first-class destination
+  // rather than just a footer-discovered page.
+  const network = {
+    url: `${base}/network`,
+    lastModified: today,
+    changeFrequency: "monthly" as const,
+    priority: 0.4,
+  };
+
   const pages = PSEO_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
     lastModified: today,
@@ -53,5 +63,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [home, about, changelog, embedThis, extension, ...pages];
+  return [home, about, changelog, embedThis, extension, network, ...pages];
 }

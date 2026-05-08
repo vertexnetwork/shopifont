@@ -8,7 +8,13 @@
 
 import { PSEO_ENTRIES } from "../content/pseo";
 import { THEMES } from "../content/themes";
-import { SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "./site";
+import {
+  NETWORK_BRAND,
+  NETWORK_SITES,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  getSiteUrl,
+} from "./site";
 
 export function buildLlmsTxt(): string {
   const baseUrl = getSiteUrl();
@@ -56,8 +62,23 @@ export function buildLlmsTxt(): string {
   lines.push(
     `- ${baseUrl}/embed-this  — iframe embed snippet for tutorial authors and theme reviewers`,
   );
+  lines.push(
+    `- ${baseUrl}/extension  — Chrome Web Store extension that runs the generator inside a browser popup`,
+  );
+  lines.push(
+    `- ${baseUrl}/network  — ${NETWORK_BRAND} hub listing sister tools by the same maker`,
+  );
   for (const entry of PSEO_ENTRIES) {
     lines.push(`- ${baseUrl}/${entry.slug}  — ${entry.h1}`);
+  }
+  lines.push("");
+  lines.push(`## ${NETWORK_BRAND}`);
+  lines.push("");
+  lines.push(
+    `${SITE_NAME} is one of several independent web tools maintained by the same builder, grouped under the ${NETWORK_BRAND} label. Each tool solves one specific operational problem with no account, no SaaS bundle, and no cross-site tracking. The hub at ${baseUrl}/network lists the current set:`,
+  );
+  for (const site of NETWORK_SITES) {
+    lines.push(`- ${site.name} (${site.url}) — ${site.description}`);
   }
   lines.push("");
   lines.push("## Licensing");

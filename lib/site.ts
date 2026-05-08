@@ -92,3 +92,36 @@ export const CREATIVE_FABRICA_REF =
  */
 export const CHROME_WEB_STORE_URL =
   "https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa";
+
+/**
+ * Cross-property branding. The Vertex Network is the umbrella label
+ * for a small group of independent web tools maintained by the same
+ * builder. Used by:
+ *  - the footer "Part of the Vertex Network" link (every page)
+ *  - the /network hub page that lists each tool
+ *  - the llms.txt and sitemap entries that surface those references
+ *    to AI extractors and Google
+ *
+ * Sister sites are kept here so adding a new one is one edit. Each
+ * entry must have a stable `name`, an absolute `url`, and a one-line
+ * `description` short enough to fit in a card and in JSON-LD without
+ * truncation. The `description` is written so it works without any
+ * shopifont.app context — it's also what appears on the /network page
+ * card, in the CollectionPage JSON-LD, and in llms.txt.
+ */
+export type NetworkSite = {
+  name: string;
+  url: string;
+  description: string;
+};
+
+export const NETWORK_BRAND = "Vertex Network";
+
+export const NETWORK_SITES: ReadonlyArray<NetworkSite> = [
+  {
+    name: "Etsy Margin",
+    url: "https://etsymargin.tools",
+    description:
+      "Profit margin calculator for Etsy sellers. Models fees, shipping, materials, and listing costs to surface true take-home per sale.",
+  },
+];

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Brand/Logo";
-import { SITE_NAME } from "@/lib/site";
+import { NETWORK_BRAND, SITE_NAME } from "@/lib/site";
 
 type FooterLink = { href: string; label: string };
 
@@ -81,7 +81,11 @@ export function Footer() {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-6 border-t border-charcoal-line/20">
           <p className="text-xs text-muted">
-            © {new Date().getFullYear()} {SITE_NAME}.
+            © {new Date().getFullYear()} {SITE_NAME}
+            <span aria-hidden className="mx-1.5 text-charcoal-line/60">·</span>
+            <Link href="/network" className="hover:text-electric">
+              Part of the {NETWORK_BRAND}
+            </Link>
           </p>
           <p className="text-xs text-muted">
             Not affiliated with Shopify Inc. &quot;Shopify&quot; and &quot;Dawn&quot; are
