@@ -89,7 +89,16 @@ export function Footer() {
               <h2 className="text-xs uppercase tracking-wide text-muted font-semibold">
                 {col.heading}
               </h2>
-              <ul className="flex flex-col gap-1.5 text-sm">
+              {/*
+               * columns-2 splits the link list into two CSS columns
+               * on mobile (each section stays distinct, but is half
+               * as tall). Reverts to a single column at sm+ where
+               * the parent grid puts each section in its own narrow
+               * column, so a second internal column would just look
+               * busy. `[&>li]:break-inside-avoid` keeps multi-word
+               * link labels from splitting mid-link across columns.
+               */}
+              <ul className="columns-2 sm:columns-1 gap-x-4 text-sm space-y-1.5 [&>li]:break-inside-avoid">
                 {col.links.map((l) => (
                   <li key={l.href}>
                     <Link
