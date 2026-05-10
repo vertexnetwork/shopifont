@@ -1,0 +1,39 @@
+# Normalize line endings to LF. Spec §6 mandates this network-wide so
+# Windows ↔ macOS/Linux contributors don't churn diffs.
+* text=auto eol=lf
+
+*.ts        text eol=lf
+*.tsx       text eol=lf
+*.js        text eol=lf
+*.mjs       text eol=lf
+*.cjs       text eol=lf
+*.json      text eol=lf
+*.md        text eol=lf
+*.mdx       text eol=lf
+*.css       text eol=lf
+*.html      text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.svg       text eol=lf
+*.txt       text eol=lf
+
+# Lockfile is a merge conflict magnet. Mark binary so Git skips line-
+# ending normalization and merge driver. Apply to whichever lockfile
+# the repo uses now (npm) and the spec target (pnpm) for forward-
+# compatibility.
+package-lock.json   binary
+pnpm-lock.yaml      binary
+yarn.lock           binary
+
+# Common binaries.
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.webp      binary
+*.ico       binary
+*.woff      binary
+*.woff2     binary
+*.ttf       binary
+*.otf       binary
+*.pdf       binary

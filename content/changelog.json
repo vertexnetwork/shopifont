@@ -1,224 +1,162 @@
 [
   {
-    "hash": "2f94de63cf1f050fae6ac7621f119e39db6a39a9",
-    "shortHash": "2f94de6",
-    "date": "2026-05-08T15:21:45-06:00",
-    "subject": "Scaffold Shopify App for auto-installing custom fonts via Theme Asset API"
+    "date": "2026-05-09",
+    "title": "Add KDP Cover, CaptionSnap, and TokenMath to Vertex Network"
   },
   {
-    "hash": "c50960a5bbb0b8d771b608fda8bde912f736b09c",
-    "shortHash": "c50960a",
-    "date": "2026-05-08T15:04:28-06:00",
-    "subject": "Add affiliate revenue stack, AdSense gating, email capture, and generator robustness fixes"
+    "date": "2026-05-09",
+    "title": "Fix mobile header overflow and footer wall"
   },
   {
-    "hash": "42f95a277fe9013346c6112e21595ff7af4e6dd0",
-    "shortHash": "42f95a2",
-    "date": "2026-05-07T21:06:26-06:00",
-    "subject": "Refresh changelog to include recent commits"
+    "date": "2026-05-08",
+    "title": "Polish Generator UX and de-Dawn extension marketing assets"
   },
   {
-    "hash": "54438e661e8dd42ad9ec98ff1fa07c7d247d20ad",
-    "shortHash": "54438e6",
-    "date": "2026-05-07T21:05:47-06:00",
-    "subject": "Align SEO/GEO surfaces with recently-added pages"
+    "date": "2026-05-08",
+    "title": "Scaffold Shopify App for auto-installing custom fonts via Theme Asset API"
   },
   {
-    "hash": "78d668abeff10087d947c7cc8bea105fb863ceaf",
-    "shortHash": "78d668a",
-    "date": "2026-05-07T20:59:28-06:00",
-    "subject": "Refresh changelog to include recent commits"
+    "date": "2026-05-08",
+    "title": "Add affiliate revenue stack, AdSense gating, email capture, and generator robus…"
   },
   {
-    "hash": "c2ab3f55a5c5d979d990ba8765658b1295d79562",
-    "shortHash": "c2ab3f5",
-    "date": "2026-05-07T20:59:20-06:00",
-    "subject": "Add uninstall guide and two evergreen marketing pages"
+    "date": "2026-05-07",
+    "title": "Refresh changelog to include recent commits"
   },
   {
-    "hash": "3b02bbcbfd2d2bcef1d8630fe2a16c481125da0b",
-    "shortHash": "3b02bbc",
-    "date": "2026-05-07T20:59:13-06:00",
-    "subject": "Add custom preview text to web generator and extension popup"
+    "date": "2026-05-07",
+    "title": "Align SEO/GEO surfaces with recently-added pages"
   },
   {
-    "hash": "7424fe939bd391c5ea7755e904b939d8a8253403",
-    "shortHash": "7424fe9",
-    "date": "2026-05-07T20:36:31-06:00",
-    "subject": "Generate llms-full.txt with page-level content for AI extractors"
+    "date": "2026-05-07",
+    "title": "Refresh changelog to include recent commits"
   },
   {
-    "hash": "b76a4ba43f5abbf438b059a3f45f0eda67c7342b",
-    "shortHash": "b76a4ba",
-    "date": "2026-05-07T20:16:15-06:00",
-    "subject": "Refresh changelog to include recent commits"
+    "date": "2026-05-07",
+    "title": "Add uninstall guide and two evergreen marketing pages"
   },
   {
-    "hash": "9099765a9d716a47e348676756d498858ef7569d",
-    "shortHash": "9099765",
-    "date": "2026-05-07T20:16:10-06:00",
-    "subject": "Add Vertex Network footer link, /network hub, and llms.txt entry"
+    "date": "2026-05-07",
+    "title": "Add custom preview text to web generator and extension popup"
   },
   {
-    "hash": "f293ad2044990f95695f4c2c2e98718ef11f9675",
-    "shortHash": "f293ad2",
-    "date": "2026-05-07T20:00:39-06:00",
-    "subject": "Promote Chrome extension on site (landing page, nav, homepage card)"
+    "date": "2026-05-07",
+    "title": "Generate llms-full.txt with page-level content for AI extractors"
   },
   {
-    "hash": "d9e01080eab0d6bbaa2f77bd061274936d443a3b",
-    "shortHash": "d9e0108",
-    "date": "2026-05-07T10:35:02-06:00",
-    "subject": "Add Creative Fabrica affiliate (3 touchpoints + disclosure)"
+    "date": "2026-05-07",
+    "title": "Refresh changelog to include recent commits"
   },
   {
-    "hash": "fc5a1d03634ef6213752f2cb52ea3517e78eb505",
-    "shortHash": "fc5a1d0",
-    "date": "2026-05-07T10:15:49-06:00",
-    "subject": "Refresh changelog to include recent commits"
+    "date": "2026-05-07",
+    "title": "Add Vertex Network footer link, /network hub, and llms.txt entry"
   },
   {
-    "hash": "9483170a82411749bcebcf39d81bd509bb1b71f4",
-    "shortHash": "9483170",
-    "date": "2026-05-07T10:10:08-06:00",
-    "subject": "Fix mobile horizontal overflow: page no longer loads zoomed out"
+    "date": "2026-05-07",
+    "title": "Promote Chrome extension on site (landing page, nav, homepage card)"
   },
   {
-    "hash": "e9044e23e693dfb61201f91bef3d5711625f2297",
-    "shortHash": "e9044e2",
-    "date": "2026-05-06T18:17:40-06:00",
-    "subject": "Tune Web Store asset pipeline: crop popup + fade-to-charcoal"
+    "date": "2026-05-07",
+    "title": "Add Creative Fabrica affiliate (3 touchpoints + disclosure)"
   },
   {
-    "hash": "b23a3939e13d762b453606faf49753931ffc6917",
-    "shortHash": "b23a393",
-    "date": "2026-05-06T18:04:58-06:00",
-    "subject": "Add Web Store asset pipeline (sharp-driven)"
+    "date": "2026-05-07",
+    "title": "Refresh changelog to include recent commits"
   },
   {
-    "hash": "22e81c9fde718fb180e5968e0bc57b97227c178c",
-    "shortHash": "22e81c9",
-    "date": "2026-05-06T17:55:16-06:00",
-    "subject": "Rebuild Chrome extension popup as a popup-native UI (v0.2.0)"
+    "date": "2026-05-07",
+    "title": "Fix mobile horizontal overflow: page no longer loads zoomed out"
   },
   {
-    "hash": "687e2b0b08b6552da3fc98301dcc8b776e2a535f",
-    "shortHash": "687e2b0",
-    "date": "2026-05-06T17:15:46-06:00",
-    "subject": "Trim extension manifest description to fit Chrome's 132-char limit"
+    "date": "2026-05-06",
+    "title": "Tune Web Store asset pipeline: crop popup + fade-to-charcoal"
   },
   {
-    "hash": "1bf4903aa0cb01fedeae257f06543a22309a3bb5",
-    "shortHash": "1bf4903",
-    "date": "2026-05-06T17:10:03-06:00",
-    "subject": "Gitignore extension submission zips"
+    "date": "2026-05-06",
+    "title": "Add Web Store asset pipeline (sharp-driven)"
   },
   {
-    "hash": "6faf9c87838d672baee4b7ae15ab3620dad81e12",
-    "shortHash": "6faf9c8",
-    "date": "2026-05-06T15:53:29-06:00",
-    "subject": "Exclude extension/ from parent typecheck and lint"
+    "date": "2026-05-06",
+    "title": "Rebuild Chrome extension popup as a popup-native UI (v0.2.0)"
   },
   {
-    "hash": "277f77e4120a56a13efb02332cd022cbc7c11ea7",
-    "shortHash": "277f77e",
-    "date": "2026-05-06T15:50:08-06:00",
-    "subject": "Add iframe embed (/embed + /embed-this) and Chrome extension popup"
+    "date": "2026-05-06",
+    "title": "Trim extension manifest description to fit Chrome's 132-char limit"
   },
   {
-    "hash": "4f79b8faac9e9615db886914ba2d0bda38cf619f",
-    "shortHash": "4f79b8f",
-    "date": "2026-05-06T15:07:20-06:00",
-    "subject": "Add Vercel Analytics + Speed Insights"
+    "date": "2026-05-06",
+    "title": "Gitignore extension submission zips"
   },
   {
-    "hash": "fc9930bcb0d17c5935841ba2b09f692d6da80951",
-    "shortHash": "fc9930b",
-    "date": "2026-05-06T14:54:42-06:00",
-    "subject": "LCP fix: system-font H1, gate TypedHint, strip Next polyfill module"
+    "date": "2026-05-06",
+    "title": "Exclude extension/ from parent typecheck and lint"
   },
   {
-    "hash": "5a06693eeff94048f4fe5be1da2c1861fb999ba6",
-    "shortHash": "5a06693",
-    "date": "2026-05-06T14:40:36-06:00",
-    "subject": "Lighthouse perf + security pass: defer 3p, drop polyfills, HSTS"
+    "date": "2026-05-06",
+    "title": "Add iframe embed (/embed + /embed-this) and Chrome extension popup"
   },
   {
-    "hash": "02e34dbd3fb05edd05049902898df43492f818ab",
-    "shortHash": "02e34db",
-    "date": "2026-05-06T14:32:23-06:00",
-    "subject": "Honest Lighthouse + a11y fixes from real audit run"
+    "date": "2026-05-06",
+    "title": "Add Vercel Analytics + Speed Insights"
   },
   {
-    "hash": "059ecf31665d66d98819f8c424a1059a18a5332e",
-    "shortHash": "059ecf3",
-    "date": "2026-05-06T14:22:11-06:00",
-    "subject": "Tiers 1-4: hero demo, URL state, sticky CTA, changelog, useCaseSteps"
+    "date": "2026-05-06",
+    "title": "LCP fix: system-font H1, gate TypedHint, strip Next polyfill module"
   },
   {
-    "hash": "635db0db308ded28fb21ffba9972710a5057b96c",
-    "shortHash": "635db0d",
-    "date": "2026-05-06T13:55:29-06:00",
-    "subject": "Energy pass 2: hero radial, bolder H1, live typed hint"
+    "date": "2026-05-06",
+    "title": "Lighthouse perf + security pass: defer 3p, drop polyfills, HSTS"
   },
   {
-    "hash": "bf86f9473f770e626ecdfeef4d91963449dbf881",
-    "shortHash": "bf86f94",
-    "date": "2026-05-06T13:47:57-06:00",
-    "subject": "Fix code-block alignment, drop NoUpload expand, dial up visual energy"
+    "date": "2026-05-06",
+    "title": "Honest Lighthouse + a11y fixes from real audit run"
   },
   {
-    "hash": "c0502473bbf8964da33518fb9d28d29819e81523",
-    "shortHash": "c050247",
-    "date": "2026-05-06T13:24:39-06:00",
-    "subject": "Apply Conversion Aesthetician audit: hero CTA, sequenced Copy, brand glyph"
+    "date": "2026-05-06",
+    "title": "Tiers 1-4: hero demo, URL state, sticky CTA, changelog, useCaseSteps"
   },
   {
-    "hash": "9589ae352c15e2253582d513d17d4dce52003120",
-    "shortHash": "9589ae3",
-    "date": "2026-05-06T12:41:44-06:00",
-    "subject": "Strip personal name and private repo link from About page"
+    "date": "2026-05-06",
+    "title": "Energy pass 2: hero radial, bolder H1, live typed hint"
   },
   {
-    "hash": "05e2291fa830e0ad18ed0db64f8f22c872f20792",
-    "shortHash": "05e2291",
-    "date": "2026-05-06T12:30:53-06:00",
-    "subject": "Apply UX/CRO audit fixes and wire Microsoft Clarity"
+    "date": "2026-05-06",
+    "title": "Fix code-block alignment, drop NoUpload expand, dial up visual energy"
   },
   {
-    "hash": "f1dd4a85f852f4f54fdae4d0b97b93d50ebcfb5b",
-    "shortHash": "f1dd4a8",
-    "date": "2026-05-06T12:01:54-06:00",
-    "subject": "Bump Next.js to 15.5.15 to patch CVE-2025-66478"
+    "date": "2026-05-06",
+    "title": "Apply Conversion Aesthetician audit: hero CTA, sequenced Copy, brand glyph"
   },
   {
-    "hash": "6c1bb5e1ec58af63893a10455c7a09703272f383",
-    "shortHash": "6c1bb5e",
-    "date": "2026-05-06T11:54:29-06:00",
-    "subject": "Strip vercel.json overrides that conflict with Next.js static export"
+    "date": "2026-05-06",
+    "title": "Strip personal name and private repo link from About page"
   },
   {
-    "hash": "70b79c60217c776901fbc7c369bdd7b16f4ecd8a",
-    "shortHash": "70b79c6",
-    "date": "2026-05-06T11:52:03-06:00",
-    "subject": "Regenerate public/llms.txt for /about"
+    "date": "2026-05-06",
+    "title": "Apply UX/CRO audit fixes and wire Microsoft Clarity"
   },
   {
-    "hash": "17064b313e09116dbdefe2168146d681e19d6636",
-    "shortHash": "17064b3",
-    "date": "2026-05-06T11:51:44-06:00",
-    "subject": "Add About page for Mediavine Journey authentication"
+    "date": "2026-05-06",
+    "title": "Bump Next.js to 15.5.15 to patch CVE-2025-66478"
   },
   {
-    "hash": "96942decff199c8987bc5b3937c938c1aed09460",
-    "shortHash": "96942de",
-    "date": "2026-05-06T11:47:16-06:00",
-    "subject": "Use Mediavine Grow Faves bootstrapper snippet"
+    "date": "2026-05-06",
+    "title": "Strip vercel.json overrides that conflict with Next.js static export"
   },
   {
-    "hash": "4698e41294c78586d6b385bf3e6d8dba6fe911ce",
-    "shortHash": "4698e41",
-    "date": "2026-05-06T11:40:07-06:00",
-    "subject": "Initial commit: Shopifont — Shopify custom font CSS generator"
+    "date": "2026-05-06",
+    "title": "Regenerate public/llms.txt for /about"
+  },
+  {
+    "date": "2026-05-06",
+    "title": "Add About page for Mediavine Journey authentication"
+  },
+  {
+    "date": "2026-05-06",
+    "title": "Use Mediavine Grow Faves bootstrapper snippet"
+  },
+  {
+    "date": "2026-05-06",
+    "title": "Initial commit: Shopifont — Shopify custom font CSS generator"
   }
 ]

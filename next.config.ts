@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
+import { buildCSPFromEnv } from "./lib/csp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const emptyModule = path.resolve(__dirname, "lib/empty.js");
@@ -33,6 +34,32 @@ const config: NextConfig = {
       );
     }
     return webpackConfig;
+  },
+
+  /**
+   * Provider-aware CSP composition (spec §11). Header is sent for
+   * every route except `/embed*`, which gets `frame-ancestors *` so
+   * partner sites can iframe the generator.
+   */
+  async headers() {
+    const csp = buildCSPFromEnv();
+    const cspEmbed = buildCSPFromEnv({ embeddable: true });
+    return [
+      {
+        source: "/((?!embed).*)",
+        headers: [
+          { key: "Content-Security-Policy", value: csp },
+        ],
+      },
+      {
+        source: "/embed",
+        headers: [{ key: "Content-Security-Policy", value: cspEmbed }],
+      },
+      {
+        source: "/embed/:path*",
+        headers: [{ key: "Content-Security-Policy", value: cspEmbed }],
+      },
+    ];
   },
 };
 

@@ -1,88 +1,99 @@
 import type { MetadataRoute } from "next";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 import { PSEO_ENTRIES } from "@/content/pseo";
-import { getSiteUrl } from "@/lib/site";
+import { siteConfig } from "@/lib/site-config";
 
 export const dynamic = "force-static";
 
+/**
+ * Stable `lastmod` source. Spec §6 prefers the Vercel deploy commit
+ * date over `new Date()` so deploys with no content changes don't churn
+ * every URL's lastmod and trigger pointless re-crawls.
+ *
+ * Falls back to build time when the env var isn't present (local /
+ * non-Vercel builds).
+ */
+const LAST_MOD: Date = (() => {
+  const raw = process.env.VERCEL_GIT_COMMIT_AUTHOR_DATE?.trim();
+  if (raw) {
+    const parsed = new Date(raw);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date();
+})();
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = getSiteUrl();
-  const today = new Date();
+  const base = siteConfig.url;
 
   const home = {
     url: `${base}/`,
-    lastModified: today,
+    lastModified: LAST_MOD,
     changeFrequency: "weekly" as const,
     priority: 1.0,
   };
 
-  const about = {
-    url: `${base}/about`,
-    lastModified: today,
-    changeFrequency: "monthly" as const,
-    priority: 0.5,
-  };
+  const required = (
+    [
+      ["/about", "monthly", 0.5],
+      ["/contact", "yearly", 0.4],
+      ["/privacy", "yearly", 0.3],
+      ["/terms", "yearly", 0.3],
+      ["/changelog", "weekly", 0.4],
+      ["/network", "monthly", 0.4],
+    ] as ReadonlyArray<[
+      string,
+      "yearly" | "monthly" | "weekly",
+      number,
+    ]>
+  ).map(([path, freq, priority]) => ({
+    url: `${base}${path}`,
+    lastModified: LAST_MOD,
+    changeFrequency: freq,
+    priority,
+  }));
 
-  const changelog = {
-    url: `${base}/changelog`,
-    lastModified: today,
-    changeFrequency: "weekly" as const,
-    priority: 0.4,
-  };
-
-  // /embed-this is the marketing surface partners discover; /embed
-  // itself is intentionally excluded from the sitemap (it's a partner
-  // endpoint, noindexed at the route level).
   const embedThis = {
     url: `${base}/embed-this`,
-    lastModified: today,
+    lastModified: LAST_MOD,
     changeFrequency: "monthly" as const,
     priority: 0.5,
   };
 
   const extension = {
     url: `${base}/extension`,
-    lastModified: today,
+    lastModified: LAST_MOD,
     changeFrequency: "monthly" as const,
     priority: 0.6,
   };
 
-  // Vertex Network hub. Linked from every page's footer; adding it
-  // here makes sure Google indexes it as a first-class destination
-  // rather than just a footer-discovered page.
-  const network = {
-    url: `${base}/network`,
-    lastModified: today,
+  const recommendations = {
+    url: `${base}/recommendations`,
+    lastModified: LAST_MOD,
     changeFrequency: "monthly" as const,
     priority: 0.4,
   };
 
-  const pages = PSEO_ENTRIES.map((entry) => ({
+  const pseo = PSEO_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
-    lastModified: today,
+    lastModified: LAST_MOD,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
 
-  // Hand-crafted evergreen guides (uninstall guide, decision framework,
-  // best-fonts listicle). Single source of truth lives in
-  // content/evergreen.ts; sitemap and llms.txt iterate the same array
-  // so adding a new entry propagates everywhere.
   const evergreen = EVERGREEN_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
-    lastModified: today,
+    lastModified: LAST_MOD,
     changeFrequency: "monthly" as const,
     priority: entry.priority,
   }));
 
   return [
     home,
-    about,
-    changelog,
+    ...required,
     embedThis,
     extension,
-    network,
+    recommendations,
     ...evergreen,
-    ...pages,
+    ...pseo,
   ];
 }

@@ -1,55 +1,31 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Spec §11: hub reusable workflow is the source of truth for
+# typecheck/lint/test/build. The local jobs below cover Lighthouse and
+# Playwright (smoke + axe a11y + OG snapshot) which the hub workflow
+# doesn't bundle.
+
 jobs:
-  verify:
-    name: Typecheck, lint, test, build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Unit tests
-        run: npm test
-
-      - name: Build static export
-        run: npm run build
-
-      - name: Upload static export
-        uses: actions/upload-artifact@v4
-        with:
-          name: out
-          path: out
-          retention-days: 7
+  ci:
+    uses: ThatMovieGuyOriginal/vertex-network-hub/.github/workflows/spoke-ci.yml@v1
+    with:
+      node-version: "22"
+      run-e2e: false
 
   lighthouse:
     name: Lighthouse mobile budget
     runs-on: ubuntu-latest
-    needs: verify
+    needs: ci
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -57,13 +33,13 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install
         run: npm ci
 
-      - name: Build static export
+      - name: Build
         run: npm run build
 
       - name: Run Lighthouse CI
@@ -72,3 +48,41 @@ jobs:
           configPath: ./lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: true
+
+  e2e:
+    name: Playwright (smoke + a11y + OG)
+    runs-on: ubuntu-latest
+    needs: ci
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Playwright
+        run: npx playwright test
+        env:
+          # No production-preview URL in CI by default — Playwright
+          # will boot `next start` on localhost via webServer config.
+          PLAYWRIGHT_BASE_URL: ""
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

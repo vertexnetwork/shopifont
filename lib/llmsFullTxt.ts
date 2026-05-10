@@ -15,13 +15,21 @@ import { THEMES } from "../content/themes";
 import { buildCssVariableOverrides } from "./generators/cssVariables";
 import { buildFontFaceCss } from "./generators/fontFace";
 import { buildSettingsSchemaJson } from "./generators/settingsSchema";
+import { getSisterPropertiesSync } from "./network";
 import {
   NETWORK_BRAND,
-  NETWORK_SITES,
   SITE_DESCRIPTION,
   SITE_NAME,
   getSiteUrl,
 } from "./site";
+
+const NETWORK_SITES = (() => {
+  try {
+    return getSisterPropertiesSync();
+  } catch {
+    return [];
+  }
+})();
 
 const SAMPLE_INPUT = {
   fontName: "My Brand Sans",

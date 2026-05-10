@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
-import { SITE_NAME } from "@/lib/site";
 import changelog from "@/content/changelog.json";
+import { siteConfig } from "@/lib/site-config";
 
 export const dynamic = "force-static";
 
-const PAGE_DESCRIPTION = `Public changelog for ${SITE_NAME} — every commit landed on main, generated at build time from git history.`;
+const PAGE_DESCRIPTION = `Public changelog for ${siteConfig.name} — generated at build time from git history. Dates and titles only.`;
 
 export const metadata: Metadata = {
   title: `Changelog`,
   description: PAGE_DESCRIPTION,
   alternates: { canonical: "/changelog" },
   openGraph: {
-    title: `${SITE_NAME} Changelog`,
+    title: `${siteConfig.name} Changelog`,
     description: PAGE_DESCRIPTION,
     url: "/changelog",
     type: "article",
@@ -24,13 +24,13 @@ const DATE_FMT = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "short",
   day: "numeric",
+  timeZone: "UTC",
 });
 
+/** Locked data shape (spec §7). */
 type Entry = {
-  hash: string;
-  shortHash: string;
   date: string;
-  subject: string;
+  title: string;
 };
 
 function groupByMonth(entries: ReadonlyArray<Entry>) {
@@ -76,14 +76,32 @@ export default function ChangelogPage() {
         </nav>
 
         <header className="flex flex-col gap-3">
-          <p className="text-xs uppercase tracking-wide text-muted">Changelog</p>
+          <p className="text-xs uppercase tracking-wide text-muted">
+            Changelog
+          </p>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05]">
             What&apos;s shipped
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Every commit landed on <code className="font-mono">main</code>, in
-            order. Generated from git history at build time so it stays in
-            sync with the repo without anyone hand-curating release notes.
+            Every commit landed on{" "}
+            <code className="font-mono">main</code>, in order. Generated
+            from git history at build time so it stays in sync with the
+            repo without anyone hand-curating release notes.
+            {siteConfig.repoUrl ? (
+              <>
+                {" "}
+                Long-form release notes live in{" "}
+                <a
+                  href={`${siteConfig.repoUrl}/releases`}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-electric hover:underline"
+                >
+                  GitHub Releases
+                </a>
+                .
+              </>
+            ) : null}
           </p>
         </header>
 
@@ -95,10 +113,6 @@ export default function ChangelogPage() {
           <div className="flex flex-col gap-10">
             {groups.map(([month, entries]) => {
               const firstDate = new Date(entries[0]!.date);
-              const monthLabel = DATE_FMT.format(firstDate).replace(
-                /\s\d+,/,
-                ",",
-              );
               return (
                 <section
                   key={month}
@@ -116,10 +130,10 @@ export default function ChangelogPage() {
                     })}
                   </h2>
                   <ul className="flex flex-col divide-y divide-charcoal-line/20 border-y border-charcoal-line/20">
-                    {entries.map((e) => (
+                    {entries.map((e, idx) => (
                       <li
-                        key={e.hash}
-                        className="grid grid-cols-[6rem_1fr] sm:grid-cols-[7rem_1fr_5rem] gap-3 py-3"
+                        key={`${e.date}-${idx}`}
+                        className="grid grid-cols-[6rem_1fr] sm:grid-cols-[7rem_1fr] gap-3 py-3"
                       >
                         <time
                           dateTime={e.date}
@@ -128,17 +142,11 @@ export default function ChangelogPage() {
                           {DATE_FMT.format(new Date(e.date))}
                         </time>
                         <p className="text-sm text-charcoal leading-snug">
-                          {e.subject}
+                          {e.title}
                         </p>
-                        <code className="hidden sm:block font-mono text-[11px] text-muted text-right">
-                          {e.shortHash}
-                        </code>
                       </li>
                     ))}
                   </ul>
-                  <span className="sr-only" aria-hidden>
-                    {monthLabel}
-                  </span>
                 </section>
               );
             })}
@@ -147,7 +155,7 @@ export default function ChangelogPage() {
 
         <p className="text-xs text-muted">
           Generated from <code className="font-mono">git log</code> on every
-          deploy. Source of truth lives in the repo.
+          deploy.
         </p>
       </div>
     </>

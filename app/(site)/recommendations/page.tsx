@@ -5,13 +5,9 @@ import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { JsonLd } from "@/components/Schema/JsonLd";
-import {
-  CREATIVE_FABRICA_REF,
-  NETWORK_SITES,
-  PRINTIFY_REF,
-  SITE_NAME,
-  absoluteUrl,
-} from "@/lib/site";
+import { CREATIVE_FABRICA_REF, PRINTIFY_REF, SITE_NAME } from "@/lib/site";
+import { absoluteUrl } from "@/lib/site-config";
+import { getSisterProperties } from "@/lib/network";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 
 export const dynamic = "force-static";
@@ -62,7 +58,8 @@ const AFFILIATE_ROWS: ReadonlyArray<AffiliateRow> = [
   },
 ];
 
-export default function RecommendationsPage() {
+export default async function RecommendationsPage() {
+  const sisters = await getSisterProperties();
   const crumbs = [
     { name: "Home", href: "/" },
     { name: "Recommended tools", href: `/${ENTRY.slug}` },
@@ -159,7 +156,7 @@ export default function RecommendationsPage() {
           <CreativeFabricaCard />
         </section>
 
-        {NETWORK_SITES.length > 0 ? (
+        {sisters.length > 0 ? (
           <section
             aria-labelledby="network-heading"
             className="flex flex-col gap-4"
@@ -176,7 +173,7 @@ export default function RecommendationsPage() {
               sister properties we ship from the same workflow.
             </p>
             <ul className="flex flex-col gap-3">
-              {NETWORK_SITES.map((site) => (
+              {sisters.map((site) => (
                 <li
                   key={site.url}
                   className="rounded-lg border border-charcoal-line/30 p-4 shadow-card"

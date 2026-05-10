@@ -1,137 +1,46 @@
 /**
- * Centralizes site-wide constants. Keeps URL/brand strings out of components
- * so a domain swap is one edit.
+ * Compatibility shim. The real source of truth is `lib/site-config.ts`.
+ * This module re-exports the legacy named constants the rest of the app
+ * still imports so the migration to `siteConfig` could land without a
+ * mega-PR. New code should import from `@/lib/site-config`.
+ *
+ * Network registry helpers live in `lib/network.ts` to keep the
+ * Node-only file-system reads out of the client bundle (this shim is
+ * pulled in by the `"use client"` Footer).
  */
-export const SITE_NAME = "Shopifont";
-export const SITE_TAGLINE = "Free Shopify Custom Font Generator";
-export const SITE_DESCRIPTION =
-  "Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for any Shopify OS 2.0 theme. Conversion-optimized typography without layout shifts.";
 
-const FALLBACK_URL = "https://shopifont.app";
+import { siteConfig } from "./site-config";
+
+export {
+  siteConfig,
+  absoluteUrl,
+  BUILD_DATE_ISO,
+  getBuildDateLabel,
+} from "./site-config";
+
+export const SITE_NAME = siteConfig.name;
+export const SITE_TAGLINE = siteConfig.tagline;
+export const SITE_DESCRIPTION = siteConfig.description;
 
 export function getSiteUrl(): string {
-  const env = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!env) return FALLBACK_URL;
-  return env.replace(/\/$/, "");
+  return siteConfig.url;
 }
 
-export function absoluteUrl(path: string): string {
-  if (!path.startsWith("/")) path = `/${path}`;
-  return `${getSiteUrl()}${path}`;
-}
+/** @deprecated read `siteConfig.features.affiliates[0].url` instead. */
+export const CREATIVE_FABRICA_REF = siteConfig.features.affiliates[0]!.url;
 
-/**
- * Build-time timestamp baked into the bundle. Surfaced on every pSEO
- * page as a "last updated" signal so visitors can see the guides are
- * actively maintained — important trust gate for paste-into-production
- * code. Refreshes automatically every deploy.
- */
-export const BUILD_DATE_ISO: string = new Date().toISOString();
+/** @deprecated read `siteConfig.features.affiliates[1].url` instead. */
+export const PRINTIFY_REF = siteConfig.features.affiliates[1]!.url;
 
-const BUILD_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
-
-export function getBuildDateLabel(): string {
-  return BUILD_DATE_FORMATTER.format(new Date(BUILD_DATE_ISO));
-}
-
-/**
- * Creative Fabrica affiliate referral URL. Single source of truth so
- * we can swap the partner ID in one place and propagate everywhere.
- *
- * The `/ref/<id>/` segment is Creative Fabrica's own attribution
- * mechanism — DO NOT append UTM parameters before it, that breaks the
- * affiliate cookie. Plausible captures the outbound click on our
- * side via its outbound-links script (already enabled in the (site)
- * layout), so we don't need our own attribution params here.
- *
- * Every link rendered with this URL must carry rel="sponsored"
- * (Google's link-relationship signal for paid placements) and
- * target="_blank" + rel="noopener" so we don't get back-button stuck
- * on the affiliate page if the user wants to return.
- */
-export const CREATIVE_FABRICA_REF =
-  "https://www.creativefabrica.com/ref/24727168/";
-
-/**
- * Printify affiliate referral URL. Single source of truth for the
- * Shopify print-on-demand recommendation across the generator-intent
- * pSEO pages, the homepage, the /recommendations hub, and the embed
- * widget CTA target.
- *
- * The `try.printify.com/<id>` segment is Printify's own attribution
- * mechanism — DO NOT append UTM parameters before it, that breaks
- * the affiliate cookie. Plausible's outbound-links script (already
- * loaded in the (site) layout) auto-tracks clicks on our side.
- *
- * Every link rendered with this URL must carry rel="sponsored"
- * (Google's link-relationship signal for paid placements) and
- * target="_blank" + rel="noopener" so we don't get back-button stuck
- * on the affiliate page if the user wants to return.
- */
-export const PRINTIFY_REF = "https://try.printify.com/j8xm11chwojf";
-
-/**
- * Chrome Web Store listing URL for the Shopifont extension.
- * Single source of truth — all "Add to Chrome" / "Install extension"
- * CTAs across the site import this so a relisting / ID change is one
- * edit. Plausible's outbound-links script (loaded in the (site)
- * layout) auto-tracks clicks to this domain when rendered with
- * target="_blank".
- */
+/** @deprecated read `siteConfig.features.extension.chromeWebStoreUrl` instead. */
 export const CHROME_WEB_STORE_URL =
-  "https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa";
+  siteConfig.features.extension.chromeWebStoreUrl;
 
-/**
- * Cross-property branding. The Vertex Network is the umbrella label
- * for a small group of independent web tools maintained by the same
- * builder. Used by:
- *  - the footer "Part of the Vertex Network" link (every page)
- *  - the /network hub page that lists each tool
- *  - the llms.txt and sitemap entries that surface those references
- *    to AI extractors and Google
- *
- * Sister sites are kept here so adding a new one is one edit. Each
- * entry must have a stable `name`, an absolute `url`, and a one-line
- * `description` short enough to fit in a card and in JSON-LD without
- * truncation. The `description` is written so it works without any
- * shopifont.app context — it's also what appears on the /network page
- * card, in the CollectionPage JSON-LD, and in llms.txt.
- */
+export const NETWORK_BRAND = "Vertex Network";
+
+/** @deprecated use `Property` from `lib/network.ts` instead. */
 export type NetworkSite = {
   name: string;
   url: string;
   description: string;
 };
-
-export const NETWORK_BRAND = "Vertex Network";
-
-export const NETWORK_SITES: ReadonlyArray<NetworkSite> = [
-  {
-    name: "Etsy Margin",
-    url: "https://etsymargin.tools",
-    description:
-      "Profit margin calculator for Etsy sellers. Models fees, shipping, materials, and listing costs to surface true take-home per sale.",
-  },
-  {
-    name: "KDP Cover",
-    url: "https://kdpcover.pro",
-    description:
-      "Spine and cover dimension calculator for Kindle Direct Publishing. Outputs print-ready SVG templates sized to pass KDP's review on the first submission.",
-  },
-  {
-    name: "CaptionSnap",
-    url: "https://captionsnap.io",
-    description:
-      "Ad copy truncation preview across eight social platforms. Shows where each placement clips the headline and which UI overlays cover the hook before you ship the campaign.",
-  },
-  {
-    name: "TokenMath",
-    url: "https://tokenmath.dev",
-    description:
-      "Token count and API cost calculator for LLM prompts. Compares Claude, Gemini, and OpenAI pricing side by side without sending text off your device.",
-  },
-];

@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AboutPageSchema } from "@/components/Schema/AboutPageSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
-import { SITE_NAME } from "@/lib/site";
+import { siteConfig } from "@/lib/site-config";
 
 export const dynamic = "force-static";
 
-const CONTACT_EMAIL = "hello@shopifont.app";
+const SITE_NAME = siteConfig.name;
+const CONTACT_EMAIL = siteConfig.supportEmail;
 
 const ABOUT_DESCRIPTION =
   `${SITE_NAME} is a free, independently-built tool that generates the exact code Shopify merchants need to install custom fonts on Dawn and other OS 2.0 themes — without layout shifts, without uploads, and without paid plans.`;

@@ -1,0 +1,53 @@
+name: Screenshot bot
+
+# On main push, capture a homepage screenshot and dispatch it to the
+# vertex-network-hub repo so /network on every sister site can render
+# fresh previews. Spec §11 (optional): ship a Playwright capture at
+# 1280x800, PNG, and POST it to the hub via repository_dispatch.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Capture homepage screenshot
+        run: |
+          npx playwright screenshot \
+            --viewport-size=1280,800 \
+            --full-page \
+            --wait-for-timeout=3000 \
+            https://shopifont.app \
+            screenshots/shopifont.app.png
+
+      - name: Dispatch screenshot to hub
+        if: ${{ secrets.HUB_DISPATCH_TOKEN != '' }}
+        env:
+          HUB_TOKEN: ${{ secrets.HUB_DISPATCH_TOKEN }}
+        run: |
+          # Encode the PNG as base64 so the dispatch payload survives
+          # GitHub's JSON body. The hub side decodes and commits.
+          B64=$(base64 -w 0 screenshots/shopifont.app.png)
+          curl -fsSL -X POST \
+            -H "Authorization: token $HUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/ThatMovieGuyOriginal/vertex-network-hub/dispatches" \
+            -d "$(jq -n --arg domain shopifont.app --arg image "$B64" \
+              '{event_type:"vertex-screenshot",client_payload:{domain:$domain,image:$image}}')"

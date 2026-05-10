@@ -846,7 +846,10 @@ Each pSEO page below has a unique H1, a one-line direct answer for AI extractors
 
 Shopifont is one of several independent web tools maintained by the same builder, grouped under the Vertex Network label. Each tool solves one specific operational problem with no account, no SaaS bundle, and no cross-site tracking. The hub at https://shopifont.app/network lists the current set:
 
-- Etsy Margin (https://etsymargin.tools) — Profit margin calculator for Etsy sellers. Models fees, shipping, materials, and listing costs to surface true take-home per sale.
+- CaptionSnap (https://captionsnap.io) — Preview, truncate, and ship captions sized perfectly for every social platform.
+- Etsy Margin (https://etsymargin.tools) — Free Etsy profit calculator with 2026 fees, country VAT, and a waterfall breakdown.
+- KDP Cover Pro (https://kdpcover.pro) — Calculate exact KDP cover dimensions, generate templates, and export print-ready files.
+- tokenmath (https://tokenmath.dev) — Token counter and cost calculator for every modern LLM, with up-to-date pricing.
 
 ## Privacy
 

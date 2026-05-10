@@ -1,0 +1,14 @@
+# humanstxt.org — credits + tools
+# Synced from vertex-network-hub/crawler/humans.txt
+
+/* TEAM */
+Maintainer: ThatMovieGuy
+Site: https://shopifont.app
+
+/* THANKS */
+Vertex Network — https://github.com/ThatMovieGuyOriginal/vertex-network-hub
+
+/* SITE */
+Standards: HTML5, CSS3
+Components: Next.js 15, React 19, Tailwind v4
+Software: Vercel, GitHub

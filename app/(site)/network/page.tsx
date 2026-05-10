@@ -2,20 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/Schema/JsonLd";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
-import {
-  NETWORK_BRAND,
-  NETWORK_SITES,
-  SITE_NAME,
-  absoluteUrl,
-} from "@/lib/site";
+import { getSisterProperties } from "@/lib/network";
+import { absoluteUrl, siteConfig } from "@/lib/site-config";
+import { NETWORK_BRAND } from "@/lib/site";
 
 export const dynamic = "force-static";
 
-const NETWORK_DESCRIPTION =
-  `${NETWORK_BRAND} is a small collection of independent web tools for online sellers and small operators. Each tool is free, requires no account, and solves one specific operational problem.`;
+const NETWORK_DESCRIPTION = `${NETWORK_BRAND} is a small collection of independent web tools for online sellers and small operators. Each tool is free, requires no account, and solves one specific operational problem.`;
 
 export const metadata: Metadata = {
-  title: `${NETWORK_BRAND} — ${SITE_NAME}`,
+  title: `${NETWORK_BRAND} — ${siteConfig.name}`,
   description: NETWORK_DESCRIPTION,
   alternates: { canonical: "/network" },
   openGraph: {
@@ -31,7 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function NetworkPage() {
+export default async function NetworkPage() {
+  const sisters = await getSisterProperties();
   const crumbs = [
     { name: "Home", href: "/" },
     { name: NETWORK_BRAND, href: "/network" },
@@ -41,9 +38,7 @@ export default function NetworkPage() {
    * CollectionPage with an ItemList of WebSites. Each sister tool is
    * a peer WebSite, not a sub-page — schema.org's CollectionPage is
    * the right wrapper, and ItemList communicates "here are the items
-   * collected on this page" to both Google and AI extractors. We
-   * deliberately avoid Organization.subOrganization because the
-   * network isn't a registered legal entity.
+   * collected on this page" to both Google and AI extractors.
    */
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -55,8 +50,8 @@ export default function NetworkPage() {
     mainEntity: {
       "@type": "ItemList",
       itemListOrder: "https://schema.org/ItemListOrderAscending",
-      numberOfItems: NETWORK_SITES.length,
-      itemListElement: NETWORK_SITES.map((site, idx) => ({
+      numberOfItems: sisters.length,
+      itemListElement: sisters.map((site, idx) => ({
         "@type": "ListItem",
         position: idx + 1,
         item: {
@@ -102,7 +97,10 @@ export default function NetworkPage() {
             The {NETWORK_BRAND}
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            {NETWORK_DESCRIPTION}
+            {NETWORK_DESCRIPTION}{" "}
+            {sisters.length > 0
+              ? `Currently ${sisters.length} sister ${sisters.length === 1 ? "tool" : "tools"} alongside ${siteConfig.name}.`
+              : null}
           </p>
         </header>
 
@@ -117,7 +115,7 @@ export default function NetworkPage() {
             Tools in the network
           </h2>
           <ul className="grid gap-3">
-            {NETWORK_SITES.map((site) => (
+            {sisters.map((site) => (
               <li key={site.url}>
                 <a
                   href={site.url}
@@ -130,7 +128,7 @@ export default function NetworkPage() {
                       {site.name}
                     </h3>
                     <span className="text-xs font-mono text-muted whitespace-nowrap">
-                      {hostname(site.url)}
+                      {site.domain}
                       <span
                         aria-hidden
                         className="ml-1 transition-transform group-hover:translate-x-0.5 inline-block"
@@ -141,6 +139,9 @@ export default function NetworkPage() {
                   </div>
                   <p className="mt-2 text-sm sm:text-base text-charcoal/80 leading-relaxed">
                     {site.description}
+                  </p>
+                  <p className="mt-2 text-xs text-muted">
+                    For: {site.audience}
                   </p>
                 </a>
               </li>
@@ -170,8 +171,8 @@ export default function NetworkPage() {
             often enough to warrant a focused utility. If you have a
             small-but-real workflow problem you&apos;d like a tool for, the
             contact address on the{" "}
-            <Link href="/about" className="text-electric hover:underline">
-              About page
+            <Link href="/contact" className="text-electric hover:underline">
+              Contact page
             </Link>{" "}
             is open.
           </p>
@@ -179,12 +180,4 @@ export default function NetworkPage() {
       </div>
     </>
   );
-}
-
-function hostname(url: string): string {
-  try {
-    return new URL(url).hostname.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
 }

@@ -2,41 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Logo } from "@/components/Brand/Logo";
-import { SITE_NAME } from "@/lib/site";
+import { Wordmark } from "@/components/Brand/Wordmark";
+import { siteConfig } from "@/lib/site-config";
 
 /**
  * Site-wide header. Desktop: brand on left, inline nav on right.
  * Mobile (< sm, ~640px): brand + hamburger trigger; tapping opens a
- * drop-down nav drawer beneath the header bar. Inline nav previously
- * pushed the page width past 360px because five touch-target items
- * couldn't fit in the available row — fixed here by hiding the
- * desktop nav and rendering a single icon button instead.
- *
- * Client component because the menu open/close state is local UI
- * state. Wrapping in `"use client"` is the smallest viable change —
- * the rest of (site)/layout.tsx stays a server component, so this
- * doesn't drag the entire chrome into the client bundle.
+ * drop-down nav drawer beneath the header bar. Nav items source from
+ * `siteConfig.nav.primary`.
  */
-
-const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
-  { href: "/#themes", label: "Themes" },
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/embed-this", label: "Embed" },
-  { href: "/extension", label: "Extension" },
-  { href: "/about", label: "About" },
-];
-
 const NAV_LINK_CLASS =
   "min-h-[var(--spacing-touch)] inline-flex items-center px-2 hover:text-electric";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const navLinks = siteConfig.nav.primary;
 
-  // Close the drawer if the viewport grows past the sm breakpoint
-  // (e.g., the user rotates a tablet from portrait to landscape).
-  // Without this the drawer stays mounted but invisible behind the
-  // desktop nav, leaving a stale `aria-expanded="true"` state.
+  // Close the drawer if the viewport grows past the sm breakpoint.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
     const mq = window.matchMedia("(min-width: 640px)");
@@ -47,9 +29,7 @@ export function Header() {
     return () => mq.removeEventListener?.("change", handler);
   }, []);
 
-  // Close on Escape so keyboard users get the same behavior as a
-  // dialog. Body scroll-lock isn't needed because the drawer pushes
-  // page content rather than overlaying it.
+  // Close on Escape.
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
@@ -64,17 +44,16 @@ export function Header() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <Link
           href="/"
-          aria-label={`${SITE_NAME} home`}
-          className="inline-flex items-center gap-2 text-charcoal font-semibold tracking-tight min-h-[var(--spacing-touch)]"
+          aria-label={`${siteConfig.name} home`}
+          className="inline-flex items-center min-h-[var(--spacing-touch)]"
         >
-          <Logo className="w-7 h-7 text-charcoal" />
-          <span className="text-base sm:text-lg">{SITE_NAME}</span>
+          <Wordmark />
         </Link>
 
         {/* Desktop nav. Hidden below sm; the drawer below replaces it. */}
         <nav aria-label="Primary" className="hidden sm:block text-sm">
           <ul className="flex items-center gap-1 sm:gap-2">
-            {NAV_LINKS.map((l) => (
+            {navLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className={NAV_LINK_CLASS}>
                   {l.label}
@@ -84,7 +63,7 @@ export function Header() {
           </ul>
         </nav>
 
-        {/* Mobile hamburger trigger. Hidden at sm+. */}
+        {/* Mobile hamburger trigger. */}
         <button
           type="button"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -97,11 +76,6 @@ export function Header() {
         </button>
       </div>
 
-      {/* Mobile drawer. Renders inline below the header bar so it
-          pushes page content rather than overlaying it — keeps the
-          interaction model simple (no body scroll-lock, no focus
-          trap). aria-hidden is driven by the boolean so SR users
-          don't tab into the closed list. */}
       <nav
         id="primary-mobile-nav"
         aria-label="Primary mobile"
@@ -112,8 +86,11 @@ export function Header() {
         }
       >
         <ul className="flex flex-col px-4 py-2">
-          {NAV_LINKS.map((l) => (
-            <li key={l.href} className="border-b border-charcoal-line/10 last:border-b-0">
+          {navLinks.map((l) => (
+            <li
+              key={l.href}
+              className="border-b border-charcoal-line/10 last:border-b-0"
+            >
               <Link
                 href={l.href}
                 onClick={() => setOpen(false)}

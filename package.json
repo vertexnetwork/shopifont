@@ -5,13 +5,16 @@
   "description": "Free Shopify custom-font CSS generator. Pure client-side @font-face, settings_schema.json, and CSS-variable output for Dawn and other OS 2.0 themes.",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "tsx scripts/build-llms-txt.ts && tsx scripts/build-llms-full-txt.ts && tsx scripts/build-changelog.ts",
+    "prebuild": "tsx scripts/build-llms-txt.ts && tsx scripts/build-llms-full-txt.ts && tsx scripts/build-changelog.ts && tsx scripts/generate-favicon.ts",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,mdx,css,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,mdx,css,json}\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -22,6 +25,8 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.49.1",
     "@tailwindcss/postcss": "4.2.4",
     "@types/node": "22.10.5",
     "@types/react": "19.0.7",
@@ -29,7 +34,9 @@
     "eslint": "9.18.0",
     "eslint-config-next": "15.5.15",
     "postcss": "8.5.1",
+    "prettier": "^3.4.2",
     "serve": "14.2.4",
+    "sharp": "^0.33.5",
     "tailwindcss": "4.2.4",
     "tsx": "4.19.2",
     "typescript": "5.7.3",

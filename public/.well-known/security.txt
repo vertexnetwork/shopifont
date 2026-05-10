@@ -1,0 +1,8 @@
+# security.txt — Shopifont
+# RFC 9116: https://datatracker.ietf.org/doc/html/rfc9116
+# Synced from vertex-network-hub/crawler/security.txt with siteConfig values.
+
+Contact: mailto:hello@shopifont.app
+Expires: 2027-01-01T00:00:00Z
+Preferred-Languages: en
+Canonical: https://shopifont.app/.well-known/security.txt

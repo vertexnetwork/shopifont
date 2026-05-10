@@ -9,13 +9,21 @@
 import { EVERGREEN_ENTRIES } from "../content/evergreen";
 import { PSEO_ENTRIES } from "../content/pseo";
 import { THEMES } from "../content/themes";
+import { getSisterPropertiesSync } from "./network";
 import {
   NETWORK_BRAND,
-  NETWORK_SITES,
   SITE_DESCRIPTION,
   SITE_NAME,
   getSiteUrl,
 } from "./site";
+
+const NETWORK_SITES = (() => {
+  try {
+    return getSisterPropertiesSync();
+  } catch {
+    return [];
+  }
+})();
 
 export function buildLlmsTxt(): string {
   const baseUrl = getSiteUrl();

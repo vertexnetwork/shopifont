@@ -1,0 +1,7 @@
+# ads.txt — Shopifont
+# Synced from vertex-network-hub/crawler/ads.txt
+# IAB ads.txt v1.1: https://iabtechlab.com/ads-txt
+#
+# AdSense publisher line — production publisher ID per the
+# NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID env value. Re-emit if rotated.
+google.com, pub-6985819972152617, DIRECT, f08c47fec0942fa0

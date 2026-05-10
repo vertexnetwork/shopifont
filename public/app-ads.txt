@@ -1,0 +1,7 @@
+# app-ads.txt — Shopifont
+# Synced from vertex-network-hub/crawler/app-ads.txt
+# IAB app-ads.txt v1.1: https://iabtechlab.com/app-ads-txt
+# Shopifont has no native app, but serving an app-ads.txt stub is
+# expected by IAB-aligned crawlers and prevents inventory-eligibility
+# warnings in AdSense.
+google.com, pub-6985819972152617, DIRECT, f08c47fec0942fa0

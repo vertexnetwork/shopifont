@@ -1,11 +1,13 @@
 /**
- * Prebuild script. Reads the last 100 commits from `git log` and
- * writes a typed JSON to `content/changelog.json` for the
- * `/changelog` page to render.
+ * Prebuild script. Reads recent commits from `git log` and writes a
+ * typed JSON to `content/changelog.json`.
  *
- * Runs via `npm run prebuild`. Falls back to the existing JSON
- * (committed) if `git log` fails — so Vercel's shallow clones don't
- * blank out the changelog if depth is missing.
+ * Spec §7 locks the data shape to `{ date, title }` — no hash, no
+ * author, no body. Long-form release notes belong in GitHub Releases
+ * (which is a private repo for Shopifont anyway).
+ *
+ * Falls back to the existing JSON if `git log` fails — Vercel's
+ * shallow clones occasionally miss depth.
  */
 
 import { execSync } from "node:child_process";
@@ -19,16 +21,18 @@ const projectRoot = resolve(__dirname, "..");
 const target = resolve(projectRoot, "content", "changelog.json");
 
 type ChangelogEntry = {
-  hash: string;
-  shortHash: string;
+  /** ISO date `YYYY-MM-DD`. */
   date: string;
-  subject: string;
+  /** Commit subject; truncated to 80 chars. */
+  title: string;
 };
+
+const MAX_TITLE = 80;
 
 let entries: ChangelogEntry[] = [];
 try {
   const raw = execSync(
-    'git log --pretty=format:"%H::%h::%aI::%s" --no-merges -100',
+    'git log --pretty=format:"%ad|%s" --date=short --no-merges -100',
     { encoding: "utf8", cwd: projectRoot },
   );
   entries = raw
@@ -36,14 +40,14 @@ try {
     .split("\n")
     .filter(Boolean)
     .map((line) => {
-      const [hash = "", shortHash = "", date = "", ...subjectParts] =
-        line.split("::");
-      return {
-        hash,
-        shortHash,
-        date,
-        subject: subjectParts.join("::"),
-      };
+      const sep = line.indexOf("|");
+      const date = sep >= 0 ? line.slice(0, sep) : "";
+      const subject = sep >= 0 ? line.slice(sep + 1) : line;
+      const title =
+        subject.length > MAX_TITLE
+          ? subject.slice(0, MAX_TITLE - 1) + "…"
+          : subject;
+      return { date, title };
     });
 } catch (err) {
   if (existsSync(target)) {

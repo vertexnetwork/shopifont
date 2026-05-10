@@ -11,6 +11,14 @@
  * is an electric-blue confirmation per PLAN.md §6), and muted.
  */
 @theme {
+  /*
+   * Brand palette. Spec §5 defines a canonical token namespace
+   * (--color-bg / surface / accent / on-bg / on-accent / muted /
+   * border / success / danger). The Shopifont mnemonic names below
+   * (charcoal/paper/electric/...) are kept as ALIASES for legacy
+   * components — every value also re-exposes itself under the spec
+   * name so cross-spoke template extraction has a clean target.
+   */
   --color-charcoal: #1a1a1a;
   --color-charcoal-line: #333333;
   --color-paper: #ffffff;
@@ -23,10 +31,27 @@
    * Muted text. Darkened from #6b6b6b -> #5a5a5a to clear WCAG AA on
    * both white (bg-paper) and #f5f5f5 (bg-paper-dim) at the small
    * sizes this color is most often used (text-xs / text-[11px]).
-   * Lighthouse a11y flagged the previous value at 4.39:1 on paper-dim
-   * and ~3.05:1 with the /80 alpha modifier.
    */
   --color-muted: #5a5a5a;
+
+  /* Spec §5 canonical aliases — match these network-wide. */
+  --color-bg: var(--color-paper);
+  --color-surface: var(--color-paper-dim);
+  --color-accent: var(--color-electric);
+  --color-on-bg: var(--color-charcoal);
+  --color-on-accent: var(--color-paper);
+  --color-border: var(--color-charcoal-line);
+  --color-success: var(--color-electric);
+  --color-danger: var(--color-error);
+
+  /* Typography spec tokens (spec §5). Display + body fonts both Inter
+   * for Shopifont; the type-scale is what the spec asks for.            */
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --text-display: 3.5rem;
+  --text-h1: 2.25rem;
+  --text-h2: 1.75rem;
+  --text-h3: 1.375rem;
 
   /*
    * Secondary accent. Used sparingly: "Most popular" badges,
@@ -53,6 +78,13 @@
 
   /* Mobile-first content rhythm */
   --spacing-touch: 2.75rem; /* 44px minimum touch target */
+
+  /* Spec §5 radius + focus tokens. Shadow tokens stay as utility
+   * classes (.shadow-card / .shadow-cta) so brand-tunable elevation
+   * doesn't fight Tailwind's arbitrary-shadow syntax.                  */
+  --radius-card: 0.75rem;
+  --radius-pill: 9999px;
+  --focus-ring: 2px solid var(--color-accent);
 }
 
 /*

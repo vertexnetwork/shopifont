@@ -24,5 +24,13 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "out", ".next", "extension", "shopify-app"]
+  "exclude": [
+    "node_modules",
+    "out",
+    ".next",
+    "extension",
+    "shopify-app",
+    "tests/e2e",
+    "playwright.config.ts"
+  ]
 }
