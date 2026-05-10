@@ -116,4 +116,22 @@ export const NETWORK_SITES: ReadonlyArray<NetworkSite> = [
     description:
       "Profit margin calculator for Etsy sellers. Models fees, shipping, materials, and listing costs to surface true take-home per sale.",
   },
+  {
+    name: "KDP Cover",
+    url: "https://kdpcover.pro",
+    description:
+      "Spine and cover dimension calculator for Kindle Direct Publishing. Outputs print-ready SVG templates sized to pass KDP's review on the first submission.",
+  },
+  {
+    name: "CaptionSnap",
+    url: "https://captionsnap.io",
+    description:
+      "Ad copy truncation preview across eight social platforms. Shows where each placement clips the headline and which UI overlays cover the hook before you ship the campaign.",
+  },
+  {
+    name: "TokenMath",
+    url: "https://tokenmath.dev",
+    description:
+      "Token count and API cost calculator for LLM prompts. Compares Claude, Gemini, and OpenAI pricing side by side without sending text off your device.",
+  },
 ];
