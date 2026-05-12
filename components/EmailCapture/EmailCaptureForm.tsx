@@ -46,11 +46,17 @@ export function EmailCaptureForm({
     if (status === "loading") return;
     setStatus("loading");
     setErrorCode(null);
+    // Capture the current URL so the welcome email can deep-link the
+    // user back to wherever they were — preserving any encoded
+    // generator config in the search string. Server-side sanitization
+    // strips off-origin URLs before they reach the email body.
+    const returnUrl =
+      typeof window !== "undefined" ? window.location.href : "";
     try {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source }),
+        body: JSON.stringify({ email, source, returnUrl }),
       });
       if (res.ok) {
         setStatus("ok");
