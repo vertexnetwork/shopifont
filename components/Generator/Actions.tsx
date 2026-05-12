@@ -85,6 +85,8 @@ function DownloadAllButton({ state }: { state: GeneratorState }) {
     Boolean(state.warnings.settings) ||
     Boolean(state.warnings.cssVars);
 
+  const fileCount = state.preloadHints ? 4 : 3;
+
   const onDownload = () => {
     if (blocked) return;
     downloadFile("font-face.css", state.fontFaceCss, "text/css");
@@ -98,6 +100,13 @@ function DownloadAllButton({ state }: { state: GeneratorState }) {
       state.cssVariableOverrides,
       "text/css",
     );
+    if (state.preloadHints) {
+      downloadFile(
+        "preload-fonts.liquid",
+        state.preloadSnippet,
+        "text/plain",
+      );
+    }
     setDone(true);
   };
 
@@ -115,7 +124,7 @@ function DownloadAllButton({ state }: { state: GeneratorState }) {
       }
     >
       <DownloadIcon />
-      {done ? "Downloaded ✓" : "Download all 3 files"}
+      {done ? "Downloaded ✓" : `Download all ${fileCount} files`}
     </button>
   );
 }

@@ -1,55 +1,85 @@
-import type { GeneratorInput } from "./types";
+import type { FontFamily, GeneratorInput } from "./types";
 
 /**
  * Build the CSS-variable override block that retargets a Shopify OS 2.0
- * theme's typography roots to the user's custom font.
+ * theme's typography roots.
  *
- * Dawn (and Sense, Refresh, Crave, etc., which all derive from Dawn)
- * exposes typography tokens like:
+ * Single-family case (most merchants):
+ *   - Primary family applies to one or both of `--font-heading-family`
+ *     / `--font-body-family` per `input.applyTo`.
+ *   - When variable, axis defaults are plumbed via
+ *     `--font-heading-variation-settings` / `--font-body-variation-settings`.
  *
- *   --font-heading-family
- *   --font-heading-style
- *   --font-heading-weight
- *   --font-body-family
- *   --font-body-style
- *   --font-body-weight
+ * Two-family case (merchant added "Second family for headings"):
+ *   - Primary handles BODY, secondary handles HEADING. `applyTo` is
+ *     ignored — when the merchant opts into a secondary family, the
+ *     intent is unambiguously "different fonts for headings vs body."
  *
- * Selector strategy: only Dawn's defaults are verified against a live
- * install (see content/themes.ts `defaultsVerified`). For the other 12
- * free OS 2.0 themes the safest move is to apply the overrides at
- * three plausible scopes — `:root` (Dawn convention), `[data-shopify-section]`
- * (themes that scope tokens to section wrappers), and `.shopify-section`
- * (legacy section-level scope). Overriding at all three levels costs
- * nothing in browser cost (CSS specificity unchanged for `:root`) and
- * rescues the merchant when their theme deviates from Dawn's pattern.
- *
- * The `applyTo` input narrows the override scope so a merchant who
- * only wants a custom heading face doesn't accidentally override body.
+ * Selector strategy is unchanged from the legacy generator: write to
+ * `:root`, `[data-shopify-section]`, and `.shopify-section` so the
+ * override survives the various scopes the non-Dawn themes use.
  */
 export function buildCssVariableOverrides(input: GeneratorInput): string {
-  if (!input.fontName.trim()) return "";
+  const primary = input.primary;
+  if (!primary.name.trim()) return "";
 
-  const targets = new Set(input.applyTo ?? ["heading", "body"]);
-  if (targets.size === 0) return "";
+  const secondary = input.secondary;
 
-  const familyValue = `${JSON.stringify(input.fontName)}, sans-serif`;
+  // Decide which family targets which role.
+  let headingFamily: FontFamily | null = null;
+  let bodyFamily: FontFamily | null = null;
+
+  if (secondary && secondary.name.trim()) {
+    headingFamily = secondary;
+    bodyFamily = primary;
+  } else {
+    const wantsHeading = input.applyTo.includes("heading");
+    const wantsBody = input.applyTo.includes("body");
+    if (!wantsHeading && !wantsBody) return "";
+    if (wantsHeading) headingFamily = primary;
+    if (wantsBody) bodyFamily = primary;
+  }
+
+  if (!headingFamily && !bodyFamily) return "";
+
   const lines: string[] = [
     ":root,",
     "[data-shopify-section],",
     ".shopify-section {",
   ];
 
-  if (targets.has("heading")) {
-    lines.push(`  --font-heading-family: ${familyValue};`);
-    lines.push(`  --font-heading-style: ${input.style};`);
-    lines.push(`  --font-heading-weight: ${input.weight};`);
+  if (headingFamily) {
+    lines.push(...emitRole("heading", headingFamily));
   }
-  if (targets.has("body")) {
-    lines.push(`  --font-body-family: ${familyValue};`);
-    lines.push(`  --font-body-style: ${input.style};`);
-    lines.push(`  --font-body-weight: ${input.weight};`);
+  if (bodyFamily) {
+    lines.push(...emitRole("body", bodyFamily));
   }
 
   lines.push("}");
   return lines.join("\n");
+}
+
+function emitRole(role: "heading" | "body", family: FontFamily): string[] {
+  const familyValue = `${JSON.stringify(family.name)}, sans-serif`;
+  const out: string[] = [
+    `  --font-${role}-family: ${familyValue};`,
+    `  --font-${role}-style: ${family.faces[0]?.style ?? "normal"};`,
+  ];
+
+  if (family.isVariable && family.weightRange) {
+    const [min, max] = family.weightRange;
+    out.push(`  --font-${role}-weight: ${min};`);
+    out.push(`  --font-${role}-weight-min: ${min};`);
+    out.push(`  --font-${role}-weight-max: ${max};`);
+    if (family.axes && family.axes.length > 0) {
+      const settings = family.axes
+        .map((a) => `"${a.tag}" ${a.value}`)
+        .join(", ");
+      out.push(`  --font-${role}-variation-settings: ${settings};`);
+    }
+  } else {
+    out.push(`  --font-${role}-weight: ${family.faces[0]?.weight ?? 400};`);
+  }
+
+  return out;
 }

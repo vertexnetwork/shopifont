@@ -105,7 +105,7 @@ export function CodeBlock({
   return (
     <section
       aria-labelledby={sectionId}
-      className="flex flex-col rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden shadow-card"
+      className="flex flex-col h-full rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden shadow-card"
       style={{ minHeight: "var(--code-card-min-h)" }}
     >
       <header className="flex items-start gap-3 p-4 sm:p-5 border-b border-charcoal-line/40">
@@ -123,15 +123,23 @@ export function CodeBlock({
           </span>
         ) : null}
         <div className="min-w-0 flex-1">
-          <h3 id={sectionId} className="text-base font-semibold tracking-tight">
+          {/*
+           * Reserve 2 lines of title height so the 4-col layout stays
+           * vertically aligned even when one card's title wraps. Card 4
+           * ("<head> preload (theme.liquid)") naturally takes 2 lines
+           * while the others take 1; without the reserve, the black
+           * code area on cards 1-3 floats higher than card 4's.
+           */}
+          <h3
+            id={sectionId}
+            className="text-base font-semibold tracking-tight min-h-[3rem] leading-6"
+          >
             {step ? <span className="sr-only">Step {step}: </span> : null}
             {title}
           </h3>
           {/*
-           * Reserve 3 lines worth of description height so all three
-           * code blocks share equal-height headers in the desktop
-           * 3-col grid. Without this the @font-face description (the
-           * longest) pushes its code body down ~20px below the others.
+           * Reserve 3 lines worth of description height so every code
+           * block shares equal-height headers in the desktop grid.
            */}
           <p className="mt-1 text-xs text-muted line-clamp-3 min-h-[3rem]">
             {description}
@@ -150,7 +158,7 @@ export function CodeBlock({
       ) : null}
 
       <div
-        className="code-scroll relative overflow-auto bg-charcoal text-paper-dim"
+        className="code-scroll relative overflow-auto bg-charcoal text-paper-dim flex-1"
         style={{ maxHeight: "60vh" }}
       >
         {/*

@@ -1,232 +1,574 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   buildCssVariableOverrides,
   buildFontFaceCss,
+  buildPreloadSnippet,
   buildSettingsSchemaJson,
+  FORMAT_ORDER,
+  fromSimple,
+  VALID_WEIGHTS,
+  type FontDisplay,
+  type FontFace,
+  type FontFamily,
   type FontFormat,
   type FontStyle,
   type FontWeight,
   type GeneratorInput,
-  FORMAT_ORDER,
-  VALID_WEIGHTS,
+  type SimpleGeneratorInput,
+  type VariableAxis,
+  type WeightRange,
 } from "@/lib/generators";
 
-/**
- * Stable identifiers for the three generated code blocks. Used to
- * sequence the primary/secondary CTA visual hierarchy and to mark each
- * block as copied so the generator can guide the user one paste at a
- * time instead of presenting three identical-priority Copy buttons.
- */
-export type CopyTarget = "fontFace" | "settings" | "cssVars";
+/* ------------------------------------------------------------------ */
+/* Defaults                                                            */
+/* ------------------------------------------------------------------ */
+
+const DEFAULT_FONT_NAME = "My Brand Sans";
+const DEFAULT_FACE: FontFace = {
+  weight: 400,
+  style: "normal",
+  formats: ["woff2"],
+};
+
+function defaultPrimary(): FontFamily {
+  return {
+    name: DEFAULT_FONT_NAME,
+    faces: [{ ...DEFAULT_FACE }],
+    displayStrategy: "swap",
+    isVariable: false,
+  };
+}
+
+function defaultInput(): GeneratorInput {
+  return {
+    primary: defaultPrimary(),
+    applyTo: ["heading", "body"],
+    preloadHints: false,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy-target tracking                                                */
+/* ------------------------------------------------------------------ */
+
+export type CopyTarget = "fontFace" | "settings" | "cssVars" | "preload";
 
 export const COPY_ORDER: ReadonlyArray<CopyTarget> = [
   "fontFace",
   "settings",
   "cssVars",
+  "preload",
 ];
 
+export type FamilyKey = "primary" | "secondary";
+export type FallbackMetricKey =
+  | "sizeAdjust"
+  | "ascentOverride"
+  | "descentOverride"
+  | "lineGapOverride";
+
+export type Warnings = {
+  fontFace: string | null;
+  settings: string | null;
+  cssVars: string | null;
+  preload: string | null;
+};
+
 export type GeneratorState = {
-  fontName: string;
-  setFontName: (v: string) => void;
-  formats: FontFormat[];
-  toggleFormat: (f: FontFormat) => void;
-  weight: FontWeight;
-  setWeight: (w: FontWeight) => void;
-  style: FontStyle;
-  setStyle: (s: FontStyle) => void;
-  applyToHeading: boolean;
-  setApplyToHeading: (v: boolean) => void;
-  applyToBody: boolean;
-  setApplyToBody: (v: boolean) => void;
-  additionalWeights: FontWeight[];
-  addWeight: (w: FontWeight) => void;
-  removeWeight: (w: FontWeight) => void;
-  /** Snapshot of the current input for downstream generators. */
+  /** Resolved input passed to the four generators. */
   input: GeneratorInput;
+
+  /* outputs */
   fontFaceCss: string;
   settingsSchemaJson: string;
   cssVariableOverrides: string;
-  /**
-   * Surface-level validation. Each warning is a short, actionable line we
-   * render at the top of the relevant code block AND use to gate the
-   * Copy button so users never paste a degenerate snippet.
-   */
-  warnings: {
-    fontFace: string | null;
-    settings: string | null;
-    cssVars: string | null;
-  };
-  /** Steps the user has successfully copied this session. */
+  preloadSnippet: string;
+
+  /* warnings */
+  warnings: Warnings;
+
+  /* copy tracking */
   copiedSteps: ReadonlySet<CopyTarget>;
   markCopied: (id: CopyTarget) => void;
+
+  /* primary family setters */
+  setPrimaryName: (v: string) => void;
+  setPrimaryFileBaseName: (v: string | undefined) => void;
+  setPrimaryDisplay: (v: FontDisplay) => void;
+
+  /* secondary family */
+  hasSecondary: boolean;
+  toggleSecondary: () => void;
+  setSecondaryName: (v: string) => void;
+  setSecondaryDisplay: (v: FontDisplay) => void;
+
+  /* face manipulation (works on primary or secondary) */
+  addFace: (family: FamilyKey, face?: Partial<FontFace>) => void;
+  updateFace: (
+    family: FamilyKey,
+    idx: number,
+    patch: Partial<FontFace>,
+  ) => void;
+  removeFace: (family: FamilyKey, idx: number) => void;
+  toggleFormatOnFace: (
+    family: FamilyKey,
+    idx: number,
+    fmt: FontFormat,
+  ) => void;
+
+  /* variable fonts (Tier 2) */
+  toggleVariable: (family: FamilyKey) => void;
+  setWeightRange: (family: FamilyKey, range: WeightRange) => void;
+  setAxis: (family: FamilyKey, tag: string, value: number) => void;
+  removeAxis: (family: FamilyKey, tag: string) => void;
+
+  /* perf + i18n (Tier 3) */
+  setFallbackMetric: (
+    family: FamilyKey,
+    key: FallbackMetricKey,
+    value: string | undefined,
+  ) => void;
+  setFeatureSettings: (
+    family: FamilyKey,
+    values: ReadonlyArray<string>,
+  ) => void;
+
+  /* applyTo (active when no secondary) */
+  applyToHeading: boolean;
+  applyToBody: boolean;
+  setApplyToHeading: (v: boolean) => void;
+  setApplyToBody: (v: boolean) => void;
+
+  /* preload */
+  preloadHints: boolean;
+  setPreloadHints: (v: boolean) => void;
+
+  /* preview helpers — derived for the Preview.tsx component */
+  previewWeight: number;
+  previewStyle: FontStyle;
+  previewVariationSettings: string | undefined;
+  /** Joined `font-feature-settings` string for the primary family, or undefined. */
+  previewFeatureSettings: string | undefined;
+  /** Index of which face of the primary family the preview is rendering. */
+  selectedFaceIdx: number;
+  setSelectedFaceIdx: (idx: number) => void;
+  /**
+   * When a secondary family is present, the preview switches to a
+   * two-line specimen (heading sample in secondary, body sample in
+   * primary). This object carries the heading-family rendering
+   * descriptors so Preview.tsx can apply them inline.
+   */
+  previewSecondary: {
+    name: string;
+    weight: number;
+    style: FontStyle;
+    variationSettings: string | undefined;
+    featureSettings: string | undefined;
+  } | null;
 };
 
-const DEFAULT_FONT_NAME = "My Brand Sans";
-const DEFAULT_FORMATS: FontFormat[] = ["woff2"];
-const DEFAULT_WEIGHT: FontWeight = 400;
-const DEFAULT_STYLE: FontStyle = "normal";
+/* ------------------------------------------------------------------ */
+/* URL state codec — rich state lives under `?c=<base64url-JSON>`      */
+/* Legacy URLs (?font=, ?weight=, …) hydrate via fromSimple for back-  */
+/* compat.                                                             */
+/* ------------------------------------------------------------------ */
+
+function isDefaultInput(i: GeneratorInput): boolean {
+  if (i.secondary) return false;
+  if (i.preloadHints) return false;
+  if (!arrayEq(i.applyTo, ["heading", "body"])) return false;
+  const p = i.primary;
+  if (p.name !== DEFAULT_FONT_NAME) return false;
+  if (p.displayStrategy !== "swap") return false;
+  if (p.isVariable) return false;
+  if (p.fileBaseName) return false;
+  if (p.sizeAdjust || p.ascentOverride || p.descentOverride || p.lineGapOverride)
+    return false;
+  if (p.featureSettings && p.featureSettings.length > 0) return false;
+  if (p.faces.length !== 1) return false;
+  const f = p.faces[0]!;
+  if (f.weight !== DEFAULT_FACE.weight) return false;
+  if (f.style !== DEFAULT_FACE.style) return false;
+  if (!arrayEq(f.formats, DEFAULT_FACE.formats)) return false;
+  if (f.filenameOverride) return false;
+  if (f.localNames && f.localNames.length > 0) return false;
+  if (f.unicodeRangePreset || f.unicodeRangeCustom) return false;
+  return true;
+}
+
+function arrayEq<T>(a: ReadonlyArray<T>, b: ReadonlyArray<T>): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+function encodeRichState(input: GeneratorInput): string {
+  // Compact JSON, then base64url. JSON < 1KB for realistic configs.
+  const json = JSON.stringify(input);
+  if (typeof window === "undefined") {
+    return Buffer.from(json, "utf8").toString("base64url");
+  }
+  const b64 = window.btoa(unescape(encodeURIComponent(json)));
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeRichState(raw: string): GeneratorInput | null {
+  try {
+    const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = b64 + "==".slice(0, (4 - (b64.length % 4)) % 4);
+    const json =
+      typeof window === "undefined"
+        ? Buffer.from(padded, "base64").toString("utf8")
+        : decodeURIComponent(escape(window.atob(padded)));
+    const parsed = JSON.parse(json) as GeneratorInput;
+    if (!parsed || typeof parsed !== "object") return null;
+    if (!parsed.primary || typeof parsed.primary.name !== "string") return null;
+    if (!Array.isArray(parsed.primary.faces)) return null;
+    if (!Array.isArray(parsed.applyTo)) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function legacyHydrate(p: URLSearchParams): GeneratorInput | null {
+  const font = p.get("font")?.trim();
+  if (!font) return null;
+  const simple: SimpleGeneratorInput = {
+    fontName: font,
+    formats: ["woff2"],
+    weight: 400,
+    style: "normal",
+  };
+
+  const fmtRaw = p.get("formats");
+  if (fmtRaw) {
+    const valid = fmtRaw
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter((s): s is FontFormat =>
+        FORMAT_ORDER.includes(s as FontFormat),
+      );
+    if (valid.length > 0) simple.formats = valid;
+  }
+
+  const w = Number(p.get("weight"));
+  if (VALID_WEIGHTS.includes(w as FontWeight)) simple.weight = w as FontWeight;
+
+  const s = p.get("style");
+  if (s === "italic" || s === "normal") simple.style = s;
+
+  const apply = p.get("apply");
+  if (apply === "heading") simple.applyTo = ["heading"];
+  else if (apply === "body") simple.applyTo = ["body"];
+  else if (apply === "both") simple.applyTo = ["heading", "body"];
+
+  const extraRaw = p.get("weights");
+  if (extraRaw) {
+    const extras = extraRaw
+      .split(",")
+      .map((s) => Number(s.trim()))
+      .filter((n): n is FontWeight =>
+        VALID_WEIGHTS.includes(n as FontWeight),
+      );
+    if (extras.length > 0) {
+      simple.additionalWeights = Array.from(new Set(extras));
+    }
+  }
+
+  return fromSimple(simple);
+}
+
+/* ------------------------------------------------------------------ */
+/* The hook                                                            */
+/* ------------------------------------------------------------------ */
 
 export type GeneratorOptions = {
   /**
    * When false, the hook skips reading + writing
-   * `window.location.search`. Set this in non-page contexts where the
-   * URL belongs to someone else: the iframe `/embed` route (host page
-   * owns the URL) and the Chrome extension popup (popup URL is
-   * transient and rewriting it is meaningless). Default true keeps the
-   * existing share-the-config behavior on the homepage and pSEO pages.
+   * `window.location.search`. Set this in non-page contexts:
+   *   - the iframe `/embed` route (host page owns the URL)
+   *   - the Chrome extension popup (popup URL is transient)
    */
   syncToUrl?: boolean;
 };
 
 export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
   const syncToUrl = opts.syncToUrl ?? true;
-  const [fontName, setFontName] = useState<string>(DEFAULT_FONT_NAME);
-  const [formats, setFormats] = useState<FontFormat[]>([...DEFAULT_FORMATS]);
-  const [weight, setWeight] = useState<FontWeight>(DEFAULT_WEIGHT);
-  const [style, setStyle] = useState<FontStyle>(DEFAULT_STYLE);
-  const [applyToHeading, setApplyToHeading] = useState<boolean>(true);
-  const [applyToBody, setApplyToBody] = useState<boolean>(true);
-  const [additionalWeights, setAdditionalWeights] = useState<FontWeight[]>([]);
+  const [state, setState] = useState<GeneratorInput>(() => defaultInput());
   const [copiedSteps, setCopiedSteps] = useState<ReadonlySet<CopyTarget>>(
     () => new Set(),
   );
+  const [selectedFaceIdx, setSelectedFaceIdxState] = useState(0);
   const hydratedFromUrl = useRef(false);
 
-  // Hydrate from URL on first mount only. Static export means SSR can't
-  // see the search string, so we read it client-side and apply.
-  // Skipped when syncToUrl is false (embed iframe, extension popup).
+  // Clamp selectedFaceIdx if the user removes faces.
+  useEffect(() => {
+    if (selectedFaceIdx >= state.primary.faces.length) {
+      setSelectedFaceIdxState(0);
+    }
+  }, [state.primary.faces.length, selectedFaceIdx]);
+
+  const setSelectedFaceIdx = useCallback((idx: number) => {
+    setSelectedFaceIdxState(idx);
+  }, []);
+
+  /* hydrate from URL ------------------------------------------------ */
   useEffect(() => {
     if (!syncToUrl) {
       hydratedFromUrl.current = true;
       return;
     }
     if (typeof window === "undefined") return;
-    const p = new URLSearchParams(window.location.search);
-    const f = p.get("font");
-    if (f && f.trim().length > 0) setFontName(f);
-
-    const fmtRaw = p.get("formats");
-    if (fmtRaw) {
-      const valid = fmtRaw
-        .split(",")
-        .map((s) => s.trim().toLowerCase())
-        .filter((s): s is FontFormat =>
-          FORMAT_ORDER.includes(s as FontFormat),
-        );
-      if (valid.length > 0) setFormats(valid);
-    }
-
-    const w = Number(p.get("weight"));
-    if (VALID_WEIGHTS.includes(w as FontWeight)) setWeight(w as FontWeight);
-
-    const s = p.get("style");
-    if (s === "italic" || s === "normal") setStyle(s);
-
-    const apply = p.get("apply");
-    if (apply === "heading") {
-      setApplyToHeading(true);
-      setApplyToBody(false);
-    } else if (apply === "body") {
-      setApplyToHeading(false);
-      setApplyToBody(true);
-    } else if (apply === "both") {
-      setApplyToHeading(true);
-      setApplyToBody(true);
-    }
-
-    const extraRaw = p.get("weights");
-    if (extraRaw) {
-      const validExtras = extraRaw
-        .split(",")
-        .map((s) => Number(s.trim()))
-        .filter((n): n is FontWeight =>
-          VALID_WEIGHTS.includes(n as FontWeight),
-        );
-      if (validExtras.length > 0) {
-        const seen = new Set<FontWeight>();
-        const deduped: FontWeight[] = [];
-        for (const v of validExtras) {
-          if (!seen.has(v)) {
-            seen.add(v);
-            deduped.push(v);
-          }
-        }
-        setAdditionalWeights(deduped);
+    const params = new URLSearchParams(window.location.search);
+    const rich = params.get("c");
+    if (rich) {
+      const decoded = decodeRichState(rich);
+      if (decoded) {
+        setState(decoded);
+        hydratedFromUrl.current = true;
+        return;
       }
     }
-
+    const legacy = legacyHydrate(params);
+    if (legacy) setState(legacy);
     hydratedFromUrl.current = true;
   }, [syncToUrl]);
 
-  // Sync state to URL after hydration so a user can copy the address
-  // bar (or click Share) and return / forward the same configuration.
-  // Skipped when syncToUrl is false — see GeneratorOptions.
+  /* write state to URL --------------------------------------------- */
   useEffect(() => {
     if (!syncToUrl) return;
     if (typeof window === "undefined") return;
     if (!hydratedFromUrl.current) return;
-    const p = new URLSearchParams();
-    if (fontName !== DEFAULT_FONT_NAME) p.set("font", fontName);
-    if (
-      !(formats.length === 1 && formats[0] === "woff2") &&
-      formats.length > 0
-    ) {
-      p.set("formats", formats.join(","));
-    }
-    if (weight !== DEFAULT_WEIGHT) p.set("weight", String(weight));
-    if (style !== DEFAULT_STYLE) p.set("style", style);
-    const applyKey =
-      applyToHeading && applyToBody
-        ? null
-        : applyToHeading
-          ? "heading"
-          : applyToBody
-            ? "body"
-            : "none";
-    if (applyKey) p.set("apply", applyKey);
-    if (additionalWeights.length > 0) {
-      p.set("weights", additionalWeights.join(","));
-    }
-
-    const search = p.toString();
     const url = new URL(window.location.href);
-    url.search = search;
+    if (isDefaultInput(state)) {
+      url.search = "";
+    } else {
+      const params = new URLSearchParams();
+      params.set("c", encodeRichState(state));
+      url.search = params.toString();
+    }
     window.history.replaceState({}, "", url.toString());
-  }, [
-    syncToUrl,
-    fontName,
-    formats,
-    weight,
-    style,
-    applyToHeading,
-    applyToBody,
-    additionalWeights,
-  ]);
+  }, [state, syncToUrl]);
 
-  const toggleFormat = useCallback((f: FontFormat) => {
-    setFormats((prev) =>
-      prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f],
+  /* mutators ------------------------------------------------------- */
+  const patchFamily = useCallback(
+    (key: FamilyKey, patch: (fam: FontFamily) => FontFamily) => {
+      setState((prev) => {
+        if (key === "primary") return { ...prev, primary: patch(prev.primary) };
+        if (!prev.secondary) return prev;
+        return { ...prev, secondary: patch(prev.secondary) };
+      });
+    },
+    [],
+  );
+
+  const setPrimaryName = useCallback((v: string) => {
+    setState((prev) => ({ ...prev, primary: { ...prev.primary, name: v } }));
+  }, []);
+
+  const setPrimaryFileBaseName = useCallback((v: string | undefined) => {
+    setState((prev) => ({
+      ...prev,
+      primary: { ...prev.primary, fileBaseName: v?.trim() || undefined },
+    }));
+  }, []);
+
+  const setPrimaryDisplay = useCallback((v: FontDisplay) => {
+    setState((prev) => ({
+      ...prev,
+      primary: { ...prev.primary, displayStrategy: v },
+    }));
+  }, []);
+
+  const toggleSecondary = useCallback(() => {
+    setState((prev) =>
+      prev.secondary
+        ? { ...prev, secondary: undefined }
+        : {
+            ...prev,
+            secondary: {
+              name: "Heading Font",
+              faces: [{ ...DEFAULT_FACE }],
+              displayStrategy: "swap",
+              isVariable: false,
+            },
+          },
     );
   }, []);
 
-  const setWeightSafe = useCallback((w: FontWeight) => {
-    if (VALID_WEIGHTS.includes(w)) setWeight(w);
-  }, []);
-
-  const addWeight = useCallback(
-    (w: FontWeight) => {
-      if (!VALID_WEIGHTS.includes(w)) return;
-      // Don't allow adding the primary weight as a duplicate.
-      if (w === weight) return;
-      setAdditionalWeights((prev) => (prev.includes(w) ? prev : [...prev, w]));
-    },
-    [weight],
+  const setSecondaryName = useCallback(
+    (v: string) =>
+      setState((prev) =>
+        prev.secondary
+          ? { ...prev, secondary: { ...prev.secondary, name: v } }
+          : prev,
+      ),
+    [],
   );
 
-  const removeWeight = useCallback((w: FontWeight) => {
-    setAdditionalWeights((prev) => prev.filter((x) => x !== w));
+  const setSecondaryDisplay = useCallback(
+    (v: FontDisplay) =>
+      setState((prev) =>
+        prev.secondary
+          ? { ...prev, secondary: { ...prev.secondary, displayStrategy: v } }
+          : prev,
+      ),
+    [],
+  );
+
+  const addFace = useCallback(
+    (family: FamilyKey, face: Partial<FontFace> = {}) => {
+      patchFamily(family, (fam) => ({
+        ...fam,
+        faces: [
+          ...fam.faces,
+          {
+            weight: 400,
+            style: "normal",
+            formats: ["woff2"],
+            ...face,
+          } as FontFace,
+        ],
+      }));
+    },
+    [patchFamily],
+  );
+
+  const updateFace = useCallback(
+    (family: FamilyKey, idx: number, patch: Partial<FontFace>) => {
+      patchFamily(family, (fam) => {
+        const next = fam.faces.slice();
+        const current = next[idx];
+        if (!current) return fam;
+        next[idx] = { ...current, ...patch };
+        return { ...fam, faces: next };
+      });
+    },
+    [patchFamily],
+  );
+
+  const removeFace = useCallback(
+    (family: FamilyKey, idx: number) => {
+      patchFamily(family, (fam) => {
+        if (fam.faces.length <= 1) return fam; // keep at least one face
+        return { ...fam, faces: fam.faces.filter((_, i) => i !== idx) };
+      });
+    },
+    [patchFamily],
+  );
+
+  const toggleFormatOnFace = useCallback(
+    (family: FamilyKey, idx: number, fmt: FontFormat) => {
+      patchFamily(family, (fam) => {
+        const next = fam.faces.slice();
+        const current = next[idx];
+        if (!current) return fam;
+        const has = current.formats.includes(fmt);
+        next[idx] = {
+          ...current,
+          formats: has
+            ? current.formats.filter((f) => f !== fmt)
+            : [...current.formats, fmt],
+        };
+        return { ...fam, faces: next };
+      });
+    },
+    [patchFamily],
+  );
+
+  const toggleVariable = useCallback(
+    (family: FamilyKey) => {
+      patchFamily(family, (fam) => ({
+        ...fam,
+        isVariable: !fam.isVariable,
+        weightRange: !fam.isVariable
+          ? (fam.weightRange ?? [100, 900])
+          : fam.weightRange,
+        axes: !fam.isVariable
+          ? (fam.axes ?? [{ tag: "wght", value: 400 }])
+          : fam.axes,
+      }));
+    },
+    [patchFamily],
+  );
+
+  const setWeightRange = useCallback(
+    (family: FamilyKey, range: WeightRange) => {
+      patchFamily(family, (fam) => ({ ...fam, weightRange: range }));
+    },
+    [patchFamily],
+  );
+
+  const setAxis = useCallback(
+    (family: FamilyKey, tag: string, value: number) => {
+      patchFamily(family, (fam) => {
+        const existing = fam.axes ?? [];
+        const idx = existing.findIndex((a) => a.tag === tag);
+        const next: VariableAxis[] =
+          idx === -1
+            ? [...existing, { tag, value }]
+            : existing.map((a, i) => (i === idx ? { tag, value } : a));
+        return { ...fam, axes: next };
+      });
+    },
+    [patchFamily],
+  );
+
+  const removeAxis = useCallback(
+    (family: FamilyKey, tag: string) => {
+      patchFamily(family, (fam) => ({
+        ...fam,
+        axes: (fam.axes ?? []).filter((a) => a.tag !== tag),
+      }));
+    },
+    [patchFamily],
+  );
+
+  const setFallbackMetric = useCallback(
+    (family: FamilyKey, key: FallbackMetricKey, value: string | undefined) => {
+      patchFamily(family, (fam) => ({
+        ...fam,
+        [key]: value?.trim() || undefined,
+      }));
+    },
+    [patchFamily],
+  );
+
+  const setFeatureSettings = useCallback(
+    (family: FamilyKey, values: ReadonlyArray<string>) => {
+      patchFamily(family, (fam) => ({
+        ...fam,
+        featureSettings: values.length > 0 ? values : undefined,
+      }));
+    },
+    [patchFamily],
+  );
+
+  const setApplyToHeading = useCallback((v: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      applyTo: applyToFromFlags(v, prev.applyTo.includes("body")),
+    }));
+  }, []);
+
+  const setApplyToBody = useCallback((v: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      applyTo: applyToFromFlags(prev.applyTo.includes("heading"), v),
+    }));
+  }, []);
+
+  const setPreloadHints = useCallback((v: boolean) => {
+    setState((prev) => ({ ...prev, preloadHints: v }));
   }, []);
 
   const markCopied = useCallback((id: CopyTarget) => {
@@ -238,85 +580,164 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     });
   }, []);
 
-  const input = useMemo<GeneratorInput>(() => {
-    const applyTo: Array<"heading" | "body"> = [];
-    if (applyToHeading) applyTo.push("heading");
-    if (applyToBody) applyTo.push("body");
-    return {
-      fontName,
-      formats,
-      weight,
-      style,
-      applyTo,
-      additionalWeights:
-        additionalWeights.length > 0 ? additionalWeights : undefined,
-    };
-  }, [
-    fontName,
-    formats,
-    weight,
-    style,
-    applyToHeading,
-    applyToBody,
-    additionalWeights,
-  ]);
-
-  const fontFaceCss = useMemo(() => buildFontFaceCss(input), [input]);
+  /* outputs -------------------------------------------------------- */
+  const fontFaceCss = useMemo(() => buildFontFaceCss(state), [state]);
   const settingsSchemaJson = useMemo(
-    () => buildSettingsSchemaJson(input),
-    [input],
+    () => buildSettingsSchemaJson(state),
+    [state],
   );
   const cssVariableOverrides = useMemo(
-    () => buildCssVariableOverrides(input),
-    [input],
+    () => buildCssVariableOverrides(state),
+    [state],
+  );
+  const preloadSnippet = useMemo(() => buildPreloadSnippet(state), [state]);
+
+  const warnings = useMemo<Warnings>(() => {
+    const noPrimaryName = !state.primary.name.trim();
+    const primaryFirstFace = state.primary.faces[0];
+    const noFormatsAnywhere = state.primary.faces.every(
+      (f) => f.formats.length === 0,
+    );
+    const noApply =
+      !state.secondary && state.applyTo.length === 0
+        ? "Select Headings or Body so the override has a target."
+        : null;
+    return {
+      fontFace: noPrimaryName
+        ? "Enter a font name above to generate this block."
+        : noFormatsAnywhere
+          ? "Pick at least one format on every face — without WOFF2 the block won't load."
+          : null,
+      settings: noPrimaryName
+        ? "Enter a font name above to generate this block."
+        : null,
+      cssVars: noPrimaryName
+        ? "Enter a font name above to generate this block."
+        : noApply,
+      preload:
+        state.preloadHints && !primaryFirstFace
+          ? "Add at least one face to emit a preload hint."
+          : null,
+    };
+  }, [state]);
+
+  /* preview helpers ------------------------------------------------ */
+  const safeFaceIdx = Math.min(
+    Math.max(0, selectedFaceIdx),
+    Math.max(0, state.primary.faces.length - 1),
+  );
+  const selectedFace = state.primary.faces[safeFaceIdx];
+
+  const previewWeight = useMemo<number>(() => {
+    if (state.primary.isVariable) {
+      const wghtAxis = state.primary.axes?.find((a) => a.tag === "wght");
+      return wghtAxis?.value ?? state.primary.weightRange?.[0] ?? 400;
+    }
+    return selectedFace?.weight ?? 400;
+  }, [state.primary.isVariable, state.primary.axes, state.primary.weightRange, selectedFace]);
+
+  const previewStyle = useMemo<FontStyle>(
+    () => selectedFace?.style ?? "normal",
+    [selectedFace],
   );
 
-  const warnings = useMemo(() => {
-    const trimmedName = fontName.trim();
-    const noName = trimmedName.length === 0
-      ? "Enter a font name above to generate this block."
-      : null;
-    const noFormats = formats.length === 0
-      ? "Pick at least one format above — without WOFF2 the @font-face block won't load any file."
-      : null;
-    const noApply = !applyToHeading && !applyToBody
-      ? "Select Headings or Body above so the override has a target."
-      : null;
+  const previewVariationSettings = useMemo<string | undefined>(() => {
+    if (!state.primary.isVariable) return undefined;
+    const axes = state.primary.axes ?? [];
+    if (axes.length === 0) return undefined;
+    return axes.map((a) => `"${a.tag}" ${a.value}`).join(", ");
+  }, [state.primary.isVariable, state.primary.axes]);
+
+  const previewFeatureSettings = useMemo<string | undefined>(() => {
+    const fs = state.primary.featureSettings;
+    if (!fs || fs.length === 0) return undefined;
+    return fs.join(", ");
+  }, [state.primary.featureSettings]);
+
+  const previewSecondary = useMemo<GeneratorState["previewSecondary"]>(() => {
+    const sec = state.secondary;
+    if (!sec || !sec.name.trim()) return null;
+    const face = sec.faces[0];
+    const weight = sec.isVariable
+      ? (sec.axes?.find((a) => a.tag === "wght")?.value ??
+        sec.weightRange?.[0] ??
+        400)
+      : (face?.weight ?? 400);
+    const style: FontStyle = face?.style ?? "normal";
+    const variationSettings =
+      sec.isVariable && sec.axes && sec.axes.length > 0
+        ? sec.axes.map((a) => `"${a.tag}" ${a.value}`).join(", ")
+        : undefined;
+    const featureSettings =
+      sec.featureSettings && sec.featureSettings.length > 0
+        ? sec.featureSettings.join(", ")
+        : undefined;
     return {
-      fontFace: noName ?? noFormats,
-      settings: noName,
-      cssVars: noName ?? noApply,
+      name: sec.name,
+      weight,
+      style,
+      variationSettings,
+      featureSettings,
     };
-  }, [fontName, formats, applyToHeading, applyToBody]);
+  }, [state.secondary]);
+
+  const applyToHeading = state.applyTo.includes("heading");
+  const applyToBody = state.applyTo.includes("body");
 
   return {
-    fontName,
-    setFontName,
-    formats,
-    toggleFormat,
-    weight,
-    setWeight: setWeightSafe,
-    style,
-    setStyle,
-    applyToHeading,
-    setApplyToHeading,
-    applyToBody,
-    setApplyToBody,
-    additionalWeights,
-    addWeight,
-    removeWeight,
-    input,
+    input: state,
     fontFaceCss,
     settingsSchemaJson,
     cssVariableOverrides,
+    preloadSnippet,
     warnings,
     copiedSteps,
     markCopied,
+    setPrimaryName,
+    setPrimaryFileBaseName,
+    setPrimaryDisplay,
+    hasSecondary: Boolean(state.secondary),
+    toggleSecondary,
+    setSecondaryName,
+    setSecondaryDisplay,
+    addFace,
+    updateFace,
+    removeFace,
+    toggleFormatOnFace,
+    toggleVariable,
+    setWeightRange,
+    setAxis,
+    removeAxis,
+    setFallbackMetric,
+    setFeatureSettings,
+    applyToHeading,
+    applyToBody,
+    setApplyToHeading,
+    setApplyToBody,
+    preloadHints: state.preloadHints,
+    setPreloadHints,
+    previewWeight,
+    previewStyle,
+    previewVariationSettings,
+    previewFeatureSettings,
+    selectedFaceIdx: safeFaceIdx,
+    setSelectedFaceIdx,
+    previewSecondary,
   };
 }
 
+function applyToFromFlags(
+  heading: boolean,
+  body: boolean,
+): ReadonlyArray<"heading" | "body"> {
+  const out: Array<"heading" | "body"> = [];
+  if (heading) out.push("heading");
+  if (body) out.push("body");
+  return out;
+}
+
 /**
- * Variant for a given step's primary action.
+ * Visual variant for a given step's primary action.
  *  - "primary"   — fill with brand-blue, the next thing the user should do
  *  - "secondary" — outlined, available but not primary
  *  - "done"      — already copied this session; muted but still re-copyable
@@ -328,5 +749,6 @@ export function variantFor(
   if (copiedSteps.has(id)) return "done";
   const idx = COPY_ORDER.indexOf(id);
   if (idx <= 0) return "primary";
-  return copiedSteps.has(COPY_ORDER[idx - 1]!) ? "primary" : "secondary";
+  const prev = COPY_ORDER[idx - 1];
+  return prev && copiedSteps.has(prev) ? "primary" : "secondary";
 }

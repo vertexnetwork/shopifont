@@ -7,15 +7,16 @@ import { GeneratorPreview } from "./Preview";
 import { CodeBlock } from "./CodeBlock";
 import { useGenerator, variantFor, type CopyTarget } from "./state";
 
-const BLOCKS: ReadonlyArray<{
+type BlockMeta = {
   id: CopyTarget;
   step: number;
   title: string;
-  /** Long descriptor for desktop and aria-label. */
   short: string;
   description: string;
   language: "css" | "json";
-}> = [
+};
+
+const CORE_BLOCKS: ReadonlyArray<BlockMeta> = [
   {
     id: "fontFace",
     step: 1,
@@ -45,67 +46,97 @@ const BLOCKS: ReadonlyArray<{
   },
 ];
 
+const PRELOAD_BLOCK: BlockMeta = {
+  id: "preload",
+  step: 4,
+  title: "<head> preload (theme.liquid)",
+  short: "preload",
+  description:
+    "Paste in <head> in layout/theme.liquid, just before the stylesheet link. Preloads the first WOFF2 of every family so the LCP element renders in your brand face on first paint.",
+  language: "css",
+};
+
 type ShopifontGeneratorProps = {
   /**
    * Render mode. "page" is the default homepage / pSEO context — the
    * generator owns the URL and shows the Share-this-config action.
    * "embed" is the iframe `/embed` route AND the Chrome extension
    * popup — URL syncing is off (host page owns the URL) and the
-   * Share button is hidden because the URL it would copy isn't
-   * shareable from the host's perspective.
+   * Share button is hidden.
    */
   mode?: "page" | "embed";
 };
 
-/**
- * The full Shopifont generator surface. Embedded on the homepage and
- * on every pSEO page. Pure client-side string interpolation — no
- * network, no upload, no server round-trip.
- */
-export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = {}) {
+export function ShopifontGenerator({
+  mode = "page",
+}: ShopifontGeneratorProps = {}) {
   const isEmbed = mode === "embed";
   const state = useGenerator({ syncToUrl: !isEmbed });
   const [activeMobile, setActiveMobile] = useState<CopyTarget>("fontFace");
 
+  const blocks: ReadonlyArray<BlockMeta> = state.preloadHints
+    ? [...CORE_BLOCKS, PRELOAD_BLOCK]
+    : CORE_BLOCKS;
+
   const codeFor = (id: CopyTarget): string => {
     if (id === "fontFace") return state.fontFaceCss;
     if (id === "settings") return state.settingsSchemaJson;
-    return state.cssVariableOverrides;
+    if (id === "cssVars") return state.cssVariableOverrides;
+    return state.preloadSnippet;
   };
   const warnFor = (id: CopyTarget): string | null => {
     if (id === "fontFace") return state.warnings.fontFace;
     if (id === "settings") return state.warnings.settings;
-    return state.warnings.cssVars;
+    if (id === "cssVars") return state.warnings.cssVars;
+    return state.warnings.preload;
   };
+
+  if (activeMobile === "preload" && !state.preloadHints) {
+    setActiveMobile("fontFace");
+  }
+
+  const blockCountCopy = state.preloadHints
+    ? "Paste these four blocks. The first three install the font; the fourth (<head> preload) is optional but speeds up your LCP."
+    : "Paste these three blocks in order. They're independent files in your theme — copying one without the others won't break the store.";
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-6 lg:grid-cols-2">
-        <GeneratorInputs state={state} />
-        <GeneratorPreview state={state} />
+      {/* Generator surface.
+          Mobile: preview-first (so it's visible at the top), inputs below,
+          and the preview is sticky-positioned to the top of the viewport
+          so users see live changes without scrolling back up.
+          Desktop: side-by-side, with the preview column sticky inside its
+          grid cell. */}
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        {/* Inputs panel — order-2 on mobile so the preview sits on top of
+            the scroll. order-1 on desktop so the input reads left-to-right
+            in the natural reading direction. */}
+        <div className="order-2 lg:order-1">
+          <GeneratorInputs state={state} />
+        </div>
+
+        {/* Preview — sticky on every viewport. Order-1 on mobile (always
+            on top of the inputs); on desktop the preview is the right
+            column. `top-2` keeps a tiny gap from the viewport edge / the
+            previous element when pinned. */}
+        <div className="order-1 lg:order-2 sticky top-2 z-20 lg:top-4">
+          <GeneratorPreview state={state} />
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs text-muted max-w-md">
-          Paste these three blocks in order. They&apos;re independent files in
-          your theme — copying one without the others won&apos;t break the store.
-        </p>
+        <p className="text-xs text-muted max-w-md">{blockCountCopy}</p>
         <GeneratorActions state={state} hideShare={isEmbed} />
       </div>
 
-      {/*
-       * Mobile (< lg): tabbed switcher to cut ~⅔ of vertical scroll on
-       * the output. Desktop: all three side-by-side. Tab labels are
-       * Step 1/2/3 on small viewports so three pills don't wrap to a
-       * second row at 360px; the long technical name lives on the card.
-       */}
+      {/* Mobile (< lg): tabbed switcher */}
       <div className="lg:hidden">
         <div
           role="tablist"
           aria-label="Generated code blocks"
           className="flex flex-wrap gap-2 mb-3"
         >
-          {BLOCKS.map((b) => {
+          {blocks.map((b) => {
             const active = activeMobile === b.id;
             const w = warnFor(b.id);
             const isDone = state.copiedSteps.has(b.id);
@@ -152,7 +183,7 @@ export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = 
             );
           })}
         </div>
-        {BLOCKS.map((b) => (
+        {blocks.map((b) => (
           <div
             key={b.id}
             id={`mobile-panel-${b.id}`}
@@ -177,8 +208,16 @@ export function ShopifontGenerator({ mode = "page" }: ShopifontGeneratorProps = 
         ))}
       </div>
 
-      <div className="hidden lg:grid gap-6 lg:grid-cols-3">
-        {BLOCKS.map((b) => (
+      {/* Desktop: side-by-side blocks. `items-stretch` forces every grid
+          cell to match the tallest sibling, so the optional 4th preload
+          card matches @font-face's vertical extent. */}
+      <div
+        className={
+          "hidden lg:grid gap-6 items-stretch " +
+          (state.preloadHints ? "lg:grid-cols-4" : "lg:grid-cols-3")
+        }
+      >
+        {blocks.map((b) => (
           <CodeBlock
             key={b.id}
             idPrefix="d"

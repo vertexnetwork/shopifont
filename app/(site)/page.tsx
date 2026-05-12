@@ -123,10 +123,14 @@ export default function HomePage() {
          * Web Store) gives users context, lets the landing page do
          * the conversion work, and accrues SEO equity to the site.
          */}
+        {/* Chrome extension promo. Hidden on mobile — Chrome extensions
+            don't install on phones, so mobile visitors who tap "Get the
+            extension" hit a dead end. Desktop-only keeps the card
+            useful for users who CAN install it. */}
         <Reveal>
           <section
             aria-labelledby="ext-card-heading"
-            className="rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-5 sm:p-6 shadow-card"
+            className="hidden lg:block rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-5 sm:p-6 shadow-card"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0 flex flex-col gap-2">
