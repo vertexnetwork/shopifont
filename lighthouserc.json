@@ -1,10 +1,12 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": "./out",
+      "startServerCommand": "npm run start",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 60000,
       "url": [
-        "http://localhost/",
-        "http://localhost/shopify-dawn-custom-font-generator"
+        "http://localhost:3000/",
+        "http://localhost:3000/shopify-dawn-custom-font-generator"
       ],
       "numberOfRuns": 1,
       "settings": {

@@ -105,9 +105,11 @@ jobs:
         run: npm run build
 
       - name: Run Playwright
+        # PLAYWRIGHT_BASE_URL is intentionally unset — playwright.config.ts
+        # falls back to http://localhost:3000 and boots `next start` via
+        # its `webServer` block. Setting the env var (even to "") would
+        # disable the auto-launched server and break the run.
         run: npx playwright test
-        env:
-          PLAYWRIGHT_BASE_URL: ""
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}

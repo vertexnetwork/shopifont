@@ -2,10 +2,18 @@ import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Playwright config for the Shopifont smoke + a11y + OG-snapshot
- * suites. Spec §2 + §15 PREMIUM. We default to running against a
- * production preview when `PLAYWRIGHT_BASE_URL` is set; otherwise we
- * boot `next start` against a local build.
+ * suites. We default to running against a production preview when
+ * `PLAYWRIGHT_BASE_URL` is set to a non-empty value; otherwise we boot
+ * `next start` against a local build.
+ *
+ * `||` (not `??`) on the env-var check so an empty string falls
+ * through to the localhost default — empty env vars do leak into CI
+ * jobs (e.g. via a YAML `env: KEY: ""` declaration) and they should
+ * not be treated as a real override.
  */
+const baseUrl = process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000";
+const useExternalServer = Boolean(process.env.PLAYWRIGHT_BASE_URL);
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
@@ -14,8 +22,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL:
-      process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    baseURL: baseUrl,
     trace: "retain-on-failure",
   },
   projects: [
@@ -28,7 +35,7 @@ export default defineConfig({
       use: { ...devices["Pixel 7"] },
     },
   ],
-  webServer: process.env.PLAYWRIGHT_BASE_URL
+  webServer: useExternalServer
     ? undefined
     : {
         command: "npm run start",
