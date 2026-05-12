@@ -155,6 +155,24 @@ export type GeneratorState = {
   previewWeight: number;
   previewStyle: FontStyle;
   previewVariationSettings: string | undefined;
+  /** Joined `font-feature-settings` string for the primary family, or undefined. */
+  previewFeatureSettings: string | undefined;
+  /** Index of which face of the primary family the preview is rendering. */
+  selectedFaceIdx: number;
+  setSelectedFaceIdx: (idx: number) => void;
+  /**
+   * When a secondary family is present, the preview switches to a
+   * two-line specimen (heading sample in secondary, body sample in
+   * primary). This object carries the heading-family rendering
+   * descriptors so Preview.tsx can apply them inline.
+   */
+  previewSecondary: {
+    name: string;
+    weight: number;
+    style: FontStyle;
+    variationSettings: string | undefined;
+    featureSettings: string | undefined;
+  } | null;
 };
 
 /* ------------------------------------------------------------------ */
@@ -289,7 +307,19 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
   const [copiedSteps, setCopiedSteps] = useState<ReadonlySet<CopyTarget>>(
     () => new Set(),
   );
+  const [selectedFaceIdx, setSelectedFaceIdxState] = useState(0);
   const hydratedFromUrl = useRef(false);
+
+  // Clamp selectedFaceIdx if the user removes faces.
+  useEffect(() => {
+    if (selectedFaceIdx >= state.primary.faces.length) {
+      setSelectedFaceIdxState(0);
+    }
+  }, [state.primary.faces.length, selectedFaceIdx]);
+
+  const setSelectedFaceIdx = useCallback((idx: number) => {
+    setSelectedFaceIdxState(idx);
+  }, []);
 
   /* hydrate from URL ------------------------------------------------ */
   useEffect(() => {
@@ -592,17 +622,23 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
   }, [state]);
 
   /* preview helpers ------------------------------------------------ */
+  const safeFaceIdx = Math.min(
+    Math.max(0, selectedFaceIdx),
+    Math.max(0, state.primary.faces.length - 1),
+  );
+  const selectedFace = state.primary.faces[safeFaceIdx];
+
   const previewWeight = useMemo<number>(() => {
     if (state.primary.isVariable) {
       const wghtAxis = state.primary.axes?.find((a) => a.tag === "wght");
       return wghtAxis?.value ?? state.primary.weightRange?.[0] ?? 400;
     }
-    return state.primary.faces[0]?.weight ?? 400;
-  }, [state]);
+    return selectedFace?.weight ?? 400;
+  }, [state.primary.isVariable, state.primary.axes, state.primary.weightRange, selectedFace]);
 
   const previewStyle = useMemo<FontStyle>(
-    () => state.primary.faces[0]?.style ?? "normal",
-    [state],
+    () => selectedFace?.style ?? "normal",
+    [selectedFace],
   );
 
   const previewVariationSettings = useMemo<string | undefined>(() => {
@@ -610,7 +646,40 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     const axes = state.primary.axes ?? [];
     if (axes.length === 0) return undefined;
     return axes.map((a) => `"${a.tag}" ${a.value}`).join(", ");
-  }, [state]);
+  }, [state.primary.isVariable, state.primary.axes]);
+
+  const previewFeatureSettings = useMemo<string | undefined>(() => {
+    const fs = state.primary.featureSettings;
+    if (!fs || fs.length === 0) return undefined;
+    return fs.join(", ");
+  }, [state.primary.featureSettings]);
+
+  const previewSecondary = useMemo<GeneratorState["previewSecondary"]>(() => {
+    const sec = state.secondary;
+    if (!sec || !sec.name.trim()) return null;
+    const face = sec.faces[0];
+    const weight = sec.isVariable
+      ? (sec.axes?.find((a) => a.tag === "wght")?.value ??
+        sec.weightRange?.[0] ??
+        400)
+      : (face?.weight ?? 400);
+    const style: FontStyle = face?.style ?? "normal";
+    const variationSettings =
+      sec.isVariable && sec.axes && sec.axes.length > 0
+        ? sec.axes.map((a) => `"${a.tag}" ${a.value}`).join(", ")
+        : undefined;
+    const featureSettings =
+      sec.featureSettings && sec.featureSettings.length > 0
+        ? sec.featureSettings.join(", ")
+        : undefined;
+    return {
+      name: sec.name,
+      weight,
+      style,
+      variationSettings,
+      featureSettings,
+    };
+  }, [state.secondary]);
 
   const applyToHeading = state.applyTo.includes("heading");
   const applyToBody = state.applyTo.includes("body");
@@ -650,6 +719,10 @@ export function useGenerator(opts: GeneratorOptions = {}): GeneratorState {
     previewWeight,
     previewStyle,
     previewVariationSettings,
+    previewFeatureSettings,
+    selectedFaceIdx: safeFaceIdx,
+    setSelectedFaceIdx,
+    previewSecondary,
   };
 }
 

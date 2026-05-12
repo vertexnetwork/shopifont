@@ -8,33 +8,56 @@ const SAMPLE_OPTIONS = [
     id: "storefront",
     label: "Storefront",
     text: "Add to cart · Free shipping · 30-day returns",
+    headingText: "Limited Edition Drop",
   },
   {
     id: "headings",
     label: "Headings",
     text: "Limited Edition Drop — Now Shipping",
+    headingText: "Limited Edition Drop — Now Shipping",
   },
   {
     id: "body",
     label: "Body copy",
     text: "Hand-finished in small batches. Designed to last for years, not seasons. Free returns within 30 days, no questions asked.",
+    headingText: "Designed to last",
   },
   {
     id: "pangram",
     label: "Pangram",
     text: "The quick brown fox jumps over the lazy dog 0123456789",
+    headingText: "The quick brown fox",
   },
   {
     id: "custom",
     label: "Custom",
     text: "",
+    headingText: "",
   },
 ] as const;
 
-type SampleId = (typeof SAMPLE_OPTIONS)[number]["id"];
+type SampleOption = (typeof SAMPLE_OPTIONS)[number];
+type SampleId = SampleOption["id"];
 
 const DEFAULT_CUSTOM_TEXT =
   "Type any text here — your real product names, headlines, or a multilingual sample. The preview updates live.";
+
+const FACE_LABEL_WORDS: Record<number, string> = {
+  100: "Thin",
+  200: "Extra Light",
+  300: "Light",
+  400: "Regular",
+  500: "Medium",
+  600: "Semi Bold",
+  700: "Bold",
+  800: "Extra Bold",
+  900: "Black",
+};
+
+function faceShortLabel(weight: number, style: string): string {
+  const word = FACE_LABEL_WORDS[weight] ?? `${weight}`;
+  return style === "italic" ? `${word} Italic` : word;
+}
 
 export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -48,9 +71,10 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
 
-  // Use the resolved primary-family name and derived weight/style/var
-  // axes from the state hook, which already account for variable fonts.
-  const fontName = state.input.primary.name;
+  const primaryFamilyName = state.input.primary.name;
+  const primaryFaces = state.input.primary.faces;
+  const isMultiFace = primaryFaces.length > 1;
+  const isSpecimen = state.previewSecondary !== null;
 
   useEffect(() => {
     return () => {
@@ -73,7 +97,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       return;
     }
     if (typeof document === "undefined" || !document.fonts?.check) return;
-    const name = fontName.trim();
+    const name = primaryFamilyName.trim();
     if (!name) {
       setInstalled(null);
       return;
@@ -84,18 +108,20 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
     } catch {
       setInstalled(null);
     }
-  }, [fontName, previewFamily]);
+  }, [primaryFamilyName, previewFamily]);
 
   useEffect(() => {
     const shouldShow =
-      !previewFamily && installed === false && fontName.trim().length > 0;
+      !previewFamily &&
+      installed === false &&
+      primaryFamilyName.trim().length > 0;
     if (!shouldShow) {
       setShowNotInstalledBadge(false);
       return;
     }
     const t = setTimeout(() => setShowNotInstalledBadge(true), 120);
     return () => clearTimeout(t);
-  }, [installed, previewFamily, fontName]);
+  }, [installed, previewFamily, primaryFamilyName]);
 
   const loadFont = useCallback(
     async (file: File) => {
@@ -105,11 +131,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       try {
         const buffer = await file.arrayBuffer();
         const face = new FontFace(family, buffer, {
-          weight: state.input.primary.isVariable
-            ? // For variable fonts, use the wght axis default if present;
-              // otherwise the min of the weight range.
-              String(state.previewWeight)
-            : String(state.previewWeight),
+          weight: String(state.previewWeight),
           style: state.previewStyle,
           display: "swap",
         });
@@ -128,7 +150,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
         );
       }
     },
-    [state.previewWeight, state.previewStyle, state.input.primary.isVariable],
+    [state.previewWeight, state.previewStyle],
   );
 
   const onDrop = useCallback(
@@ -149,25 +171,50 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
     [loadFont],
   );
 
-  const renderedFamily = previewFamily ?? fontName ?? "system-ui";
+  // Renders the primary body face. When a dropped file is loaded, we
+  // render in that uploaded family; otherwise the user's typed font
+  // name + system fallback.
+  const renderedBodyFamily = previewFamily ?? primaryFamilyName ?? "system-ui";
+  const renderedHeadingFamily = state.previewSecondary?.name ?? renderedBodyFamily;
 
-  const previewStyle = useMemo<React.CSSProperties>(() => {
+  const bodyStyle = useMemo<React.CSSProperties>(() => {
     const base: React.CSSProperties = {
-      fontFamily: `"${renderedFamily}", system-ui, sans-serif`,
+      fontFamily: `"${renderedBodyFamily}", system-ui, sans-serif`,
       fontWeight: state.previewWeight,
       fontStyle: state.previewStyle,
-      fontFeatureSettings: '"kern", "liga"',
+      fontFeatureSettings: state.previewFeatureSettings ?? '"kern", "liga"',
     };
     if (state.previewVariationSettings) {
       base.fontVariationSettings = state.previewVariationSettings;
     }
     return base;
   }, [
-    renderedFamily,
+    renderedBodyFamily,
     state.previewWeight,
     state.previewStyle,
     state.previewVariationSettings,
+    state.previewFeatureSettings,
   ]);
+
+  const headingStyle = useMemo<React.CSSProperties>(() => {
+    const sec = state.previewSecondary;
+    if (!sec) return bodyStyle;
+    const base: React.CSSProperties = {
+      fontFamily: `"${renderedHeadingFamily}", serif`,
+      fontWeight: sec.weight,
+      fontStyle: sec.style,
+      fontFeatureSettings: sec.featureSettings ?? '"kern", "liga"',
+    };
+    if (sec.variationSettings) {
+      base.fontVariationSettings = sec.variationSettings;
+    }
+    return base;
+  }, [state.previewSecondary, renderedHeadingFamily, bodyStyle]);
+
+  const sample = sampleTextFor(sampleId);
+  const headingSample =
+    sampleId === "custom" ? customText.slice(0, 40) : sample.headingText;
+  const bodySample = sampleId === "custom" ? customText : sample.text;
 
   return (
     <section
@@ -201,6 +248,38 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
         </div>
       </div>
 
+      {/* Face selector — only when the primary family has more than one
+          face. Lets the user preview Bold / Italic / etc. without having
+          to also change the primary face's weight & style. */}
+      {isMultiFace && !isSpecimen ? (
+        <div
+          role="radiogroup"
+          aria-label="Preview face"
+          className="flex flex-wrap gap-1.5"
+        >
+          {primaryFaces.map((face, idx) => {
+            const active = idx === state.selectedFaceIdx;
+            return (
+              <button
+                key={idx}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => state.setSelectedFaceIdx(idx)}
+                className={
+                  "min-h-[2rem] px-2.5 rounded-full text-[11px] font-medium transition-colors border " +
+                  (active
+                    ? "bg-charcoal text-paper border-charcoal"
+                    : "bg-paper text-muted border-charcoal-line/40 hover:border-electric hover:text-electric")
+                }
+              >
+                {faceShortLabel(face.weight, face.style)}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+
       <div
         onDragOver={
           isTouch
@@ -233,12 +312,38 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           (isTouch ? " cursor-pointer" : "")
         }
       >
-        <p
-          className="text-xl sm:text-2xl leading-snug break-words"
-          style={previewStyle}
-        >
-          {sampleId === "custom" ? customText : sampleTextFor(sampleId)}
-        </p>
+        {isSpecimen ? (
+          <div className="flex flex-col gap-2">
+            <p
+              className="text-2xl sm:text-3xl leading-tight tracking-tight break-words"
+              style={headingStyle}
+            >
+              {headingSample || sample.headingText}
+            </p>
+            <p
+              className="text-base sm:text-lg leading-snug break-words"
+              style={bodyStyle}
+            >
+              {bodySample}
+            </p>
+            <p className="text-[10px] text-muted flex flex-wrap gap-3 mt-1">
+              <span>
+                <strong>Heading:</strong>{" "}
+                {state.previewSecondary?.name ?? "—"}
+              </span>
+              <span>
+                <strong>Body:</strong> {primaryFamilyName}
+              </span>
+            </p>
+          </div>
+        ) : (
+          <p
+            className="text-xl sm:text-2xl leading-snug break-words"
+            style={bodyStyle}
+          >
+            {bodySample}
+          </p>
+        )}
 
         <SampleChipStrip sampleId={sampleId} onSelect={setSampleId} />
 
@@ -266,11 +371,22 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           </label>
         ) : null}
 
-        {state.input.primary.isVariable && state.previewVariationSettings ? (
-          <p className="mt-3 text-[11px] text-muted font-mono">
-            font-variation-settings: {state.previewVariationSettings}
-          </p>
-        ) : null}
+        {/* Active-rendering hints — surface the most opaque CSS state so
+            users can verify their controls are reaching the preview. */}
+        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted font-mono">
+          {state.input.primary.isVariable && state.previewVariationSettings ? (
+            <span>
+              <span className="text-charcoal/70">variation:</span>{" "}
+              {state.previewVariationSettings}
+            </span>
+          ) : null}
+          {state.previewFeatureSettings ? (
+            <span>
+              <span className="text-charcoal/70">features:</span>{" "}
+              {state.previewFeatureSettings}
+            </span>
+          ) : null}
+        </div>
 
         {!previewFamily ? (
           <p className="mt-3 text-xs text-muted">
@@ -290,9 +406,9 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           >
             <span aria-hidden>!</span>
             <span>
-              &ldquo;{fontName}&rdquo; isn&apos;t installed on this device.
-              Generated code is still correct — drop a file above to preview the
-              actual face.
+              &ldquo;{primaryFamilyName}&rdquo; isn&apos;t installed on this
+              device. Generated code is still correct — drop a file above to
+              preview the actual face.
             </span>
           </p>
         ) : null}
@@ -310,8 +426,8 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   );
 }
 
-function sampleTextFor(id: SampleId): string {
-  return SAMPLE_OPTIONS.find((o) => o.id === id)?.text ?? SAMPLE_OPTIONS[0].text;
+function sampleTextFor(id: SampleId): SampleOption {
+  return SAMPLE_OPTIONS.find((o) => o.id === id) ?? SAMPLE_OPTIONS[0];
 }
 
 function SampleChipStrip({
