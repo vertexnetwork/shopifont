@@ -86,20 +86,25 @@ export function Header() {
         }
       >
         <ul className="flex flex-col px-4 py-2">
-          {navLinks.map((l) => (
-            <li
-              key={l.href}
-              className="border-b border-charcoal-line/10 last:border-b-0"
-            >
-              <Link
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center min-h-[var(--spacing-touch)] py-2 text-sm text-charcoal hover:text-electric"
+          {navLinks
+            // Chrome extensions don't install on mobile, so drop the
+            // /extension entry from the mobile drawer — saves the user
+            // a dead-end tap. Desktop nav still shows it.
+            .filter((l) => l.href !== "/extension")
+            .map((l) => (
+              <li
+                key={l.href}
+                className="border-b border-charcoal-line/10 last:border-b-0"
               >
-                {l.label}
-              </Link>
-            </li>
-          ))}
+                <Link
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center min-h-[var(--spacing-touch)] py-2 text-sm text-charcoal hover:text-electric"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
         </ul>
       </nav>
     </header>

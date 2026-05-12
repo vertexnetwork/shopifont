@@ -61,9 +61,13 @@ export function GeneratorInputs({ state }: Props) {
       aria-label="Configure font"
       className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card"
     >
+      {/* When a secondary family is active, label the primary as the
+          body family so the two panels read as a pair, not a duplicate.  */}
+      {state.hasSecondary ? <FamilyRoleBadge role="body" /> : null}
+
       {/* Primary family name */}
       <label className="flex flex-col gap-2 text-sm font-medium">
-        <span>Custom font name</span>
+        <span>{state.hasSecondary ? "Body font name" : "Custom font name"}</span>
         <input
           type="text"
           inputMode="text"
@@ -127,7 +131,8 @@ export function GeneratorInputs({ state }: Props) {
         onToggle={() => state.toggleSecondary()}
       >
         {state.hasSecondary && state.input.secondary ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 rounded-md border-l-4 border-amber bg-amber-soft/30 p-4">
+            <FamilyRoleBadge role="heading" />
             <label className="flex flex-col gap-2 text-sm font-medium">
               <span>Heading font name</span>
               <input
@@ -189,6 +194,34 @@ export function GeneratorInputs({ state }: Props) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Role badge — clarifies primary vs secondary family at a glance       */
+/* ------------------------------------------------------------------ */
+
+function FamilyRoleBadge({ role }: { role: "body" | "heading" }) {
+  const isHeading = role === "heading";
+  return (
+    <span
+      aria-hidden
+      className={
+        "inline-flex items-center gap-1.5 self-start rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide font-semibold " +
+        (isHeading
+          ? "bg-amber text-amber-deep"
+          : "bg-electric/15 text-electric")
+      }
+    >
+      <span
+        aria-hidden
+        className={
+          "w-1.5 h-1.5 rounded-full " +
+          (isHeading ? "bg-amber-deep" : "bg-electric")
+        }
+      />
+      {isHeading ? "Heading family · /h1, h2, …" : "Body family · /p, li, …"}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Faces panel — one row per face, Add / Remove                        */
 /* ------------------------------------------------------------------ */
 
@@ -207,12 +240,18 @@ function FacesPanel({
 
   return (
     <fieldset className="flex flex-col gap-3">
-      <legend className="text-sm font-medium">{label}</legend>
+      <legend className="text-sm font-medium flex items-baseline gap-2">
+        <span>{label}</span>
+        <span className="text-xs text-muted font-normal">
+          ({fam.faces.length} {fam.faces.length === 1 ? "face" : "faces"})
+        </span>
+      </legend>
       <div className="flex flex-col gap-3">
         {fam.faces.map((face, idx) => (
           <FaceRow
             key={idx}
             face={face}
+            index={idx}
             removable={fam.faces.length > 1}
             onUpdate={(patch) => state.updateFace(family, idx, patch)}
             onRemove={() => state.removeFace(family, idx)}
@@ -223,10 +262,12 @@ function FacesPanel({
         ))}
         <button
           type="button"
-          onClick={() => state.addFace(family)}
+          onClick={() =>
+            state.addFace(family, suggestNextFace(fam.faces))
+          }
           className="self-start min-h-[var(--spacing-touch)] px-4 rounded-md border border-dashed border-electric/50 text-electric text-sm font-medium hover:bg-electric/5"
         >
-          + Add face (e.g. Bold, Italic, Bold Italic)
+          + Add face ({suggestNextLabel(fam.faces)})
         </button>
         <p className="text-xs text-muted">
           Each face becomes its own <code className="font-mono">@font-face</code>{" "}
@@ -239,64 +280,131 @@ function FacesPanel({
   );
 }
 
+/**
+ * Suggest the next-most-useful face to add based on what's already
+ * configured: Regular → Bold → Italic → Bold Italic → next weight up.
+ * Lets the "+ Add face" button advertise a concrete next step instead of
+ * a generic "e.g. Bold, Italic" hint.
+ */
+function suggestNextFace(faces: ReadonlyArray<FontFace>): Partial<FontFace> {
+  const has = (w: number, s: "normal" | "italic") =>
+    faces.some((f) => f.weight === w && f.style === s);
+  if (!has(700, "normal"))
+    return { weight: 700, style: "normal", formats: ["woff2"] };
+  if (!has(400, "italic"))
+    return { weight: 400, style: "italic", formats: ["woff2"] };
+  if (!has(700, "italic"))
+    return { weight: 700, style: "italic", formats: ["woff2"] };
+  if (!has(500, "normal"))
+    return { weight: 500, style: "normal", formats: ["woff2"] };
+  if (!has(300, "normal"))
+    return { weight: 300, style: "normal", formats: ["woff2"] };
+  return { weight: 400, style: "normal", formats: ["woff2"] };
+}
+
+function suggestNextLabel(faces: ReadonlyArray<FontFace>): string {
+  const next = suggestNextFace(faces);
+  const weight = next.weight ?? 400;
+  const style = next.style ?? "normal";
+  const styleLabel = style === "italic" ? " Italic" : "";
+  const weightLabel =
+    weight === 700
+      ? "Bold"
+      : weight === 400
+        ? "Regular"
+        : (WEIGHT_LABEL[weight as FontWeight] ?? `${weight}`).split(
+            " — ",
+          )[1] ?? `${weight}`;
+  return `add ${weightLabel}${styleLabel}`;
+}
+
+function faceSummary(face: FontFace): string {
+  const weightWord =
+    face.weight === 400
+      ? "Regular"
+      : face.weight === 700
+        ? "Bold"
+        : (WEIGHT_LABEL[face.weight] ?? `${face.weight}`)
+            .split(" — ")[1] ?? `${face.weight}`;
+  const styleSuffix = face.style === "italic" ? " Italic" : "";
+  return `${weightWord} ${face.weight}${styleSuffix}`;
+}
+
 function FaceRow({
   face,
+  index,
   removable,
   onUpdate,
   onRemove,
   onToggleFormat,
 }: {
   face: FontFace;
+  index: number;
   removable: boolean;
   onUpdate: (patch: Partial<FontFace>) => void;
   onRemove: () => void;
   onToggleFormat: (fmt: FontFormat) => void;
 }) {
+  const summary = faceSummary(face);
   return (
-    <div className="rounded-md border border-charcoal-line/40 p-3 flex flex-col gap-3 bg-paper-dim/30">
-      <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3">
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          <span>Weight</span>
-          <select
-            value={face.weight}
-            onChange={(e) =>
-              onUpdate({ weight: Number(e.target.value) as FontWeight })
-            }
-            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
+    <div className="rounded-md border border-charcoal-line/40 flex flex-col bg-paper-dim/30 overflow-hidden">
+      <header className="flex items-center justify-between gap-2 px-3 py-2 bg-charcoal/[0.04] border-b border-charcoal-line/30">
+        <p className="text-xs font-semibold text-charcoal flex items-baseline gap-2">
+          <span
+            aria-hidden
+            className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-charcoal text-paper font-mono text-[10px]"
           >
-            {VALID_WEIGHTS.map((w) => (
-              <option key={w} value={w}>
-                {WEIGHT_LABEL[w]}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          <span>Style</span>
-          <select
-            value={face.style}
-            onChange={(e) =>
-              onUpdate({
-                style: e.target.value === "italic" ? "italic" : "normal",
-              })
-            }
-            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
-          >
-            <option value="normal">normal</option>
-            <option value="italic">italic</option>
-          </select>
-        </label>
+            {index + 1}
+          </span>
+          <span>Face {index + 1}</span>
+          <span className="font-normal text-muted">·</span>
+          <span className="font-normal text-muted">{summary}</span>
+        </p>
         {removable ? (
           <button
             type="button"
             onClick={onRemove}
-            className="self-end min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/40 text-sm hover:border-error hover:text-error"
-            aria-label="Remove face"
+            className="min-h-[1.75rem] px-2 rounded text-xs text-muted hover:text-error hover:bg-error/5"
+            aria-label={`Remove face ${index + 1}`}
           >
             Remove
           </button>
         ) : null}
-      </div>
+      </header>
+      <div className="flex flex-col gap-3 p-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            <span>Weight</span>
+            <select
+              value={face.weight}
+              onChange={(e) =>
+                onUpdate({ weight: Number(e.target.value) as FontWeight })
+              }
+              className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
+            >
+              {VALID_WEIGHTS.map((w) => (
+                <option key={w} value={w}>
+                  {WEIGHT_LABEL[w]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            <span>Style</span>
+            <select
+              value={face.style}
+              onChange={(e) =>
+                onUpdate({
+                  style: e.target.value === "italic" ? "italic" : "normal",
+                })
+              }
+              className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
+            >
+              <option value="normal">normal</option>
+              <option value="italic">italic</option>
+            </select>
+          </label>
+        </div>
 
       <div className="flex flex-col gap-1.5">
         <span className="text-xs font-medium">Formats</span>
@@ -331,6 +439,7 @@ function FaceRow({
           <code className="font-mono">Calibre-Bold</code> here.
         </span>
       </label>
+      </div>
     </div>
   );
 }
@@ -354,48 +463,69 @@ function VariableControls({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-3">
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          <span>Weight range — min</span>
-          <input
-            type="number"
-            min={1}
-            max={1000}
-            value={min}
-            onChange={(e) =>
-              state.setWeightRange(family, [Number(e.target.value), max])
-            }
-            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-medium">
-          <span>Weight range — max</span>
-          <input
-            type="number"
-            min={1}
-            max={1000}
-            value={max}
-            onChange={(e) =>
-              state.setWeightRange(family, [min, Number(e.target.value)])
-            }
-            className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal"
-          />
-        </label>
-      </div>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="text-xs font-semibold uppercase tracking-wide text-muted">
+          Weight range
+        </legend>
+        <div className="grid grid-cols-2 gap-3">
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            <span className="text-muted">Min</span>
+            <input
+              type="number"
+              min={1}
+              max={1000}
+              value={min}
+              onChange={(e) =>
+                state.setWeightRange(family, [Number(e.target.value), max])
+              }
+              className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal font-mono"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-medium">
+            <span className="text-muted">Max</span>
+            <input
+              type="number"
+              min={1}
+              max={1000}
+              value={max}
+              onChange={(e) =>
+                state.setWeightRange(family, [min, Number(e.target.value)])
+              }
+              className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-charcoal-line/60 bg-paper text-charcoal font-mono"
+            />
+          </label>
+        </div>
+        <p className="text-[11px] text-muted">
+          Becomes <code className="font-mono">font-weight: {min} {max};</code>{" "}
+          in every face. Most variable fonts ship 100–900.
+        </p>
+      </fieldset>
 
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium">Axis defaults</span>
+      <fieldset className="flex flex-col gap-2">
+        <legend className="text-xs font-semibold uppercase tracking-wide text-muted">
+          Axis defaults
+        </legend>
+        {axes.length === 0 ? (
+          <p className="text-[11px] text-muted">
+            No axes yet. Add one below — <code className="font-mono">wght</code>{" "}
+            (weight) is the most common; <code className="font-mono">wdth</code>{" "}
+            (width) and <code className="font-mono">slnt</code> (slant) cover the
+            remaining design space.
+          </p>
+        ) : null}
         {axes.map((axis) => (
           <div
             key={axis.tag}
-            className="grid grid-cols-[5rem_1fr_auto] gap-2 items-center"
+            className="grid grid-cols-[9rem_1fr_auto] gap-2 items-center bg-paper-dim/40 rounded-md px-2 py-1.5 border border-charcoal-line/30"
           >
-            <code className="font-mono text-xs text-charcoal">
-              {axis.tag}
-              <span className="ml-1 text-muted">
-                ({AXIS_HINTS[axis.tag] ?? "Custom"})
+            <span className="flex flex-col">
+              <code className="font-mono text-xs text-charcoal font-semibold">
+                {axis.tag}
+              </code>
+              <span className="text-[10px] text-muted">
+                {AXIS_HINTS[axis.tag] ?? "Custom axis"}
               </span>
-            </code>
+            </span>
             <input
               type="number"
               value={axis.value}
@@ -407,7 +537,7 @@ function VariableControls({
             <button
               type="button"
               onClick={() => state.removeAxis(family, axis.tag)}
-              className="text-xs text-muted hover:text-error px-2 py-1"
+              className="min-h-[2rem] min-w-[2rem] rounded text-sm text-muted hover:text-error hover:bg-error/5"
               aria-label={`Remove axis ${axis.tag}`}
             >
               ×
@@ -418,7 +548,7 @@ function VariableControls({
           existingTags={axes.map((a) => a.tag)}
           onAdd={(tag, value) => state.setAxis(family, tag, value)}
         />
-      </div>
+      </fieldset>
     </div>
   );
 }
@@ -435,14 +565,16 @@ function AddAxisRow({
   const presets = ["wght", "wdth", "slnt", "opsz", "ital"].filter(
     (t) => !existingTags.includes(t),
   );
+  const canAdd =
+    tag.length > 0 && value.length > 0 && Number.isFinite(Number(value));
   return (
-    <div className="grid grid-cols-[5rem_1fr_auto] gap-2 items-center">
+    <div className="grid grid-cols-[9rem_1fr_auto] gap-2 items-center pt-1">
       <select
         value={tag}
         onChange={(e) => setTag(e.target.value)}
-        className="min-h-[2.25rem] px-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal text-xs"
+        className="min-h-[var(--spacing-touch)] px-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal text-xs"
       >
-        <option value="">+ Add axis</option>
+        <option value="">+ Add axis…</option>
         {presets.map((t) => (
           <option key={t} value={t}>
             {t} ({AXIS_HINTS[t]})
@@ -451,22 +583,21 @@ function AddAxisRow({
       </select>
       <input
         type="number"
-        placeholder="value"
+        placeholder="default value"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="min-h-[2.25rem] px-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal font-mono text-xs"
+        className="min-h-[var(--spacing-touch)] px-2 rounded-md border border-charcoal-line/60 bg-paper text-charcoal font-mono text-xs"
       />
       <button
         type="button"
+        disabled={!canAdd}
         onClick={() => {
-          if (!tag) return;
-          const n = Number(value);
-          if (!Number.isFinite(n)) return;
-          onAdd(tag, n);
+          if (!canAdd) return;
+          onAdd(tag, Number(value));
           setTag("");
           setValue("");
         }}
-        className="text-xs px-2 py-1 rounded-md border border-electric text-electric hover:bg-electric/5"
+        className="min-h-[var(--spacing-touch)] px-3 rounded-md border border-electric text-electric text-xs hover:bg-electric/5 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         Add
       </button>

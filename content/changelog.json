@@ -1,5 +1,9 @@
 [
   {
+    "date": "2026-05-12",
+    "title": "Ship font builder v2 (Tier 1 + 2 + 3): multi-face, variable fonts, perf/i18n"
+  },
+  {
     "date": "2026-05-10",
     "title": "Land Vertex Network spoke audit fixes (38 of 40 punch-list items)"
   },

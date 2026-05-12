@@ -105,7 +105,7 @@ export function CodeBlock({
   return (
     <section
       aria-labelledby={sectionId}
-      className="flex flex-col rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden shadow-card"
+      className="flex flex-col h-full rounded-lg border border-charcoal-line/60 bg-paper overflow-hidden shadow-card"
       style={{ minHeight: "var(--code-card-min-h)" }}
     >
       <header className="flex items-start gap-3 p-4 sm:p-5 border-b border-charcoal-line/40">
@@ -150,7 +150,7 @@ export function CodeBlock({
       ) : null}
 
       <div
-        className="code-scroll relative overflow-auto bg-charcoal text-paper-dim"
+        className="code-scroll relative overflow-auto bg-charcoal text-paper-dim flex-1"
         style={{ maxHeight: "60vh" }}
       >
         {/*
