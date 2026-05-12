@@ -1,24 +1,30 @@
 /**
- * POST /api/subscribe — adds an email to the Resend audience that
- * powers the font-pairing-checklist lead magnet, then sends a welcome
- * email containing (a) the printable checklist URL with ?format=pdf so
- * the user lands directly on the print dialog and (b) a deep link back
- * to the generator with the user's config restored.
+ * POST /api/subscribe — captures an email into a Resend audience and
+ * returns the lead-magnet deliverable URLs so the form can show them
+ * inline. Optionally also fires a welcome email when the spoke has a
+ * verified Resend sender configured (RESEND_FROM_EMAIL set).
  *
- * Edge runtime: sub-50ms cold start, well within Vercel's free-tier
- * Edge invocation budget. No database — Resend stores the contacts
- * (audience) AND the send history (transactional emails).
+ * Two-mode design works around Resend's free-tier 1-verified-domain
+ * limit: every spoke can capture into its own audience (no domain
+ * needed), and only the spoke(s) with a verified sender opt into the
+ * /emails transactional send. Spokes without a sender still deliver
+ * the checklist URL — the success screen renders the same links the
+ * email would have contained.
  *
- * Per-spoke isolation: each spoke deploys with its own
- * NEXT_PUBLIC_SITE_URL + NEXT_PUBLIC_SITE_DOMAIN + RESEND_AUDIENCE_ID
- * + RESEND_FROM_EMAIL. The Resend account is shared across the
- * network; the audience and the from-domain are spoke-specific so
- * deliverability scores don't bleed across sites.
+ * Per-spoke isolation:
+ *   - RESEND_AUDIENCE_ID is per-spoke (each spoke writes into its own
+ *     audience inside a shared Resend account).
+ *   - RESEND_FROM_EMAIL is per-spoke. Unset → no welcome email; set →
+ *     send via /emails using that From address.
  *
- * Failure model: validate inputs and fail fast. Audience-add failures
- * propagate as 502. Welcome-email failures are LOGGED but do NOT fail
- * the request — the contact is captured, that's the load-bearing part;
- * we can resend the welcome later if Resend hiccups.
+ * Edge runtime: sub-50ms cold start. No DB — Resend stores contacts;
+ * we don't persist anything server-side beyond what Resend already
+ * keeps.
+ *
+ * Failure model:
+ *   - Audience-add failure → 502, the form shows an error.
+ *   - Welcome-email failure → logged, the form still gets ok:true
+ *     because the deliverable URL is what actually matters.
  */
 
 import { siteConfig } from "@/lib/site-config";
@@ -43,13 +49,13 @@ export async function POST(request: Request): Promise<Response> {
     return jsonError(400, "invalid_json");
   }
 
-  const { email, returnUrl } = parseBody(body);
+  const { email, returnUrl: rawReturnUrl } = parseBody(body);
   if (!EMAIL_RE.test(email) || email.length > 254) {
     return jsonError(400, "invalid_email");
   }
 
-  // 1. Add to audience. Treat 409 (already subscribed) as success so a
-  //    returning visitor still gets the welcome email re-sent.
+  // 1. Add to audience. Treat 409 (already subscribed) as success so
+  //    returning visitors still get the deliverable URLs back.
   const upstream = await fetch(
     `https://api.resend.com/audiences/${audienceId}/contacts`,
     {
@@ -66,52 +72,65 @@ export async function POST(request: Request): Promise<Response> {
     return jsonError(502, "upstream_error");
   }
 
-  // 2. Fire the welcome email. Best-effort — a failure here doesn't
-  //    invalidate the contact-add. We log to the Edge logs so a
-  //    backlog of failed sends is debuggable from the Vercel dashboard.
-  const safeReturnUrl = sanitizeReturnUrl(returnUrl);
-  const checklistUrl = `${siteConfig.url}/font-pairing-checklist/sheet?format=pdf&utm_source=email&utm_medium=welcome&utm_campaign=font-pairing-checklist`;
-  const email_ = renderWelcomeEmail({
-    returnUrl: safeReturnUrl,
-    checklistUrl,
-  });
-  const fromEmail =
-    process.env.RESEND_FROM_EMAIL?.trim() ||
-    `${siteConfig.name} <hello@${siteConfig.domain}>`;
+  // 2. Resolve deliverable URLs. Always returned in the response so the
+  //    success screen can render them inline — this is the actual
+  //    delivery channel for spokes without a verified Resend sender.
+  const safeReturnUrl = sanitizeReturnUrl(rawReturnUrl);
+  const checklistUrl = `${siteConfig.url}/font-pairing-checklist/sheet?format=pdf&utm_source=lead-magnet&utm_medium=form&utm_campaign=font-pairing-checklist`;
 
-  const sendRes = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: fromEmail,
-      to: [email],
-      reply_to: siteConfig.supportEmail,
-      subject: email_.subject,
-      html: email_.html,
-      text: email_.text,
-      headers: {
-        // Helps the receiving MTA classify and lets users one-click
-        // unsubscribe in clients that surface the header.
-        "List-Unsubscribe": `<mailto:${siteConfig.supportEmail}?subject=unsubscribe>`,
-      },
-      tags: [
-        { name: "kind", value: "welcome" },
-        { name: "magnet", value: "font-pairing-checklist" },
-      ],
-    }),
-  });
-
-  if (!sendRes.ok) {
-    const detail = await safeText(sendRes);
-    console.warn(
-      `[subscribe] welcome email failed (${sendRes.status}): ${detail.slice(0, 200)}`,
-    );
+  // 3. Optionally fire the welcome email. Only when the spoke has a
+  //    verified Resend sender configured. Failure is logged but
+  //    doesn't change the response status — the user already has the
+  //    URLs in the form response.
+  const fromEmail = process.env.RESEND_FROM_EMAIL?.trim();
+  let emailSent = false;
+  if (fromEmail) {
+    const rendered = renderWelcomeEmail({
+      returnUrl: safeReturnUrl,
+      checklistUrl,
+    });
+    try {
+      const sendRes = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: fromEmail,
+          to: [email],
+          reply_to: siteConfig.supportEmail,
+          subject: rendered.subject,
+          html: rendered.html,
+          text: rendered.text,
+          headers: {
+            "List-Unsubscribe": `<mailto:${siteConfig.supportEmail}?subject=unsubscribe>`,
+          },
+          tags: [
+            { name: "kind", value: "welcome" },
+            { name: "magnet", value: "font-pairing-checklist" },
+          ],
+        }),
+      });
+      if (sendRes.ok) {
+        emailSent = true;
+      } else {
+        const detail = await safeText(sendRes);
+        console.warn(
+          `[subscribe] welcome email failed (${sendRes.status}): ${detail.slice(0, 200)}`,
+        );
+      }
+    } catch (err) {
+      console.warn(`[subscribe] welcome email threw: ${String(err)}`);
+    }
   }
 
-  return Response.json({ ok: true });
+  return Response.json({
+    ok: true,
+    checklistUrl,
+    returnUrl: safeReturnUrl,
+    emailSent,
+  });
 }
 
 function parseBody(body: unknown): { email: string; returnUrl: string } {
@@ -131,9 +150,8 @@ function parseBody(body: unknown): { email: string; returnUrl: string } {
 /**
  * Force the returnUrl back to our origin. Prevents an attacker who can
  * call the endpoint from putting an arbitrary URL into a real user's
- * welcome email body. Strategy: parse the supplied URL; if its origin
- * matches `siteConfig.url`, keep the path + search + hash. Otherwise
- * fall back to the site root.
+ * welcome email body OR into the API response (which the form then
+ * renders as a clickable link).
  */
 function sanitizeReturnUrl(raw: string): string {
   const fallback = `${siteConfig.url}/`;

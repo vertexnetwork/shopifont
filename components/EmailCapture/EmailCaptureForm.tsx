@@ -4,31 +4,37 @@ import { useId, useState } from "react";
 
 /**
  * Anonymous email capture. Posts JSON to the /api/subscribe Edge
- * Function which proxies to Resend Audiences. No DB on our side; the
- * audience itself is the contact list.
+ * Function which proxies to Resend Audiences and (when the spoke has
+ * a verified sender configured) sends a welcome email.
+ *
+ * Delivery contract:
+ *   - The deliverable (checklist URL + return URL) is returned in the
+ *     API response body and rendered inline in the success state. The
+ *     user always gets the link in-browser regardless of whether the
+ *     welcome email actually went out — this is the load-bearing
+ *     delivery channel and works across spokes that don't have a
+ *     verified Resend domain.
+ *   - If the welcome email also fired, we tack on a confirmation note
+ *     ("Also sent to your inbox") so the user knows to check email
+ *     later.
  *
  * Two render contexts:
- *
- *  - "footer" — sits in the global footer card. Heading + subhead are
- *    rendered by the parent, so the form itself is bare: input +
- *    button + small disclosure line.
- *  - "landing" — same minimum surface, slightly larger type. The
- *    /font-pairing-checklist page provides its own surrounding copy.
- *
- * No internal `<label>` element — both contexts have a heading right
- * above the form that tells the user what they're signing up for.
- * `aria-label` on the input keeps screen readers covered.
- *
- * Layout: input + button on one row (or stacked on the narrowest
- * mobile widths), disclosure / error text on the row below. Avoids
- * the basis-full / flex-wrap dance that broke the previous version.
+ *   - "footer" — sits in the global footer card.
+ *   - "landing" — the /font-pairing-checklist page provides surrounding
+ *     copy.
  */
+
+type SuccessPayload = {
+  checklistUrl: string;
+  returnUrl: string;
+  emailSent: boolean;
+};
+
 export function EmailCaptureForm({
   variant = "footer",
   source,
 }: {
   variant?: "footer" | "landing";
-  /** Optional analytics tag — passed through to /api/subscribe. */
   source?: string;
 }) {
   const inputId = useId();
@@ -38,6 +44,7 @@ export function EmailCaptureForm({
     "idle",
   );
   const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [success, setSuccess] = useState<SuccessPayload | null>(null);
 
   const isCompact = variant === "footer";
 
@@ -49,7 +56,7 @@ export function EmailCaptureForm({
     // Capture the current URL so the welcome email can deep-link the
     // user back to wherever they were — preserving any encoded
     // generator config in the search string. Server-side sanitization
-    // strips off-origin URLs before they reach the email body.
+    // strips off-origin URLs before they reach the response body.
     const returnUrl =
       typeof window !== "undefined" ? window.location.href : "";
     try {
@@ -59,6 +66,14 @@ export function EmailCaptureForm({
         body: JSON.stringify({ email, source, returnUrl }),
       });
       if (res.ok) {
+        const data = (await res.json().catch(() => ({}))) as Partial<
+          SuccessPayload & { ok: boolean }
+        >;
+        setSuccess({
+          checklistUrl: data.checklistUrl ?? "",
+          returnUrl: data.returnUrl ?? "",
+          emailSent: Boolean(data.emailSent),
+        });
         setStatus("ok");
         setEmail("");
         return;
@@ -72,22 +87,8 @@ export function EmailCaptureForm({
     }
   }
 
-  if (status === "ok") {
-    return (
-      <p
-        id={statusId}
-        role="status"
-        aria-live="polite"
-        className={
-          isCompact
-            ? "text-sm text-charcoal"
-            : "text-base text-charcoal leading-relaxed"
-        }
-      >
-        Check your inbox in 1–2 minutes for the font-pairing checklist. If it
-        doesn&apos;t arrive, peek at your spam folder once.
-      </p>
-    );
+  if (status === "ok" && success) {
+    return <SuccessPanel success={success} isCompact={isCompact} />;
   }
 
   const inputClass =
@@ -143,6 +144,82 @@ export function EmailCaptureForm({
           : "One email. No spam. Unsubscribe anytime."}
       </p>
     </form>
+  );
+}
+
+/**
+ * Post-capture success panel. Always renders the checklist link
+ * in-browser so the user has the deliverable immediately — this is
+ * the load-bearing delivery channel that works across every spoke
+ * regardless of whether the welcome email actually went out.
+ *
+ * The "Email this to me" button uses a `mailto:` link pre-filled with
+ * the deliverable URLs. The user's mail client opens; they send to
+ * themselves. Zero server-side sending required, so it works on
+ * spokes without a verified Resend domain.
+ */
+function SuccessPanel({
+  success,
+  isCompact,
+}: {
+  success: SuccessPayload;
+  isCompact: boolean;
+}) {
+  const mailtoBody = encodeURIComponent(
+    [
+      "Your Shopify font-pairing checklist is ready.",
+      "",
+      "1. Printable checklist (opens the print dialog so you can save as PDF):",
+      `   ${success.checklistUrl}`,
+      "",
+      "2. Generator with your config restored:",
+      `   ${success.returnUrl}`,
+      "",
+      "— Sent from Shopifont",
+    ].join("\n"),
+  );
+  const mailtoSubject = encodeURIComponent(
+    "Your Shopify font-pairing checklist",
+  );
+  const mailtoHref = `mailto:?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+  const textSize = isCompact ? "text-sm" : "text-base";
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={
+        "flex flex-col gap-3 rounded-md border border-electric/30 bg-electric/[0.04] p-4 " +
+        textSize
+      }
+    >
+      <p className="text-charcoal">
+        <strong className="font-semibold">You&apos;re in.</strong> The
+        checklist is ready below.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <a
+          href={success.checklistUrl}
+          target="_blank"
+          rel="noopener"
+          className="inline-flex items-center justify-center min-h-[var(--spacing-touch)] px-4 rounded-md bg-electric text-paper font-semibold shadow-cta hover:bg-electric-hover whitespace-nowrap"
+        >
+          Open checklist (PDF)
+        </a>
+        <a
+          href={mailtoHref}
+          className="inline-flex items-center justify-center min-h-[var(--spacing-touch)] px-4 rounded-md border border-charcoal-line/40 text-charcoal hover:border-electric hover:text-electric"
+        >
+          Email this to me
+        </a>
+      </div>
+      <p className="text-xs text-muted">
+        {success.emailSent
+          ? "Also sent to your inbox — check spam if it doesn't arrive in 1–2 minutes."
+          : "Tip: bookmark the checklist URL or use ‘Email this to me’ to save a copy."}
+      </p>
+    </div>
   );
 }
 
