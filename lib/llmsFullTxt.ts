@@ -15,6 +15,7 @@ import { THEMES } from "../content/themes";
 import { buildCssVariableOverrides } from "./generators/cssVariables";
 import { buildFontFaceCss } from "./generators/fontFace";
 import { buildSettingsSchemaJson } from "./generators/settingsSchema";
+import { fromSimple } from "./generators/legacyAdapter";
 import { getSisterPropertiesSync } from "./network";
 import {
   NETWORK_BRAND,
@@ -87,7 +88,11 @@ export function buildLlmsFullTxt(): string {
   lines.push("### @font-face block");
   lines.push("");
   lines.push("```css");
-  lines.push(buildFontFaceCss({ ...SAMPLE_INPUT, formats: [...SAMPLE_INPUT.formats] }));
+  lines.push(
+    buildFontFaceCss(
+      fromSimple({ ...SAMPLE_INPUT, formats: [...SAMPLE_INPUT.formats] }),
+    ),
+  );
   lines.push("```");
   lines.push("");
 
@@ -95,10 +100,12 @@ export function buildLlmsFullTxt(): string {
   lines.push("");
   lines.push("```json");
   lines.push(
-    buildSettingsSchemaJson({
-      ...SAMPLE_INPUT,
-      formats: [...SAMPLE_INPUT.formats],
-    }),
+    buildSettingsSchemaJson(
+      fromSimple({
+        ...SAMPLE_INPUT,
+        formats: [...SAMPLE_INPUT.formats],
+      }),
+    ),
   );
   lines.push("```");
   lines.push("");
@@ -107,11 +114,13 @@ export function buildLlmsFullTxt(): string {
   lines.push("");
   lines.push("```css");
   lines.push(
-    buildCssVariableOverrides({
-      ...SAMPLE_INPUT,
-      formats: [...SAMPLE_INPUT.formats],
-      applyTo: [...SAMPLE_INPUT.applyTo],
-    }),
+    buildCssVariableOverrides(
+      fromSimple({
+        ...SAMPLE_INPUT,
+        formats: [...SAMPLE_INPUT.formats],
+        applyTo: [...SAMPLE_INPUT.applyTo],
+      }),
+    ),
   );
   lines.push("```");
   lines.push("");

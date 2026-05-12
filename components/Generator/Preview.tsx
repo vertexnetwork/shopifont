@@ -36,20 +36,6 @@ type SampleId = (typeof SAMPLE_OPTIONS)[number]["id"];
 const DEFAULT_CUSTOM_TEXT =
   "Type any text here — your real product names, headlines, or a multilingual sample. The preview updates live.";
 
-/**
- * Live preview pane. Drag-and-drop a font file (WOFF2/WOFF/TTF) to
- * register a FontFace into `document.fonts`, then render sample copy in
- * that face. The file is held only as a blob URL — never uploaded.
- *
- * If no file has been dropped, we render the sample in the current
- * `fontName` directly. The browser will use its installed copy if one
- * exists, otherwise the system fallback — which is itself a useful
- * preview because it shows the metric box your users would see while
- * the WOFF2 is in flight. We surface a "not installed locally" badge in
- * that case so the user doesn't think the preview is broken; a 120ms
- * delay suppresses the brief flash that would otherwise appear while
- * `document.fonts.check` settles.
- */
 export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [previewFamily, setPreviewFamily] = useState<string | null>(null);
@@ -62,15 +48,16 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
 
-  // Free the blob URL when we replace or unmount.
+  // Use the resolved primary-family name and derived weight/style/var
+  // axes from the state hook, which already account for variable fonts.
+  const fontName = state.input.primary.name;
+
   useEffect(() => {
     return () => {
       if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     };
   }, []);
 
-  // Coarse-pointer detection. Touch devices can't drag-and-drop a file,
-  // so we swap the drop-zone copy and remove the misleading instruction.
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
     const mq = window.matchMedia("(hover: none) and (pointer: coarse)");
@@ -80,15 +67,13 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
     return () => mq.removeEventListener?.("change", apply);
   }, []);
 
-  // Probe document.fonts for a locally-installed copy of the typed name.
-  // Re-runs when fontName changes; cheap, synchronous, no side effects.
   useEffect(() => {
     if (previewFamily) {
       setInstalled(null);
       return;
     }
     if (typeof document === "undefined" || !document.fonts?.check) return;
-    const name = state.fontName.trim();
+    const name = fontName.trim();
     if (!name) {
       setInstalled(null);
       return;
@@ -99,20 +84,18 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
     } catch {
       setInstalled(null);
     }
-  }, [state.fontName, previewFamily]);
+  }, [fontName, previewFamily]);
 
-  // Defer the "not installed" badge so the rendered system fallback
-  // doesn't visibly flicker between paint and badge appearance.
   useEffect(() => {
     const shouldShow =
-      !previewFamily && installed === false && state.fontName.trim().length > 0;
+      !previewFamily && installed === false && fontName.trim().length > 0;
     if (!shouldShow) {
       setShowNotInstalledBadge(false);
       return;
     }
     const t = setTimeout(() => setShowNotInstalledBadge(true), 120);
     return () => clearTimeout(t);
-  }, [installed, previewFamily, state.fontName]);
+  }, [installed, previewFamily, fontName]);
 
   const loadFont = useCallback(
     async (file: File) => {
@@ -122,8 +105,12 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       try {
         const buffer = await file.arrayBuffer();
         const face = new FontFace(family, buffer, {
-          weight: String(state.weight),
-          style: state.style,
+          weight: state.input.primary.isVariable
+            ? // For variable fonts, use the wght axis default if present;
+              // otherwise the min of the weight range.
+              String(state.previewWeight)
+            : String(state.previewWeight),
+          style: state.previewStyle,
           display: "swap",
         });
         await face.load();
@@ -141,7 +128,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
         );
       }
     },
-    [state.weight, state.style],
+    [state.previewWeight, state.previewStyle, state.input.primary.isVariable],
   );
 
   const onDrop = useCallback(
@@ -162,7 +149,25 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
     [loadFont],
   );
 
-  const renderedFamily = previewFamily ?? state.fontName ?? "system-ui";
+  const renderedFamily = previewFamily ?? fontName ?? "system-ui";
+
+  const previewStyle = useMemo<React.CSSProperties>(() => {
+    const base: React.CSSProperties = {
+      fontFamily: `"${renderedFamily}", system-ui, sans-serif`,
+      fontWeight: state.previewWeight,
+      fontStyle: state.previewStyle,
+      fontFeatureSettings: '"kern", "liga"',
+    };
+    if (state.previewVariationSettings) {
+      base.fontVariationSettings = state.previewVariationSettings;
+    }
+    return base;
+  }, [
+    renderedFamily,
+    state.previewWeight,
+    state.previewStyle,
+    state.previewVariationSettings,
+  ]);
 
   return (
     <section
@@ -171,7 +176,10 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       style={{ minHeight: "var(--preview-min-h)" }}
     >
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <h3 id="preview-heading" className="text-sm font-medium uppercase tracking-wide text-muted">
+        <h3
+          id="preview-heading"
+          className="text-sm font-medium uppercase tracking-wide text-muted"
+        >
           Live preview
         </h3>
         <div className="flex items-center gap-2">
@@ -227,12 +235,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
       >
         <p
           className="text-xl sm:text-2xl leading-snug break-words"
-          style={{
-            fontFamily: `"${renderedFamily}", system-ui, sans-serif`,
-            fontWeight: state.weight,
-            fontStyle: state.style,
-            fontFeatureSettings: '"kern", "liga"',
-          }}
+          style={previewStyle}
         >
           {sampleId === "custom" ? customText : sampleTextFor(sampleId)}
         </p>
@@ -263,6 +266,12 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           </label>
         ) : null}
 
+        {state.input.primary.isVariable && state.previewVariationSettings ? (
+          <p className="mt-3 text-[11px] text-muted font-mono">
+            font-variation-settings: {state.previewVariationSettings}
+          </p>
+        ) : null}
+
         {!previewFamily ? (
           <p className="mt-3 text-xs text-muted">
             {isTouch
@@ -281,7 +290,7 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
           >
             <span aria-hidden>!</span>
             <span>
-              &ldquo;{state.fontName}&rdquo; isn&apos;t installed on this device.
+              &ldquo;{fontName}&rdquo; isn&apos;t installed on this device.
               Generated code is still correct — drop a file above to preview the
               actual face.
             </span>
@@ -312,12 +321,10 @@ function SampleChipStrip({
   sampleId: SampleId;
   onSelect: (id: SampleId) => void;
 }) {
-  const groupId = useMemo(() => "sample-strip", []);
   return (
     <div
       role="radiogroup"
       aria-label="Sample text"
-      id={groupId}
       className="mt-3 flex flex-wrap gap-1.5"
     >
       {SAMPLE_OPTIONS.map((o) => {

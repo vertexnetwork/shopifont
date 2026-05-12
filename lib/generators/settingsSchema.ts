@@ -1,45 +1,86 @@
-import { sortFormats, type GeneratorInput } from "./types";
+import {
+  sortFormats,
+  type FontFamily,
+  type GeneratorInput,
+} from "./types";
 import { slugify } from "./slugify";
 
 /**
- * Build the JSON snippet that adds a typography section to a Shopify
- * theme's `config/settings_schema.json`.
+ * Build the JSON snippet for `config/settings_schema.json`.
  *
- * Output is a complete top-level array entry that the user pastes into
- * their settings_schema.json. The two `font_picker` controls are
- * deliberately labeled as Theme Editor *fallbacks*, not the install
- * path — the actual install is the @font-face block + the asset
- * uploads. Earlier copy ("Heading font (fallback when custom file is
- * unavailable)") confused merchants into thinking the picker WAS the
- * install path.
+ * When the merchant only has a primary family, output is a single
+ * top-level array entry. When a secondary family is set, we emit TWO
+ * top-level entries (one per family) so each gets its own Theme Editor
+ * section. The merchant pastes the entire output verbatim into the
+ * settings_schema.json array.
  *
- * Because `settings_schema.json` is JSON-with-comments only inside
- * leading dummy entries, we emit pure JSON. Pretty-printed with two
- * spaces to match the Shopify CLI default.
+ * Per the locked UX: each family renders ONE `font_picker` (native
+ * Theme Editor fallback only) plus a "Use this font for both headings
+ * and body" checkbox + an apply-target select that activates when the
+ * checkbox is unchecked.
  */
 export function buildSettingsSchemaJson(input: GeneratorInput): string {
-  if (!input.fontName.trim()) return "";
-  const baseName = (input.fileBaseName ?? slugify(input.fontName)).trim();
-  if (!baseName) return "";
+  if (!input.primary.name.trim()) return "";
 
-  const idSlug = slugify(input.fontName).replace(/-/g, "_") || "custom";
-  const orderedFormats = sortFormats(input.formats);
+  const sections: ReadonlyArray<unknown> = input.secondary
+    ? [
+        buildFamilySection(input.primary, "primary"),
+        buildFamilySection(input.secondary, "secondary"),
+      ]
+    : [buildFamilySection(input.primary, "primary")];
+
+  // Single section serializes as one top-level entry (back-compat with
+  // the legacy generator's output shape). Two sections serialize as a
+  // JSON array of entries so the merchant can paste both at once.
+  if (sections.length === 1) return JSON.stringify(sections[0], null, 2);
+  return JSON.stringify(sections, null, 2);
+}
+
+function buildFamilySection(
+  family: FontFamily,
+  role: "primary" | "secondary",
+): unknown {
+  const idSlug = slugify(family.name).replace(/-/g, "_") || "custom";
+
+  // Re-derive the asset filename used in the explanatory paragraph.
+  // Multi-face families have several uploads, but for the section copy
+  // we cite the FIRST face's filename + format so the merchant sees a
+  // concrete `asset_url` example. The face-level filename override
+  // (when set) wins so the example matches the merchant's actual upload.
+  const firstFace = family.faces[0];
+  const baseSlug = family.fileBaseName?.trim() || slugify(family.name);
+  const exampleStem =
+    firstFace?.filenameOverride?.trim() ??
+    (family.faces.length > 1 && firstFace
+      ? `${baseSlug}-${firstFace.weight}${firstFace.style === "italic" ? "-italic" : ""}`
+      : family.isVariable
+        ? `${baseSlug}-variable`
+        : baseSlug);
+  const orderedFormats = firstFace ? sortFormats(firstFace.formats) : [];
   const formatList = orderedFormats.length > 0 ? orderedFormats.join(", ") : "woff2";
-  // First format in the precedence list is what the merchant uploads
-  // first; we cite it in the example asset_url so the instruction
-  // matches the actual @font-face filename the merchant will see.
   const exampleFormat = orderedFormats[0] ?? "woff2";
-  const sectionInfo =
-    `Upload your ${input.fontName} files (${formatList}) ` +
-    `to your theme's Assets folder. The @font-face block will resolve ` +
-    `them via {{ '${baseName}.${exampleFormat}' | asset_url }}.`;
 
-  const block = {
-    name: `${input.fontName} (custom font)`,
+  const faceCount = family.faces.length;
+  const faceCopy = family.isVariable
+    ? "one variable font file"
+    : faceCount > 1
+      ? `${faceCount} font files (one per weight/style — see filenames listed in the @font-face block)`
+      : "your font file";
+
+  const sectionInfo =
+    `Upload ${faceCopy} (${formatList}) to your theme's Assets folder. ` +
+    `The @font-face block will resolve them via {{ '${exampleStem}.${exampleFormat}' | asset_url }}.`;
+
+  const displayHelp =
+    `font-display strategy: ${family.displayStrategy} — controls how text renders ` +
+    `while the font file is downloading. "swap" is the recommended default.`;
+
+  return {
+    name: `${family.name} (${role === "primary" ? "primary" : "secondary"} custom font)`,
     settings: [
       {
         type: "header",
-        content: `${input.fontName} typography`,
+        content: `${family.name} typography`,
       },
       {
         type: "paragraph",
@@ -56,9 +97,15 @@ export function buildSettingsSchemaJson(input: GeneratorInput): string {
         label: "Native Theme Editor body fallback (only used if you don't upload custom files)",
       },
       {
+        type: "checkbox",
+        id: `${idSlug}_use_for_both`,
+        label: "Use this font for both headings and body",
+        default: true,
+      },
+      {
         type: "select",
         id: `${idSlug}_apply_to`,
-        label: `Apply ${input.fontName}`,
+        label: `Apply ${family.name} (only used when "Use this font for both" is unchecked)`,
         options: [
           { value: "headings", label: "Headings only" },
           { value: "body", label: "Body only" },
@@ -68,6 +115,10 @@ export function buildSettingsSchemaJson(input: GeneratorInput): string {
         default: "both",
       },
       {
+        type: "paragraph",
+        content: displayHelp,
+      },
+      {
         type: "checkbox",
         id: `${idSlug}_load_woff_fallback`,
         label: "Also load WOFF fallback (legacy browsers)",
@@ -75,6 +126,4 @@ export function buildSettingsSchemaJson(input: GeneratorInput): string {
       },
     ],
   };
-
-  return JSON.stringify(block, null, 2);
 }
