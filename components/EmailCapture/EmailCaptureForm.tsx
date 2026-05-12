@@ -119,7 +119,7 @@ export function EmailCaptureForm({
           aria-label={
             isCompact
               ? "Email for the font-pairing checklist"
-              : "Email me the checklist"
+              : "Email to get the font-pairing checklist"
           }
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -130,7 +130,7 @@ export function EmailCaptureForm({
           disabled={status === "loading" || email.length === 0}
           className={buttonClass}
         >
-          {status === "loading" ? "Sending…" : "Send it"}
+          {status === "loading" ? "Loading…" : "Get the checklist"}
         </button>
       </div>
       <p
@@ -141,7 +141,7 @@ export function EmailCaptureForm({
       >
         {status === "error"
           ? errorMessage(errorCode)
-          : "One email. No spam. Unsubscribe anytime."}
+          : "Opens in your browser instantly. We email only when we ship a major update — no spam, unsubscribe anytime."}
       </p>
     </form>
   );

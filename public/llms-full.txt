@@ -263,7 +263,7 @@ Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover
 ### Free Shopify font-pairing checklist
 
 - URL: https://shopifont.app/font-pairing-checklist
-- Summary: Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Delivered as a PDF after a one-field email signup; no account, no spam.
+- Summary: Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Opens in your browser as a printable PDF the moment you submit your email. No account, no spam.
 
 ### Recommended Shopify tools
 

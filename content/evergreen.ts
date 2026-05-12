@@ -48,7 +48,7 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
     slug: "font-pairing-checklist",
     title: "Free Shopify font-pairing checklist",
     summary:
-      "Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Delivered as a PDF after a one-field email signup; no account, no spam.",
+      "Six-axis checklist for pairing heading and body fonts on a Shopify storefront — brand fit, contrast, x-height harmony, weight availability, performance budget, and licensing. Opens in your browser as a printable PDF the moment you submit your email. No account, no spam.",
     priority: 0.5,
   },
   {
