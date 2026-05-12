@@ -29,7 +29,7 @@ export function Footer() {
                 straight to PDF from your browser. We&apos;ll only email
                 you if we ship a major update, no account, no spam.
                 Already have it? Skip to the{" "}
-                <Link href="/" className="text-electric hover:underline">
+                <Link href="/" className="text-electric underline">
                   generator
                 </Link>
                 .
@@ -72,7 +72,7 @@ export function Footer() {
         </div>
 
         {siteConfig.features.affiliates.length > 0 ? (
-          <p className="text-[11px] text-muted/80 leading-relaxed">
+          <p className="text-[11px] text-muted leading-relaxed">
             {siteConfig.features.affiliates
               .map((a) => a.label)
               .join(" and ")}{" "}
