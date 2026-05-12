@@ -35,7 +35,7 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
 
 ```json
 {
-  "name": "My Brand Sans (custom font)",
+  "name": "My Brand Sans (primary custom font)",
   "settings": [
     {
       "type": "header",
@@ -43,7 +43,7 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
     },
     {
       "type": "paragraph",
-      "content": "Upload your My Brand Sans files (woff2, woff) to your theme's Assets folder. The @font-face block will resolve them via {{ 'my-brand-sans.woff2' | asset_url }}."
+      "content": "Upload your font file (woff2, woff) to your theme's Assets folder. The @font-face block will resolve them via {{ 'my-brand-sans.woff2' | asset_url }}."
     },
     {
       "type": "font_picker",
@@ -56,9 +56,15 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
       "label": "Native Theme Editor body fallback (only used if you don't upload custom files)"
     },
     {
+      "type": "checkbox",
+      "id": "my_brand_sans_use_for_both",
+      "label": "Use this font for both headings and body",
+      "default": true
+    },
+    {
       "type": "select",
       "id": "my_brand_sans_apply_to",
-      "label": "Apply My Brand Sans",
+      "label": "Apply My Brand Sans (only used when \"Use this font for both\" is unchecked)",
       "options": [
         {
           "value": "headings",
@@ -78,6 +84,10 @@ Below is the exact code Shopifont produces for a font named "My Brand Sans" with
         }
       ],
       "default": "both"
+    },
+    {
+      "type": "paragraph",
+      "content": "font-display strategy: swap — controls how text renders while the font file is downloading. \"swap\" is the recommended default."
     },
     {
       "type": "checkbox",
