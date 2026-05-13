@@ -120,6 +120,15 @@ export default function ChooseFontPage() {
             If you&apos;re unsure, mock up your hero headline + a real product
             card in three candidates and compare against your existing
             storefront for an hour. Most fit problems show up in that hour.
+            For a head-start, the{" "}
+            <Link
+              href="/best-free-fonts-for-shopify"
+              className="text-electric hover:underline"
+            >
+              twelve fonts we actually install on Shopify storefronts
+            </Link>{" "}
+            covers each category above with a real candidate and the
+            ecommerce trade-offs that matter.
           </p>
         </section>
 
@@ -255,7 +264,19 @@ export default function ChooseFontPage() {
           <p className="text-charcoal/80 leading-relaxed">
             Don&apos;t pair two display faces. Don&apos;t pair two faces from
             the same category (two geometric sans look almost identical and
-            you&apos;ve doubled your file weight for no visual gain).
+            you&apos;ve doubled your file weight for no visual gain). For
+            ten concrete pairings that follow the rule —{" "}
+            <em>Fraunces + Inter, Montserrat + Open Sans, Playfair Display
+            + Lato</em>{" "}
+            and seven more — with file-budget data and the pitfall for
+            each, see the{" "}
+            <Link
+              href="/shopify-font-pairings"
+              className="text-electric hover:underline"
+            >
+              Shopify font pairings guide
+            </Link>
+            .
           </p>
         </section>
 

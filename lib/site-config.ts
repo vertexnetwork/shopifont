@@ -84,6 +84,7 @@ export const siteConfig = {
   nav: {
     primary: [
       { href: "/#themes", label: "Themes" },
+      { href: "/best-free-fonts-for-shopify", label: "Best fonts" },
       { href: "/#how-it-works", label: "How it works" },
       { href: "/embed-this", label: "Embed" },
       { href: "/extension", label: "Extension" },
@@ -100,7 +101,8 @@ export const siteConfig = {
       company: [
         { href: "/how-to-choose-a-font-for-shopify", label: "Choose a font" },
         { href: "/best-free-fonts-for-shopify", label: "Best free fonts" },
-        { href: "/font-pairing-checklist", label: "Font pairing checklist" },
+        { href: "/shopify-font-pairings", label: "Font pairings" },
+        { href: "/font-pairing-checklist", label: "Pairing checklist (PDF)" },
         { href: "/uninstall-custom-font-shopify", label: "Uninstall guide" },
         {
           href: "/dawn-theme-typography-css-variables",
