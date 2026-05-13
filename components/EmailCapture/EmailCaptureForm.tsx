@@ -102,7 +102,6 @@ export function EmailCaptureForm({
   return (
     <form
       onSubmit={onSubmit}
-      noValidate
       className="flex flex-col gap-2"
       aria-describedby={statusId}
     >
@@ -227,6 +226,10 @@ function errorMessage(code: string | null): string {
   switch (code) {
     case "invalid_email":
       return "That email address doesn’t look right — give it another go.";
+    case "disposable_email":
+      return "Looks like a disposable email service. Use an inbox you actually check.";
+    case "undeliverable":
+      return "We couldn’t verify that domain receives mail. Double-check the spelling.";
     case "subscribe_disabled":
       return "Sign-ups are paused right now. Try again in a minute.";
     case "upstream_error":

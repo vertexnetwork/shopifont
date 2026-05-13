@@ -4,90 +4,78 @@ import { AutoPrint } from "./AutoPrint";
 export const dynamic = "force-static";
 
 /**
- * The six-axis font-pairing checklist sheet. Designed to print cleanly
- * to A4 / Letter at default browser margins. Reachable both on the
- * web (visitors who clicked the email "open in browser" link) and via
- * the email's "open and save as PDF" link which appends `?format=pdf`
- * so the print dialog opens automatically on load.
+ * Printable six-axis font-pairing checklist. Designed for one-page A4
+ * / Letter output at default browser print margins.
  *
- * Content mirrors the six axes the marketing landing at
- * /font-pairing-checklist promises (brand fit / heading×body contrast /
- * x-height harmony / weight availability / performance budget /
- * licensing for ecommerce). Each axis carries:
- *   1. A short "What to check" question
- *   2. The "Why it matters" rationale (one sentence)
- *   3. A "Quick test" the merchant can run in under 60 seconds
- *   4. A printable checkbox
+ * Design rules (every change must respect):
+ *   - Single-page target. Total body copy is ≤250 words so the sheet
+ *     fits comfortably at 10pt body / 18pt h1 with 14mm margins.
+ *   - Pure black text on white. Small grays (≤11pt) print as illegible
+ *     fuzz on cheap inkjets; the sheet has to be readable from any
+ *     printer.
+ *   - Each axis = checkbox + 1-line "Check" sentence + 1-line "Test"
+ *     sentence. Anything longer belongs on the marketing landing at
+ *     /font-pairing-checklist, not on the working checklist.
+ *   - Write-in fields at the top (Store / Date / Heading candidate /
+ *     Body candidate) so a designer can use the same sheet across
+ *     multiple font reviews without printing fresh copies.
  */
 
 type Axis = {
   index: number;
   title: string;
-  question: string;
-  why: string;
-  quickTest: string;
+  check: string;
+  test: string;
 };
 
 const AXES: ReadonlyArray<Axis> = [
   {
     index: 1,
     title: "Brand fit",
-    question:
-      "Does the typeface category match the voice the storefront speaks in?",
-    why:
-      "Geometric sans (Inter, Mona Sans) reads modern + neutral. Humanist sans (Karla, Lato) reads friendly + warm. Display serif (Playfair, DM Serif) reads premium + traditional. Pick the category before picking the font.",
-    quickTest:
-      'Write your three best-selling product names in the candidate font. If the names feel like the product, you have brand fit. If they feel like someone else\'s product, keep looking.',
+    check:
+      "Typeface category (geometric / humanist / display) matches the voice your storefront speaks in.",
+    test:
+      "Set your three best-selling product names in the candidate. If the names feel like the product, brand fit passes.",
   },
   {
     index: 2,
     title: "Heading × body contrast",
-    question:
-      "Is there enough visual difference between the heading and body fonts to create hierarchy — but not so much that they look like they came from different sites?",
-    why:
-      "Pairings fail at both ends. Two near-identical fonts produce mush; two wildly different fonts produce dissonance. The sweet spot is one obvious axis of contrast (weight, category, or width) while everything else stays compatible.",
-    quickTest:
-      "Set a 32-point heading in the candidate heading font and 16-point body underneath in the body font. Squint until the text blurs. You should still see a clear hierarchy between heading and body. If both blurs look identical, contrast is too low.",
+    check:
+      "Enough visual difference for clear hierarchy, not so much the two fonts look like they came from different sites.",
+    test:
+      "Render 32pt heading over 16pt body, squint until both blur. Heading should still read as larger / heavier / distinct.",
   },
   {
     index: 3,
     title: "X-height harmony",
-    question:
-      "Do the heading and body fonts share roughly the same x-height ratio so they don't visually fight at the same size?",
-    why:
-      "Fonts with mismatched x-heights make a storefront look amateur even when each typeface alone is great. The body font with a tall x-height paired with a heading font with a short one (or vice versa) reads as a typographic accident.",
-    quickTest:
-      'Set the heading and body fonts at the same point size, side by side, with the lowercase word "modern" in each. If one set of letters is noticeably taller than the other at the same size, the x-heights don\'t match — try a different pairing.',
+    check:
+      "Heading and body fonts share a similar x-height ratio at the same point size.",
+    test:
+      "Render the lowercase word “modern” in each font at the same size, side by side. Neither should be noticeably taller.",
   },
   {
     index: 4,
     title: "Weight availability",
-    question:
-      "Does the font ship every weight you plan to use, in both regular and italic?",
-    why:
-      "Body copy usually needs Regular (400) + Bold (700) + Italic. Headings often need 600 or 700. If a candidate font only ships Regular + Light, you'll fake the bold via the browser — and faux-bold rendering is the single biggest tell that a brand is on a budget.",
-    quickTest:
-      "Open the foundry's listing. Confirm every weight you need exists as its own file. Bonus: confirm italic is a TRUE italic (drawn by the designer), not an oblique slant the browser computes.",
+    check:
+      "Every weight you ship has its own file. Italics are drawn by the designer, not synthesized by the browser.",
+    test:
+      "Open the foundry’s spec sheet. Confirm Regular, Bold, and Italic exist as distinct files (and Bold-Italic if you need it).",
   },
   {
     index: 5,
     title: "Performance budget",
-    question:
-      "Will the total font payload stay under 200 KB WOFF2 across all faces a visitor's first paint needs?",
-    why:
-      "Every font file pushes Largest Contentful Paint later. Three weights × WOFF2-only × ~30 KB each is the safe ceiling for a Shopify storefront that wants to stay in the Lighthouse green. Subset (`unicode-range`) and `font-display: swap` are your two best tools.",
-    quickTest:
-      "Add the WOFF2 file sizes for every face your hero + product card needs. If the total is over 200 KB, drop a weight (do you really need 300 AND 400?), or switch to a variable font, or accept that you're trading LCP for design.",
+    check:
+      "Total WOFF2 payload across every face used above the fold stays under ~200 KB.",
+    test:
+      "Sum the WOFF2 file sizes for the faces your hero + product card actually render. Over 200 KB → drop a weight or switch to a variable font.",
   },
   {
     index: 6,
     title: "Licensing for ecommerce",
-    question:
-      "Does the web license cover commercial use on a public Shopify storefront, including the ad surfaces you run?",
-    why:
-      "Web fonts often have separate licenses for self-hosting, ad creative, packaging, and merchandise. \"Free for personal use\" almost never covers a paid storefront. A misread license is the most expensive kind of typography mistake.",
-    quickTest:
-      "Confirm three things on the license page: (a) commercial use is permitted, (b) the license covers self-hosting via @font-face on your domain, (c) the monthly pageview cap (if any) exceeds your actual traffic. Screenshot the license page and save it with your brand assets.",
+    check:
+      "Web license covers commercial use on a public Shopify storefront, including any ad surfaces.",
+    test:
+      "Confirm three things on the license page: commercial use permitted, self-hosting via @font-face on your domain, pageview cap exceeds your traffic. Screenshot the page.",
   },
 ];
 
@@ -95,12 +83,12 @@ export default function ChecklistSheetPage() {
   return (
     <>
       <AutoPrint />
+      <PrintCss />
       <div className="checklist-sheet bg-white text-black min-h-screen">
-        <PrintCss />
         <main className="mx-auto max-w-[760px] px-8 py-10 print:px-0 print:py-0">
           <Header />
-          <Intro />
-          <ol className="mt-8 flex flex-col gap-6 list-none p-0">
+          <WriteInFields />
+          <ol className="axes mt-5 flex flex-col list-none p-0">
             {AXES.map((axis) => (
               <AxisRow key={axis.index} axis={axis} />
             ))}
@@ -114,63 +102,60 @@ export default function ChecklistSheetPage() {
 
 function Header() {
   return (
-    <header className="border-b-2 border-black pb-4 flex items-baseline justify-between gap-4 flex-wrap">
+    <header className="header flex items-baseline justify-between gap-4 flex-wrap pb-3 border-b border-black">
       <div>
-        <p className="text-[11px] uppercase tracking-[0.18em] text-neutral-600">
-          {siteConfig.name}
-        </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
           The Shopify Font-Pairing Checklist
         </h1>
-        <p className="mt-1 text-sm text-neutral-700">
-          Six axes for confirming a font combo before you ship it.
+        <p className="mt-1 text-sm">
+          Six axes for confirming a font combo before you ship it. Check
+          each box once the pair passes that axis.
         </p>
       </div>
-      <p className="text-[11px] text-neutral-600 font-mono">
-        {siteConfig.domain}
-      </p>
+      <p className="text-[11px] font-mono">{siteConfig.domain}</p>
     </header>
   );
 }
 
-function Intro() {
+function WriteInFields() {
   return (
-    <section className="mt-6 text-sm leading-relaxed text-neutral-800">
-      <p>
-        <strong>How to use this:</strong> work through the six axes
-        below in order with your two candidate fonts (heading + body)
-        in front of you. Check the box once you&apos;re satisfied the
-        pairing passes that axis. A pairing that passes all six is
-        ready for production. A pairing that fails one or two is
-        salvageable with a different weight or a small size adjustment.
-        A pairing that fails three or more — try a different pairing.
-      </p>
+    <section
+      aria-label="Sheet metadata"
+      className="write-in grid grid-cols-2 gap-x-6 gap-y-3 mt-5 text-[11px]"
+    >
+      <Field label="Store" />
+      <Field label="Date" />
+      <Field label="Heading font candidate" />
+      <Field label="Body font candidate" />
     </section>
+  );
+}
+
+function Field({ label }: { label: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="uppercase tracking-wide font-semibold">{label}</span>
+      <span className="block h-[1.25rem] border-b border-black" />
+    </div>
   );
 }
 
 function AxisRow({ axis }: { axis: Axis }) {
   return (
-    <li className="grid grid-cols-[2rem_1fr] gap-x-4 gap-y-1 break-inside-avoid">
+    <li className="axis grid grid-cols-[1.5rem_1fr] gap-x-3 py-2.5 border-b border-black/15 break-inside-avoid last:border-b-0">
       <Checkbox />
-      <div className="flex flex-col gap-2">
-        <h2 className="text-base font-bold tracking-tight">
-          <span className="font-mono text-neutral-500 mr-2">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-[13px] font-bold leading-snug">
+          <span className="font-mono mr-2 text-black/70">
             {String(axis.index).padStart(2, "0")}
           </span>
           {axis.title}
         </h2>
-        <p className="text-sm leading-relaxed">
-          <strong className="font-semibold">What to check.</strong>{" "}
-          {axis.question}
+        <p className="text-[11.5px] leading-snug">
+          <strong className="font-semibold">Check.</strong> {axis.check}
         </p>
-        <p className="text-sm leading-relaxed text-neutral-700">
-          <strong className="font-semibold text-black">Why it matters.</strong>{" "}
-          {axis.why}
-        </p>
-        <p className="text-sm leading-relaxed">
-          <strong className="font-semibold">Quick test.</strong>{" "}
-          {axis.quickTest}
+        <p className="text-[11.5px] leading-snug">
+          <strong className="font-semibold">Test.</strong> {axis.test}
         </p>
       </div>
     </li>
@@ -181,52 +166,37 @@ function Checkbox() {
   return (
     <span
       aria-hidden
-      className="inline-block w-6 h-6 border-2 border-black rounded-[3px] mt-1"
+      className="checkbox inline-block w-[1.1rem] h-[1.1rem] border-[1.5px] border-black rounded-[3px] mt-[2px]"
     />
   );
 }
 
 function Footer() {
   return (
-    <footer className="mt-10 pt-6 border-t border-neutral-300 flex flex-col gap-3 text-sm text-neutral-700">
-      <div className="grid grid-cols-2 gap-4 text-[12px]">
-        <p>
-          <strong className="block uppercase tracking-wide text-[10px] text-neutral-500">
-            Store
-          </strong>
-          <span className="inline-block min-w-[12rem] border-b border-neutral-400 pb-[2px]">
-            &nbsp;
-          </span>
-        </p>
-        <p>
-          <strong className="block uppercase tracking-wide text-[10px] text-neutral-500">
-            Date reviewed
-          </strong>
-          <span className="inline-block min-w-[12rem] border-b border-neutral-400 pb-[2px]">
-            &nbsp;
-          </span>
-        </p>
-      </div>
-      <p className="text-[12px] text-neutral-600 leading-relaxed">
-        Generated by{" "}
-        <strong className="text-black">{siteConfig.name}</strong> —{" "}
-        the free generator that turns a font name into the three
-        copy-paste code blocks you need to install a custom font on a
-        Shopify OS 2.0 theme. Visit{" "}
-        <span className="font-mono">{siteConfig.domain}</span>.
+    <footer className="footer mt-4 pt-3 border-t border-black/40 text-[10px] flex items-baseline justify-between gap-3 flex-wrap">
+      <p>
+        A pairing that passes all six is ready for production. Three or
+        more fails → try a different pairing.
+      </p>
+      <p className="font-mono">
+        Generated by <strong>{siteConfig.name}</strong> · {siteConfig.domain}
       </p>
     </footer>
   );
 }
 
 /**
- * Print stylesheet inlined into the page so we don't have to thread a
- * separate CSS file through the build. Sets A4-ish page size, removes
- * the page padding for print (the on-screen padding belongs on screen
- * only), and ensures the checkboxes + box backgrounds print at full
- * opacity even when "background graphics" is off in the print dialog.
+ * Print stylesheet. Inlined as a server `<style>` so it ships in the
+ * initial HTML and applies before the first frame is rastered to PDF.
  *
- * Rendered as a server `<style>` tag so it ships in the initial HTML.
+ * Goals:
+ *   - A4 / Letter portrait, 14mm margins.
+ *   - Pure black text everywhere; no Tailwind `text-black/15` grays
+ *     leak through. Borders and the checkbox keep their strokes.
+ *   - Compact pt-sized typography so the whole sheet fits on one page
+ *     regardless of the user's browser zoom or default font.
+ *   - `break-inside: avoid` on every axis row so no axis splits across
+ *     a page boundary.
  */
 function PrintCss() {
   return (
@@ -237,12 +207,19 @@ function PrintCss() {
 @media print {
   html, body { background: #ffffff !important; }
   .checklist-sheet { padding: 0 !important; }
-  .checklist-sheet h1 { font-size: 22pt; }
-  .checklist-sheet h2 { font-size: 13pt; }
-  .checklist-sheet, .checklist-sheet * { color: #000 !important; }
-  .checklist-sheet a { text-decoration: underline; }
-  /* Don't break an axis row across pages mid-sentence. */
-  .checklist-sheet li { break-inside: avoid; }
+  .checklist-sheet, .checklist-sheet p, .checklist-sheet li, .checklist-sheet span, .checklist-sheet strong, .checklist-sheet h1, .checklist-sheet h2 { color: #000 !important; }
+  .checklist-sheet .header { border-bottom-color: #000 !important; }
+  .checklist-sheet .axis { border-bottom-color: rgba(0,0,0,0.15) !important; }
+  .checklist-sheet .footer { border-top-color: rgba(0,0,0,0.4) !important; }
+  .checklist-sheet .checkbox { border-color: #000 !important; }
+  .checklist-sheet h1 { font-size: 18pt; line-height: 1.15; }
+  .checklist-sheet .header p { font-size: 9.5pt; line-height: 1.35; }
+  .checklist-sheet .write-in { font-size: 9pt; }
+  .checklist-sheet .axis h2 { font-size: 11pt; }
+  .checklist-sheet .axis p { font-size: 9.5pt; line-height: 1.35; }
+  .checklist-sheet .footer { font-size: 8.5pt; }
+  .checklist-sheet .axis { break-inside: avoid; }
+  .checklist-sheet a[href]::after { content: none !important; }
 }
 `,
       }}
