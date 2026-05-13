@@ -28,11 +28,11 @@
  */
 
 import { siteConfig } from "@/lib/site-config";
+import { validateEmail } from "@/lib/emailValidation";
 import { renderWelcomeEmail } from "@/lib/welcomeEmail";
 
 export const runtime = "edge";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_RETURN_URL = 2048;
 
 export async function POST(request: Request): Promise<Response> {
@@ -50,8 +50,14 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const { email, returnUrl: rawReturnUrl } = parseBody(body);
-  if (!EMAIL_RE.test(email) || email.length > 254) {
-    return jsonError(400, "invalid_email");
+
+  // Three-stage validation: regex → disposable blocklist → MX/A DNS
+  // check via Cloudflare DoH. Cuts the obvious junk (fake@fake.com,
+  // mailinator addresses, syntactically-broken inputs) before we
+  // pollute the audience with low-intent contacts.
+  const validation = await validateEmail(email);
+  if (!validation.ok) {
+    return jsonError(400, validation.code);
   }
 
   // 1. Add to audience. Treat 409 (already subscribed) as success so
