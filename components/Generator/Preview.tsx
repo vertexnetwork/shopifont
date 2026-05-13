@@ -219,7 +219,10 @@ export function GeneratorPreview({ state }: { state: GeneratorState }) {
   return (
     <section
       aria-labelledby="preview-heading"
-      className="flex flex-col gap-3 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card"
+      // `min-w-0 overflow-hidden` defends against a long font name or
+      // long variation-settings string pushing the preview wider than
+      // its grid cell on narrow viewports.
+      className="flex flex-col gap-3 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card min-w-0 overflow-hidden"
       style={{ minHeight: "var(--preview-min-h)" }}
     >
       <div className="flex items-center justify-between gap-3 flex-wrap">

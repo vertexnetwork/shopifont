@@ -59,7 +59,15 @@ export function GeneratorInputs({ state }: Props) {
   return (
     <section
       aria-label="Configure font"
-      className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card"
+      // Arbitrary descendant selectors force every form control to
+      // fit its container. Without this, `<select>` elements default
+      // to intrinsic content width — which for the font-display and
+      // unicode-range selects is 400-500px (their option labels are
+      // 50-80 chars each). On a 360px mobile viewport one wide select
+      // forces the entire panel wider than the viewport, and the body
+      // overflow-x:clip rule masks it visually as a "tool boxes wider
+      // than the page" symptom.
+      className="flex flex-col gap-5 border border-charcoal-line/60 rounded-lg p-5 bg-paper shadow-card min-w-0 [&_select]:w-full [&_select]:max-w-full [&_select]:min-w-0 [&_input]:max-w-full [&_input]:min-w-0"
     >
       {/* When a secondary family is active, label the primary as the
           body family so the two panels read as a pair, not a duplicate.  */}

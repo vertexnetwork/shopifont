@@ -110,8 +110,12 @@ export function ShopifontGenerator({
       <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         {/* Inputs panel — order-2 on mobile so the preview sits on top of
             the scroll. order-1 on desktop so the input reads left-to-right
-            in the natural reading direction. */}
-        <div className="order-2 lg:order-1">
+            in the natural reading direction.
+            `min-w-0` on both grid items lets them shrink past their
+            content min-width on narrow viewports; without it a wide
+            descendant (long select option, mono filename) forces the
+            grid track wider than the viewport. */}
+        <div className="order-2 lg:order-1 min-w-0">
           <GeneratorInputs state={state} />
         </div>
 
@@ -119,7 +123,7 @@ export function ShopifontGenerator({
             on top of the inputs); on desktop the preview is the right
             column. `top-2` keeps a tiny gap from the viewport edge / the
             previous element when pinned. */}
-        <div className="order-1 lg:order-2 sticky top-2 z-20 lg:top-4">
+        <div className="order-1 lg:order-2 sticky top-2 z-20 lg:top-4 min-w-0">
           <GeneratorPreview state={state} />
         </div>
       </div>
