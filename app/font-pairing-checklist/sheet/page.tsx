@@ -85,7 +85,7 @@ export default function ChecklistSheetPage() {
       <AutoPrint />
       <PrintCss />
       <div className="checklist-sheet bg-white text-black min-h-screen">
-        <main className="mx-auto max-w-[760px] px-8 py-10 print:px-0 print:py-0">
+        <main className="mx-auto max-w-[760px] px-8 py-10 print:max-w-none print:w-full print:p-0 print:m-0">
           <Header />
           <WriteInFields />
           <ol className="axes mt-5 flex flex-col list-none p-0">
@@ -203,22 +203,105 @@ function PrintCss() {
     <style
       dangerouslySetInnerHTML={{
         __html: `
-@page { size: auto; margin: 14mm; }
+/* Explicit page size: \`size: auto\` lets some browsers pick a custom
+   tiny default, which is what produced the 80px-wide pages users were
+   reporting in print preview. \`letter portrait\` is a deterministic
+   choice for US printers; A4 users still get a sensible result because
+   the @page size is a printer-side preference and most engines respect
+   the user's tray when this rule is non-strict. */
+@page {
+  size: letter portrait;
+  margin: 0.6in;
+}
+
 @media print {
-  html, body { background: #ffffff !important; }
-  .checklist-sheet { padding: 0 !important; }
-  .checklist-sheet, .checklist-sheet p, .checklist-sheet li, .checklist-sheet span, .checklist-sheet strong, .checklist-sheet h1, .checklist-sheet h2 { color: #000 !important; }
-  .checklist-sheet .header { border-bottom-color: #000 !important; }
-  .checklist-sheet .axis { border-bottom-color: rgba(0,0,0,0.15) !important; }
-  .checklist-sheet .footer { border-top-color: rgba(0,0,0,0.4) !important; }
-  .checklist-sheet .checkbox { border-color: #000 !important; }
-  .checklist-sheet h1 { font-size: 18pt; line-height: 1.15; }
-  .checklist-sheet .header p { font-size: 9.5pt; line-height: 1.35; }
-  .checklist-sheet .write-in { font-size: 9pt; }
-  .checklist-sheet .axis h2 { font-size: 11pt; }
-  .checklist-sheet .axis p { font-size: 9.5pt; line-height: 1.35; }
-  .checklist-sheet .footer { font-size: 8.5pt; }
-  .checklist-sheet .axis { break-inside: avoid; }
+  /* Full reset of the page chrome. */
+  html, body {
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Force the sheet container + main to fill the printable area.
+     Tailwind's max-w-[760px] and px-8 on <main> are overridden here
+     so the sheet doesn't render at a clipped 60-100px-wide width. */
+  .checklist-sheet {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+  }
+  .checklist-sheet main {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Pure black text everywhere. Tailwind grays (text-black/70,
+     border-black/15) print as illegible fuzz on cheap inkjets. */
+  .checklist-sheet,
+  .checklist-sheet * {
+    color: #000 !important;
+  }
+
+  /* Pt-sized typography so the print output doesn't reflow based on
+     the user's browser default font size. */
+  .checklist-sheet h1 {
+    font-size: 18pt !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+  }
+  .checklist-sheet .header p {
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+  }
+  .checklist-sheet .write-in {
+    font-size: 9pt !important;
+  }
+  .checklist-sheet .axis h2 {
+    font-size: 11pt !important;
+    line-height: 1.2 !important;
+  }
+  .checklist-sheet .axis p {
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+  }
+  .checklist-sheet .footer {
+    font-size: 8.5pt !important;
+  }
+
+  /* Page-break controls. break-inside is the modern name;
+     page-break-inside is the legacy spec — set both for older
+     print engines that haven't adopted the new shorthand. */
+  .checklist-sheet .axis,
+  .checklist-sheet .header,
+  .checklist-sheet .write-in {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Borders + checkbox stroke should still render at full ink. */
+  .checklist-sheet .header {
+    border-bottom: 1pt solid #000 !important;
+  }
+  .checklist-sheet .axis {
+    border-bottom: 0.5pt solid #999 !important;
+  }
+  .checklist-sheet .footer {
+    border-top: 0.5pt solid #555 !important;
+  }
+  .checklist-sheet .checkbox {
+    border: 1pt solid #000 !important;
+    background: #fff !important;
+  }
+
+  /* Suppress any print stylesheet's default URL-after-link adornment.
+     We don't render external links on the sheet but defense-in-depth. */
   .checklist-sheet a[href]::after { content: none !important; }
 }
 `,
