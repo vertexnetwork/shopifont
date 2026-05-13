@@ -160,12 +160,15 @@ export default function PrivacyPage() {
         {siteConfig.features.email.enabled ? (
           <Section title="Email capture">
             <p>
-              The footer signup form sends one email — the{" "}
-              {siteConfig.features.email.leadMagnetName.replace(/-/g, " ")} —
-              and adds your address to a Resend audience used for occasional
-              update emails. We never sell or share the address. You can
-              unsubscribe from any email; doing so removes you from the
-              audience entirely. We store nothing else.
+              The footer signup form delivers the{" "}
+              {siteConfig.features.email.leadMagnetName.replace(/-/g, " ")}{" "}
+              <strong>directly in your browser</strong> the moment you
+              submit — no email round-trip required. We add your address
+              to a Resend audience so we can send occasional update emails
+              when we ship a major change (typically a handful of times a
+              year, not on a schedule). We never sell or share the
+              address. Unsubscribing from any email removes you from the
+              audience entirely; we store nothing else.
             </p>
           </Section>
         ) : null}

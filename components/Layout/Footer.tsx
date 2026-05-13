@@ -25,9 +25,11 @@ export function Footer() {
                 The Shopify font-pairing checklist
               </h2>
               <p className="text-sm text-muted leading-relaxed">
-                Six-axis PDF. One email, then it&apos;s in your inbox. No
-                account, no spam. Already have it? Skip to the{" "}
-                <Link href="/" className="text-electric hover:underline">
+                Six-axis PDF. Opens instantly when you submit — save it
+                straight to PDF from your browser. We&apos;ll only email
+                you if we ship a major update, no account, no spam.
+                Already have it? Skip to the{" "}
+                <Link href="/" className="text-electric underline">
                   generator
                 </Link>
                 .
@@ -70,7 +72,7 @@ export function Footer() {
         </div>
 
         {siteConfig.features.affiliates.length > 0 ? (
-          <p className="text-[11px] text-muted/80 leading-relaxed">
+          <p className="text-[11px] text-muted leading-relaxed">
             {siteConfig.features.affiliates
               .map((a) => a.label)
               .join(" and ")}{" "}

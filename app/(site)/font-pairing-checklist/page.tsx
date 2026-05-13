@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 const ENTRY = EVERGREEN_ENTRIES.find((e) => e.slug === "font-pairing-checklist")!;
 
 const META_DESCRIPTION =
-  "Free six-axis font-pairing checklist for Shopify storefronts — brand fit, contrast, x-height, weight availability, performance budget, licensing. PDF delivered by email after one form field.";
+  "Free six-axis font-pairing checklist for Shopify storefronts — brand fit, contrast, x-height, weight availability, performance budget, licensing. Opens as a printable PDF the moment you submit your email.";
 
 export const metadata: Metadata = {
   title: `${ENTRY.title} | ${SITE_NAME}`,
@@ -104,9 +104,11 @@ export default function FontPairingChecklistPage() {
             The Shopify font-pairing checklist
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Six axes we run every Shopify font pairing through before it goes
-            on a storefront. One PDF, delivered to your inbox, no account, no
-            follow-up sequence — just the checklist.
+            Six axes we run every Shopify font pairing through before it
+            goes on a storefront. The checklist opens in your browser the
+            moment you submit your email — save it straight to PDF from
+            the print dialog. We&apos;ll only email you when we ship a
+            major update; no follow-up sequence, no account.
           </p>
         </header>
 
@@ -118,7 +120,7 @@ export default function FontPairingChecklistPage() {
             id="signup-heading"
             className="text-xl sm:text-2xl font-bold tracking-tight"
           >
-            Email me the checklist
+            Get the checklist
           </h2>
           <EmailCaptureForm variant="landing" source="font-pairing-checklist" />
         </section>

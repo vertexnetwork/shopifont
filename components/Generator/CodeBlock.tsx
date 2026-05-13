@@ -1,6 +1,6 @@
 "use client";
 
-import { useDeferredValue, useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useRef, useState } from "react";
 import { Highlight, themes as prismThemes, type PrismTheme } from "prism-react-renderer";
 
 export type CopyVariant = "primary" | "secondary" | "done";
@@ -72,6 +72,8 @@ export function CodeBlock({
   const deferredCode = useDeferredValue(code);
   const [copied, setCopied] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const codeScrollRef = useRef<HTMLDivElement>(null);
+  const shouldHighlight = useDeferredHighlight(codeScrollRef);
 
   useEffect(() => {
     if (!copied) return;
@@ -158,6 +160,7 @@ export function CodeBlock({
       ) : null}
 
       <div
+        ref={codeScrollRef}
         className="code-scroll relative overflow-auto bg-charcoal text-paper-dim flex-1"
         style={{ maxHeight: "60vh" }}
       >
@@ -182,7 +185,7 @@ export function CodeBlock({
             <p className="p-4 text-xs text-paper-dim/60 font-mono">
               {warning ?? "Enter a font name to generate this block."}
             </p>
-          ) : (
+          ) : shouldHighlight ? (
             <Highlight code={deferredCode} language={language} theme={CHARCOAL_THEME}>
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre
@@ -203,6 +206,22 @@ export function CodeBlock({
                 </pre>
               )}
             </Highlight>
+          ) : (
+            // Plain-text placeholder rendered until Prism is ready.
+            // Same font/size/padding as the highlighted version so the
+            // swap is visually a color change only — no layout shift.
+            // Cuts the initial DOM from ~640 spans per block down to a
+            // single text node; Lighthouse-flagged DOM-size bloat goes
+            // away.
+            <pre
+              className="font-mono text-[13px] leading-relaxed p-4 m-0"
+              style={{
+                color: CHARCOAL_THEME.plain.color,
+                background: CHARCOAL_THEME.plain.backgroundColor,
+              }}
+            >
+              {deferredCode}
+            </pre>
           )}
         </div>
 
@@ -286,6 +305,73 @@ function slugForId(input: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/**
+ * Defer Prism syntax highlighting until the block is either (a) in
+ * the viewport or (b) the browser hits an idle frame — whichever
+ * fires first. Cuts the initial DOM by ~640 spans per block (the
+ * settings_schema.json block is the worst; Prism tokenizes every
+ * character into its own <span>). Lighthouse-flagged DOM size and
+ * TBT both fall once those spans are deferred past the critical
+ * render window.
+ *
+ * Above-the-fold blocks: requestIdleCallback fires within ~50-200ms
+ * of mount, so the swap from plain text to highlighted is mostly
+ * imperceptible. Below-the-fold blocks: IntersectionObserver
+ * triggers with a 200px rootMargin so highlighting completes before
+ * the user actually scrolls the block into view.
+ *
+ * Returns true once the upgrade has been requested; the flag is
+ * sticky (never flips back to false) so a block that's scrolled
+ * past doesn't keep flipping.
+ */
+function useDeferredHighlight(
+  ref: React.RefObject<HTMLElement | null>,
+): boolean {
+  const [shouldHighlight, setShouldHighlight] = useState(false);
+
+  useEffect(() => {
+    if (shouldHighlight) return;
+    if (typeof window === "undefined") return;
+
+    // Idle-callback path. Fires after the browser finishes initial
+    // paint + script eval, so this almost always wins the race for
+    // above-the-fold blocks.
+    type IdleCB = (cb: () => void, opts?: { timeout?: number }) => number;
+    const ric = (window as unknown as { requestIdleCallback?: IdleCB })
+      .requestIdleCallback;
+    const cancel = (window as unknown as {
+      cancelIdleCallback?: (id: number) => void;
+    }).cancelIdleCallback;
+    const idleHandle = ric
+      ? ric(() => setShouldHighlight(true), { timeout: 1500 })
+      : window.setTimeout(() => setShouldHighlight(true), 200);
+
+    // Intersection path. Covers below-the-fold blocks AND user
+    // agents without requestIdleCallback (older Safari).
+    let observer: IntersectionObserver | undefined;
+    if (ref.current && window.IntersectionObserver) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            setShouldHighlight(true);
+            observer?.disconnect();
+          }
+        },
+        { rootMargin: "200px" },
+      );
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (cancel && ric) cancel(idleHandle);
+      else window.clearTimeout(idleHandle as unknown as number);
+      observer?.disconnect();
+    };
+  }, [shouldHighlight, ref]);
+
+  return shouldHighlight;
 }
 
 function legacyCopy(text: string) {
