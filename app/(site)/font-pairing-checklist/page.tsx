@@ -104,11 +104,14 @@ export default function FontPairingChecklistPage() {
             The Shopify font-pairing checklist
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Six axes we run every Shopify font pairing through before it
-            goes on a storefront. The checklist opens in your browser the
-            moment you submit your email — save it straight to PDF from
-            the print dialog. We&apos;ll only email you when we ship a
-            major update; no follow-up sequence, no account.
+            Two pages: the six-axis checklist we run every Shopify font
+            pairing through before it goes on a storefront, plus a
+            reference card of five proven pairings, a safe single-font
+            default, and the three rules that kill most pairings. Opens
+            in your browser the moment you submit your email — save it
+            straight to PDF from the print dialog. We&apos;ll only email
+            you when we ship a major update; no follow-up sequence, no
+            account.
           </p>
         </header>
 
