@@ -57,7 +57,7 @@ const FAQS: ReadonlyArray<{ q: string; a: string }> = [
   },
   {
     q: "What if it doesn't work for me?",
-    a: "No-questions-asked refund within 30 days — just reply to your receipt. The kit is built to be entirely self-contained so you never have to wait on support; the refund exists so a mismatch is never your problem.",
+    a: "No-questions-asked refund within 7 days — just reply to your receipt. The kit is built to be entirely self-contained so you never have to wait on support; the refund exists so a mismatch is never your problem.",
   },
 ];
 

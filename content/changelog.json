@@ -1,6 +1,14 @@
 [
   {
     "date": "2026-05-15",
+    "title": "Ignore kits/dist (Gumroad zip bundles — binary, regenerable)"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog"
+  },
+  {
+    "date": "2026-05-15",
     "title": "Pivot the site to sell Typography Kits; kill all Shopify-app language"
   },
   {
