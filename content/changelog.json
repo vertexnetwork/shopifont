@@ -1,6 +1,22 @@
 [
   {
     "date": "2026-05-15",
+    "title": "Pivot the site to sell Typography Kits; kill all Shopify-app language"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Build the Shopify Typography Kits product (6 kits × 13 themes)"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Correct Shopify-app docs: one brand domain, not two"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog"
+  },
+  {
+    "date": "2026-05-15",
     "title": "Wire flag-gated Shopify-app upsell at peak-friction points"
   },
   {
