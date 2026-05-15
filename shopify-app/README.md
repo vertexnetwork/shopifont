@@ -2,7 +2,7 @@
 
 Auto-installs custom fonts into a merchant's Shopify theme using the Theme Asset API. Reuses [`lib/generators/*`](../lib/generators/) from the parent project (the same pure functions that power [shopifont.app](https://shopifont.app) and the Chrome extension) — single source of truth, no fork.
 
-Sibling to [`extension/`](../extension) inside the same monorepo. Deployed as its own Vercel project, separate from `shopifont.app`.
+Sibling to [`extension/`](../extension) inside the same monorepo. The backend deploys as its own Vercel project (an SSR + Postgres + OAuth runtime — it can't live in the static shopifont.app deploy), but on **one brand domain**: it's served at the `app.shopifont.app` subdomain, and the shopifont.app marketing site links merchants to the **App Store listing** (`apps.shopify.com/<handle>`), never to the backend. There is no `*.vercel.app` URL anywhere a merchant sees. See [`SETUP.md`](SETUP.md) → "Two URLs".
 
 ## What it does
 
@@ -71,20 +71,15 @@ npm run dev
 
 ### 4. Deploy to Vercel
 
-The `shopify-app/` directory deploys as its own Vercel project — **do NOT** import it as part of the main `shopifont.app` deploy. The two are separate apps with separate domains.
+The backend deploys as its **own Vercel project** — **do NOT** import it into the main `shopifont.app` deploy (different runtime). It is **not** a separate brand domain: serve it at the `app.shopifont.app` subdomain (a custom domain on this Vercel project). The marketing site links merchants to the App Store listing, never to this backend.
 
-1. **Vercel → Add New → Project → Import** the GitHub repo, **Root Directory: `shopify-app`**.
-2. Set environment variables (Production + Preview):
-   - `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`
-   - `SHOPIFY_APP_URL` — the Vercel deploy URL (or custom domain)
-   - `SCOPES=write_themes`
-   - `DATABASE_URL`
-   - `SHOPIFY_BILLING_PLAN_NAME`, `SHOPIFY_BILLING_PLAN_PRICE_USD`, `SHOPIFY_BILLING_TRIAL_DAYS`
-3. After first deploy, run `npm run prisma:migrate:deploy` against the production DB (Vercel runs `prisma generate` on every build via `vercel.json` `buildCommand` but does not auto-apply migrations).
-4. Update the Partners app config:
-   - **App URL**: `https://your-vercel-url.vercel.app`
-   - **Allowed redirection URLs**: `https://your-vercel-url.vercel.app/auth/callback` and `/auth/shopify/callback`
-   - Or run `npm run deploy` from the CLI — it pushes the local `shopify.app.toml` to Partners.
+[`SETUP.md`](SETUP.md) is the authoritative, step-by-step runbook (DNS/subdomain, env vars, migrations, Partners config, listing, and flipping the upsell live on shopifont.app after approval). The short version:
+
+1. **Vercel → Add New → Project → Import**, **Root Directory: `shopify-app`**.
+2. Add the custom domain `app.shopifont.app` to this project (one `CNAME` in shopifont.app's DNS).
+3. Env vars (Production + Preview): `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_APP_URL=https://app.shopifont.app`, `SCOPES=write_themes`, `DATABASE_URL`, `SHOPIFY_BILLING_PLAN_NAME`, `SHOPIFY_BILLING_PLAN_PRICE_USD`, `SHOPIFY_BILLING_TRIAL_DAYS`.
+4. After first deploy, run `npm run prisma:migrate:deploy` against the production DB.
+5. `npm run deploy` pushes `shopify.app.toml` (already pointing `application_url` + `redirect_urls` at `https://app.shopifont.app`) to Partners.
 
 ### 5. Submit to App Store (when ready)
 

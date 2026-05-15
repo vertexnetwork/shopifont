@@ -36,8 +36,25 @@ work (plus Shopify's review queue, typically 5–10 business days).
 |---|---|---|
 | Shopify Partners | partners.shopify.com | Create the app, get API credentials, manage the listing |
 | A Postgres provider | neon.tech (recommended) | Session storage — the app cannot run without it |
-| Vercel | vercel.com | Hosts the app as its own project (separate from shopifont.app) |
+| Vercel | vercel.com | Hosts the app backend as its own project, served at the `app.shopifont.app` subdomain (see "Two URLs" below) |
 | A development store | Created inside Partners | Test install + billing without real charges |
+| DNS for shopifont.app | wherever the domain is managed | Add one `CNAME` so `app.shopifont.app` points at the app's Vercel project |
+
+### Two URLs — read this before you start
+
+There is **one brand domain**. There is no `*.vercel.app` URL anywhere
+a merchant can see. Two distinct URLs are involved and they are not
+interchangeable:
+
+| URL | What it is | Who sees it | Set as |
+|---|---|---|---|
+| `https://app.shopifont.app` | The app **backend** — the Remix server Shopify loads inside the admin iframe. Its own Vercel project (it's an SSR + Postgres + OAuth app; it physically cannot live in the static shopifont.app deploy). | Only Shopify's iframe + OAuth redirects. Not a marketing surface. | `SHOPIFY_APP_URL` in the **shopify-app** Vercel project; `application_url` in `shopify.app.toml` |
+| `https://apps.shopify.com/<handle>` | The **App Store listing**. Where merchants actually install. | Merchants, via every `<AppUpsell />` link on shopifont.app. | `NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL` in the **main shopifont.app** Vercel project |
+
+The shopifont.app marketing site links to the **listing**, never to
+the backend. The backend being a separate Vercel *project* is a hard
+Shopify/runtime requirement — but it is **not** a separate brand
+domain; it's the `app.` subdomain.
 
 > **Neon is recommended** over Vercel Postgres for this app: free
 > tier is generous, connection string is stable, and branch-per-env
@@ -85,7 +102,7 @@ Fill `.env`:
 | `SHOPIFY_API_KEY` | Client ID from step 2 |
 | `SHOPIFY_API_SECRET` | Client secret from step 2 |
 | `SCOPES` | `write_themes` (leave as-is) |
-| `SHOPIFY_APP_URL` | Leave the placeholder for now; the CLI rewrites it in dev |
+| `SHOPIFY_APP_URL` | `https://app.shopifont.app` (the default in `.env.example`). The Shopify CLI auto-overrides this with a tunnel URL during `npm run dev`, so the value only matters for production. |
 | `DATABASE_URL` | Neon connection string from step 3 |
 | `SHOPIFY_BILLING_PLAN_NAME` | `Shopifont Pro` (leave as-is) |
 | `SHOPIFY_BILLING_PLAN_PRICE_USD` | `4.99` |
@@ -161,10 +178,14 @@ expected behavior, not a bug (documented in `README.md` Limits).
 
 ---
 
-## 7. Deploy to Vercel (separate project)
+## 7. Deploy the backend to Vercel (own project, `app.shopifont.app`)
 
-> **Do NOT** add `shopify-app/` to the main `shopifont.app` Vercel
-> project. It is a separate Remix app with its own domain.
+> The `shopify-app/` backend is its **own Vercel project** — a
+> separate Remix/Postgres/OAuth runtime that **cannot** be folded
+> into the static shopifont.app deploy. That is a runtime constraint,
+> **not** a separate brand domain: it's served at the
+> `app.shopifont.app` subdomain. Do **not** import `shopify-app/`
+> into the main shopifont.app Vercel project.
 
 1. Vercel → **Add New → Project → Import** the GitHub repo.
 2. **Root Directory: `shopify-app`** (critical — set this in the
@@ -172,16 +193,20 @@ expected behavior, not a bug (documented in `README.md` Limits).
 3. Framework preset auto-detects Remix (confirmed by `vercel.json`).
    The build command is already pinned to
    `npm run prisma:generate && npm run build` — don't override it.
-4. Add environment variables (Production **and** Preview):
+4. **Custom domain:** in this Vercel project → Settings → Domains,
+   add `app.shopifont.app`. Vercel shows a `CNAME` target (e.g.
+   `cname.vercel-dns.com`). Add that `CNAME` record for the `app`
+   subdomain wherever shopifont.app's DNS lives. Wait for Vercel to
+   show the domain as Valid (TLS auto-provisions).
+5. Add environment variables (Production **and** Preview):
    - `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`
-   - `SHOPIFY_APP_URL` → the Vercel production URL (e.g.
-     `https://shopifont-app.vercel.app`, or a custom domain)
+   - `SHOPIFY_APP_URL=https://app.shopifont.app`
    - `SCOPES=write_themes`
    - `DATABASE_URL` → Neon string
    - `SHOPIFY_BILLING_PLAN_NAME=Shopifont Pro`
    - `SHOPIFY_BILLING_PLAN_PRICE_USD=4.99`
    - `SHOPIFY_BILLING_TRIAL_DAYS=7`
-5. Deploy. After the first successful deploy, run the production
+6. Deploy. After the first successful deploy, run the production
    migration once (Vercel runs `prisma generate` on every build but
    **does not** auto-apply migrations):
    ```bash
@@ -189,8 +214,9 @@ expected behavior, not a bug (documented in `README.md` Limits).
    DATABASE_URL="<prod-neon-url>" npm run prisma:migrate:deploy
    ```
 
-Success check: visiting the Vercel URL directly shows the
-"open from your Shopify Admin" landing page (not a 500).
+Success check: `https://app.shopifont.app` shows the "open from your
+Shopify Admin" landing page (not a 500, not a Vercel 404, and the URL
+bar stays on `app.shopifont.app` — not a `*.vercel.app` redirect).
 
 ---
 
@@ -200,15 +226,15 @@ Either edit in the Partners dashboard, or (preferred) push from the
 linked toml:
 
 ```bash
-# set application_url + redirect_urls in shopify.app.toml to the
-# Vercel URL, then:
+# shopify.app.toml already points application_url + redirect_urls at
+# https://app.shopifont.app — if your DNS uses a different subdomain,
+# edit those lines first, then:
 npm run deploy
 ```
 
-`shopify.app.toml` already has the correct relative paths; just
-swap `https://shopifont-app.vercel.app` for your real production
-URL in `application_url` and the three `redirect_urls` if the
-domain differs.
+Confirm `application_url = "https://app.shopifont.app"` and all three
+`redirect_urls` use the same host before pushing. `npm run deploy`
+writes this config to the Partners app.
 
 Re-test the install flow once against the **production** URL on the
 dev store (repeat the step 6 checklist). Webhooks now hit the
@@ -228,7 +254,7 @@ app:
 | App name | `Shopifont` (or `Shopifont — Custom Font Installer`) |
 | Pricing | **Recurring: $4.99 / month, 7-day free trial** (must match `SHOPIFY_BILLING_*` env vars exactly) |
 | Privacy policy URL | `https://shopifont.app/privacy` |
-| App URL | the Vercel production URL |
+| App URL | `https://app.shopifont.app` (the backend subdomain — Shopify loads this in the iframe) |
 | Single-purpose justification | "Auto-installs a merchant-supplied custom font into their Shopify theme via the Theme Asset API." |
 | Requested scopes justification | `write_themes`: "The app writes the @font-face stylesheet and a stylesheet_tag into the merchant's theme assets and layout — this requires write access to themes." |
 | Data handling | The app stores no end-customer PII. It persists only Shopify Session records (shop domain + access token) for auth. GDPR webhooks are implemented. |
@@ -252,6 +278,35 @@ Screenshots/demo: record the step 6 golden path on the dev store.
 - [ ] Privacy policy URL resolves.
 
 Then: Partners → app → **Submit for review**.
+
+---
+
+## 11. After approval — flip the upsell live on shopifont.app
+
+The marketing site already has flag-gated `<AppUpsell />` placements
+on the homepage, every pSEO generator page, the uninstall guide, and
+the three research guides. They render **nothing** until the listing
+URL is set. One env var turns them all on — no code change, no
+redeploy of logic:
+
+1. Get the public listing URL from the approved app:
+   `https://apps.shopify.com/<your-handle>`.
+2. In the **main shopifont.app** Vercel project (not this one) →
+   Settings → Environment Variables, add:
+   ```
+   NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL=https://apps.shopify.com/<your-handle>
+   ```
+3. Redeploy shopifont.app (or trigger a deploy). Every `<AppUpsell />`
+   now renders and links to the listing.
+4. Spot-check: homepage (card under the generated code), any
+   `/shopify-*-custom-font-generator` page (card after the install
+   steps), `/uninstall-custom-font-shopify` (card before the reinstall
+   box), and a research guide (single soft line in the closing box).
+
+Until this is set, `siteConfig.features.shopifyApp.enabled` is false
+and the component returns `null` everywhere — which is why the site
+can ship the placements now and light them up the day the listing
+goes live.
 
 ---
 
