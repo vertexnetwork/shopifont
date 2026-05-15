@@ -1,3 +1,20 @@
+> # ⚠️ SHELVED — NOT THE ACTIVE PRODUCT
+>
+> This Shopify App is **not** what Shopifont sells. It was evaluated
+> and deliberately shelved: it carries a backend, billing, GDPR
+> webhooks, and a support tail — a job, not a low-maintenance product.
+>
+> **The product is the Shopify Typography Kits** (one-time digital
+> downloads sold on Gumroad). See `content/kits.ts`,
+> `scripts/build-kits.ts`, the generated `kits/` directory, and the
+> `/shopify-typography-kits` sales page in the main project.
+>
+> This directory is kept only as an optional future lever. Do not
+> deploy or submit it without first re-confirming it's worth the
+> maintenance cost. Nothing on shopifont.app links to it.
+
+---
+
 # Shopifont — Shopify App
 
 Auto-installs custom fonts into a merchant's Shopify theme using the Theme Asset API. Reuses [`lib/generators/*`](../lib/generators/) from the parent project (the same pure functions that power [shopifont.app](https://shopifont.app) and the Chrome extension) — single source of truth, no fork.

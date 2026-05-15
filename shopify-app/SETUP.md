@@ -1,3 +1,14 @@
+> # ⚠️ SHELVED — DO NOT FOLLOW THIS UNLESS THE APP IS UN-SHELVED
+>
+> The Shopify App is not the active product. The product is the
+> **Shopify Typography Kits** (Gumroad). This runbook is preserved
+> intact for the day the app might be revived as a scale lever — but
+> do not start it without re-deciding that the support/maintenance
+> cost is worth it. See the main project's `/shopify-typography-kits`
+> page and `content/kits.ts` for what's actually being sold.
+
+---
+
 # Shopifont Shopify App — Setup & Submission Walkthrough
 
 This is the step-by-step runbook to take the app from the current

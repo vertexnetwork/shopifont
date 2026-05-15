@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CreativeFabricaInline } from "@/components/Affiliate/CreativeFabricaInline";
 import { PrintifyInline } from "@/components/Affiliate/PrintifyInline";
-import { AppUpsell } from "@/components/AppUpsell";
+import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { AdSlot } from "@/components/Layout/AdSlot";
 import { RelatedLinks } from "@/components/Layout/RelatedLinks";
@@ -158,14 +158,14 @@ export default async function PseoPage({ params }: PageProps) {
               ))}
             </ol>
             {/*
-             * Paid-app upsell. The merchant has just read an
+             * Typography Kit upsell. The merchant has just read an
              * enumerated manual procedure — the friction is literally
-             * numbered in front of them. This is the strongest upsell
-             * moment on a pSEO page, so it sits directly under the
-             * steps and above the affiliate exit. Ships dark until the
-             * App Store listing URL is set.
+             * numbered in front of them. Strongest upsell moment on a
+             * pSEO page, so it sits directly under the steps and above
+             * the affiliate exit. Ships dark until the Gumroad URL is
+             * set.
              */}
-            <AppUpsell variant="pseo-steps" themeName={entry.theme} />
+            <KitUpsell variant="pseo-steps" themeName={entry.theme} />
             {/*
              * Inline affiliate exit. Lands AFTER the technical
              * instructions so the user has already confirmed the

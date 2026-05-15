@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppUpsell } from "@/components/AppUpsell";
+import { KitUpsell } from "@/components/KitUpsell";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
@@ -515,7 +515,7 @@ export default function FontPairingsPage() {
               before you commit.
             </li>
           </ul>
-          <AppUpsell variant="soft" />
+          <KitUpsell variant="soft" />
         </section>
       </article>
     </>

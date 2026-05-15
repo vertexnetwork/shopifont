@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppUpsell } from "@/components/AppUpsell";
+import { KitUpsell } from "@/components/KitUpsell";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { SITE_NAME } from "@/lib/site";
@@ -281,14 +281,14 @@ export default function UninstallPage() {
         </section>
 
         {/*
-         * Paid-app upsell. Peak regret/pain moment on the whole site —
-         * the merchant has just hand-reversed theme-file edits. "There
-         * has to be a better way" is exactly what they're thinking, so
-         * the upsell lands here, after the manual steps and before the
-         * (free) reinstall pointer. Ships dark until the listing URL
-         * is set.
+         * Typography Kit upsell. Peak regret/pain moment on the whole
+         * site — the merchant has just hand-reversed theme-file edits.
+         * "There has to be a better way" is exactly what they're
+         * thinking, so the upsell lands here, after the manual steps
+         * and before the (free) reinstall pointer. Ships dark until
+         * the Gumroad URL is set.
          */}
-        <AppUpsell variant="uninstall" />
+        <KitUpsell variant="uninstall" />
 
         <section className="flex flex-col gap-3 rounded-lg border border-charcoal-line/30 bg-paper-dim p-5">
           <h2 className="text-xl font-bold tracking-tight">

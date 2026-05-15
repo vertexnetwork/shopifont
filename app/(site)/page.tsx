@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
-import { AppUpsell } from "@/components/AppUpsell";
+import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -118,16 +118,15 @@ export default function HomePage() {
         </section>
 
         {/*
-         * Paid-app upsell. Keystone placement: directly under the
-         * generated code blocks, the single highest-friction moment —
-         * the merchant is staring at three blocks they have to
-         * hand-paste into theme files. Sits ABOVE the affiliate
-         * because the person who just generated code already has a
-         * font; their next felt need is "now I have to install this,"
-         * which is exactly what the app removes. Renders nothing until
-         * the App Store listing URL is set (ships dark).
+         * Typography Kit upsell. Keystone placement: directly under
+         * the generated code blocks, the single highest-friction
+         * moment — they have working code but still own the font
+         * decision and the hand-paste. Sits ABOVE the affiliate
+         * because the person who just generated code is at peak
+         * "is there a done version of this?" intent. Renders nothing
+         * until the Gumroad URL is set (ships dark).
          */}
-        <AppUpsell variant="post-generator" />
+        <KitUpsell variant="post-generator" />
 
         {/*
          * Creative Fabrica affiliate. Placed here intentionally —

@@ -24,6 +24,13 @@ export type EvergreenEntry = {
 
 export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   {
+    slug: "shopify-typography-kits",
+    title: "Shopify Typography Kits — done-for-you font pairings",
+    summary:
+      "Productized font systems for Shopify storefronts: a proven heading-and-body pairing for your store type, copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, a license-cleared usage sheet, and a clean uninstall sheet. One-time purchase, instant download, no account. Six kits covering premium/editorial, luxury, DTC, editorial-warm, modern-tech, and minimal verticals.",
+    priority: 0.9,
+  },
+  {
     slug: "uninstall-custom-font-shopify",
     title: "How to uninstall a custom font from a Shopify theme",
     summary:

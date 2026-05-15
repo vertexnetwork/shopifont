@@ -84,14 +84,15 @@ export const siteConfig = {
   nav: {
     primary: [
       { href: "/#themes", label: "Themes" },
+      { href: "/shopify-typography-kits", label: "Typography Kits" },
       { href: "/best-free-fonts-for-shopify", label: "Best fonts" },
       { href: "/#how-it-works", label: "How it works" },
-      { href: "/embed-this", label: "Embed" },
       { href: "/extension", label: "Extension" },
       { href: "/about", label: "About" },
     ] as ReadonlyArray<FooterLink>,
     footer: {
       product: [
+        { href: "/shopify-typography-kits", label: "Typography Kits" },
         { href: "/shopify-dawn-custom-font-generator", label: "Dawn" },
         { href: "/shopify-sense-custom-font-generator", label: "Sense" },
         { href: "/shopify-refresh-custom-font-generator", label: "Refresh" },
@@ -148,23 +149,23 @@ export const siteConfig = {
         "https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa",
     },
     /**
-     * The paid Shopify App Store app (auto-installs fonts via the
-     * Theme Asset API; $4.99/mo, 7-day trial). It has no public
-     * listing URL until it clears Shopify review, so the upsell
-     * placements ship DARK: `enabled` is false until
-     * NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL is set in the environment,
-     * at which point every <AppUpsell /> across the site renders with
-     * no code change. Flip it on the day the listing goes live.
+     * The paid product: Shopify Typography Kits, sold on Gumroad.
+     * Every upsell + the sales page ship DARK until
+     * NEXT_PUBLIC_KIT_GUMROAD_URL is set in the environment — then
+     * every <KitUpsell /> and the "Buy" CTA light up with no code
+     * change or redeploy of logic. Set the env var the moment the
+     * Gumroad product is live; that is the only switch.
+     *
+     * (The Shopify App was evaluated and shelved — it's a support
+     * job, not a Muse. Its code remains under shopify-app/ as an
+     * optional future lever but is intentionally NOT surfaced
+     * anywhere on the site.)
      */
-    shopifyApp: {
-      enabled: Boolean(
-        process.env.NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL?.trim(),
-      ),
-      listingUrl: fallback(
-        process.env.NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL,
-        "",
-      ),
-      priceLabel: "$4.99/mo · 7-day free trial",
+    kit: {
+      enabled: Boolean(process.env.NEXT_PUBLIC_KIT_GUMROAD_URL?.trim()),
+      gumroadUrl: fallback(process.env.NEXT_PUBLIC_KIT_GUMROAD_URL, ""),
+      productName: "Shopify Typography Kits",
+      priceLabel: "from $39 · one-time · instant download",
     },
     proEnabled: false,
     email: { enabled: true, leadMagnetName: "font-pairing-checklist" },

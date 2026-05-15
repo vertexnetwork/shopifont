@@ -138,36 +138,44 @@ export default function AboutPage() {
             id="business-heading"
             className="text-2xl font-bold tracking-tight"
           >
-            How {SITE_NAME} stays free
+            How {SITE_NAME} makes money
           </h2>
           <p className="text-charcoal/80 leading-relaxed">
-            The site is funded by display advertising. We work with Mediavine
-            so that ad density stays inside the bounds Mediavine sets for its
-            partners — that means no interstitials, no auto-playing video
-            with sound, and reserved-height ad slots so a loading ad cannot
-            cause the page to jump while you&apos;re reading. If display
-            advertising ever conflicts with the developer-tool experience,
-            the experience wins.
+            The generator, the guides, and every theme page are free and
+            stay free. The site earns its keep through one paid product:{" "}
+            <Link
+              href="/shopify-typography-kits"
+              className="text-electric hover:underline"
+            >
+              Shopify Typography Kits
+            </Link>{" "}
+            — done-for-you font pairings with the install code pre-built
+            for every free theme. The free tools are genuinely useful on
+            their own; the kit is for people who would rather buy the
+            finished decision than make it themselves. Nothing about the
+            free tools is gated to push the paid one.
           </p>
           <p className="text-charcoal/80 leading-relaxed">
-            We take no affiliate commission for any Shopify theme, app, or
-            service mentioned on the site. The theme metadata is sourced
-            directly from Shopify&apos;s public Theme Store and from each
-            theme&apos;s own documentation.
-          </p>
-          <p className="text-charcoal/80 leading-relaxed">
-            We do work with one font marketplace as an affiliate:{" "}
-            <strong>Creative Fabrica</strong>. When you click a Creative
-            Fabrica link from anywhere on the site and end up buying a font,
-            we receive a small commission at no extra cost to you. We picked
-            Creative Fabrica because their web fonts ship with commercial
-            licenses included — the merchant doesn&apos;t need a separate
-            license to use the font in a Shopify storefront. Affiliate links
-            carry{" "}
+            Two smaller revenue lines support the rest. First, affiliate
+            links: we work with <strong>Creative Fabrica</strong> (a font
+            marketplace whose web fonts ship with commercial licenses
+            included) and <strong>Printify</strong> (print-on-demand
+            fulfillment). If you click one of those links and buy
+            something, we receive a small commission at no extra cost to
+            you. Both carry{" "}
             <code className="font-mono text-sm">rel=&quot;sponsored&quot;</code>{" "}
-            per Google&apos;s webmaster guidelines. The partnership does not
-            influence which themes we cover, the order they appear in, or
-            anything else about the editorial content of the site.
+            per Google&apos;s webmaster guidelines. Second, display
+            advertising via Mediavine, kept inside Mediavine&apos;s
+            density bounds — no interstitials, no sound-on autoplay, and
+            reserved-height ad slots so a loading ad never makes the page
+            jump while you read.
+          </p>
+          <p className="text-charcoal/80 leading-relaxed">
+            None of this influences the editorial content. Theme metadata
+            comes straight from Shopify&apos;s public Theme Store and each
+            theme&apos;s own documentation; the font recommendations are
+            the same whether or not a kit exists for them. If advertising
+            ever conflicts with the tool experience, the experience wins.
           </p>
         </section>
 

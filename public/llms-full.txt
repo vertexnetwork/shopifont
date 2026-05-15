@@ -255,6 +255,11 @@ Top-level pages outside the per-theme generator system. These cover identity, mo
 
 Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.
 
+### Shopify Typography Kits — done-for-you font pairings
+
+- URL: https://shopifont.app/shopify-typography-kits
+- Summary: Productized font systems for Shopify storefronts: a proven heading-and-body pairing for your store type, copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, a license-cleared usage sheet, and a clean uninstall sheet. One-time purchase, instant download, no account. Six kits covering premium/editorial, luxury, DTC, editorial-warm, modern-tech, and minimal verticals.
+
 ### How to uninstall a custom font from a Shopify theme
 
 - URL: https://shopifont.app/uninstall-custom-font-shopify

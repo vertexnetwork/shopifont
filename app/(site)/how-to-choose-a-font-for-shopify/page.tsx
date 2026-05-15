@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppUpsell } from "@/components/AppUpsell";
+import { KitUpsell } from "@/components/KitUpsell";
 import { CreativeFabricaInline } from "@/components/Affiliate/CreativeFabricaInline";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
@@ -324,7 +324,7 @@ export default function ChooseFontPage() {
             </Link>{" "}
             walks through the clean reversal in five steps.
           </p>
-          <AppUpsell variant="soft" />
+          <KitUpsell variant="soft" />
         </section>
       </article>
     </>
