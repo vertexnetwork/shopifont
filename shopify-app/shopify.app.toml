@@ -29,6 +29,17 @@ api_version = "2025-01"
   topics = ["app/uninstalled", "app/scopes_update"]
   uri = "/webhooks"
 
+  # Mandatory GDPR / privacy-compliance topics. Shopify's automated
+  # App Store review REJECTS any public app that does not subscribe to
+  # and respond 200 on all three. Handled in app/routes/webhooks.$.tsx.
+  [[webhooks.subscriptions]]
+  compliance_topics = [
+    "customers/data_request",
+    "customers/redact",
+    "shop/redact",
+  ]
+  uri = "/webhooks"
+
 [access_scopes]
 # write_themes is the load-bearing scope — without it the Theme Asset
 # API write that auto-installs the @font-face block fails. read_themes

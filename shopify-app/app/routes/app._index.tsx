@@ -1,25 +1,8 @@
-import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import {
-  BlockStack,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  DropZone,
-  InlineStack,
-  Layout,
-  Page,
-  Select,
-  Tag,
-  Text,
-  TextField,
-} from "@shopify/polaris";
+import { BlockStack, Card, Layout, Page, Text } from "@shopify/polaris";
 
 import { authenticate } from "../shopify.server";
-import { FORMAT_LABEL, FORMAT_ORDER, VALID_WEIGHTS } from "@/lib/generators";
-import type { FontFormat, FontStyle, FontWeight } from "@/lib/generators";
 import { InstallForm } from "../components/InstallForm";
 
 /**
@@ -31,17 +14,23 @@ import { InstallForm } from "../components/InstallForm";
 export async function loader({ request }: LoaderFunctionArgs) {
   const { admin } = await authenticate.admin(request);
 
-  // Fetch themes via the Admin REST endpoint — the GraphQL Admin API
-  // also exposes themes but the REST endpoint is the documented path
-  // for the matching Asset API write we use in the install action,
-  // and using the same client end-to-end means one set of error
-  // shapes to handle.
-  const response = await admin.rest.resources.Theme.all({ session: undefined });
-  const themes = (response.data ?? []).map((t) => ({
-    id: String(t.id),
-    name: t.name ?? "(untitled)",
-    role: t.role ?? "unpublished",
-  }));
+  // Raw REST client (`admin.rest.get`), NOT `admin.rest.resources.*`.
+  // shopify.server.ts deliberately omits the REST resource catalog to
+  // keep cold starts light, so `admin.rest.resources` is undefined.
+  // The install action uses the same raw client end-to-end, so one
+  // set of error shapes covers theme listing + the Asset API writes.
+  const response = await admin.rest.get({ path: "themes" });
+  let themes: Array<{ id: string; name: string; role: string }> = [];
+  if (response.ok) {
+    const body = (await response.json()) as {
+      themes?: Array<{ id: number; name?: string; role?: string }>;
+    };
+    themes = (body.themes ?? []).map((t) => ({
+      id: String(t.id),
+      name: t.name ?? "(untitled)",
+      role: t.role ?? "unpublished",
+    }));
+  }
 
   return { themes };
 }

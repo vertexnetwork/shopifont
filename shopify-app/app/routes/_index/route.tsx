@@ -1,8 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
-import { login } from "../../shopify.server";
-
 /**
  * Root landing route. Visiting `/` directly lands here; if the URL
  * has a `?shop=` query (the case when a merchant clicks "Install" on
