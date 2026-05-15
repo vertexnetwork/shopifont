@@ -147,6 +147,25 @@ export const siteConfig = {
       chromeWebStoreUrl:
         "https://chromewebstore.google.com/detail/shopifont-%E2%80%94-shopify-custo/ldljokdfbnhnhdgnggogfckekgbhmcpa",
     },
+    /**
+     * The paid Shopify App Store app (auto-installs fonts via the
+     * Theme Asset API; $4.99/mo, 7-day trial). It has no public
+     * listing URL until it clears Shopify review, so the upsell
+     * placements ship DARK: `enabled` is false until
+     * NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL is set in the environment,
+     * at which point every <AppUpsell /> across the site renders with
+     * no code change. Flip it on the day the listing goes live.
+     */
+    shopifyApp: {
+      enabled: Boolean(
+        process.env.NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL?.trim(),
+      ),
+      listingUrl: fallback(
+        process.env.NEXT_PUBLIC_SHOPIFY_APP_LISTING_URL,
+        "",
+      ),
+      priceLabel: "$4.99/mo · 7-day free trial",
+    },
     proEnabled: false,
     email: { enabled: true, leadMagnetName: "font-pairing-checklist" },
     ads: {

@@ -10,7 +10,7 @@ const SITE_NAME = siteConfig.name;
 const CONTACT_EMAIL = siteConfig.supportEmail;
 
 const ABOUT_DESCRIPTION =
-  `${SITE_NAME} is a free, independently-built tool that generates the exact code Shopify merchants need to install custom fonts on Dawn and other OS 2.0 themes — without layout shifts, without uploads, and without paid plans.`;
+  `${SITE_NAME} is a free, independently-built tool that generates the exact code Shopify merchants need to install custom fonts on Dawn and other OS 2.0 themes — no layout shifts, no uploads, no signup.`;
 
 export const metadata: Metadata = {
   title: `About ${SITE_NAME}`,

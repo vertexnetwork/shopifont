@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AppUpsell } from "@/components/AppUpsell";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
@@ -602,6 +603,7 @@ export default function BestFontsPage() {
             performance budget, licensing, weights, pairing, and
             multilingual support. Worth the ten minutes before you commit.
           </p>
+          <AppUpsell variant="soft" />
         </section>
       </article>
     </>

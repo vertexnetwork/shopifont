@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
+import { AppUpsell } from "@/components/AppUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -115,6 +116,18 @@ export default function HomePage() {
           </h2>
           <ShopifontGenerator />
         </section>
+
+        {/*
+         * Paid-app upsell. Keystone placement: directly under the
+         * generated code blocks, the single highest-friction moment —
+         * the merchant is staring at three blocks they have to
+         * hand-paste into theme files. Sits ABOVE the affiliate
+         * because the person who just generated code already has a
+         * font; their next felt need is "now I have to install this,"
+         * which is exactly what the app removes. Renders nothing until
+         * the App Store listing URL is set (ships dark).
+         */}
+        <AppUpsell variant="post-generator" />
 
         {/*
          * Creative Fabrica affiliate. Placed here intentionally —
