@@ -9,6 +9,7 @@ import { RelatedLinks } from "@/components/Layout/RelatedLinks";
 import { Reveal } from "@/components/Reveal";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
+import { HowToSchema } from "@/components/Schema/HowToSchema";
 import { SoftwareApplicationSchema } from "@/components/Schema/SoftwareApplicationSchema";
 import { PSEO_BY_SLUG, PSEO_ENTRIES } from "@/content/pseo";
 import { BUILD_DATE_ISO, absoluteUrl, getBuildDateLabel } from "@/lib/site";
@@ -64,6 +65,20 @@ export default async function PseoPage({ params }: PageProps) {
       />
       <FaqSchema id="faq-schema" faqs={entry.faqs} />
       <BreadcrumbSchema id="breadcrumb-schema" crumbs={crumbs} />
+      {/*
+       * HowTo schema only emits for instructional intents. Comparison
+       * pages list candidates side-by-side and don't have a single
+       * step-by-step procedure — emitting HowTo there would mismatch
+       * the visible content, which is a Google policy violation.
+       */}
+      {entry.intent !== "comparison" ? (
+        <HowToSchema
+          id="pseo-howto-schema"
+          name={entry.h1}
+          description={entry.oneLineAnswer}
+          steps={entry.useCaseSteps.map((text) => ({ text }))}
+        />
+      ) : null}
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-10">
         <nav aria-label="Breadcrumb" className="text-xs text-muted">

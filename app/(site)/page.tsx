@@ -20,7 +20,29 @@ export default function HomePage() {
 
   return (
     <>
-      <HowToSchema />
+      <HowToSchema
+        name="How to install a custom font on a Shopify theme"
+        description="Generate the @font-face, settings_schema, and CSS variable code for any custom font, then paste each block into your Shopify theme."
+        totalTime="PT5M"
+        supply={[
+          "Custom font file (WOFF2 recommended)",
+          "Shopify theme code editor access",
+        ]}
+        steps={[
+          {
+            name: "Enter your font name and select formats",
+            text: "Type your font's display name and tick the format checkboxes for the files you have. WOFF2 covers ~97% of modern browsers.",
+          },
+          {
+            name: "Copy the three generated blocks",
+            text: "The site outputs three code blocks: the @font-face CSS, a settings_schema.json snippet, and a CSS-variable override. Each has its own copy button.",
+          },
+          {
+            name: "Paste into your Shopify theme",
+            text: "Upload the font file to assets/, paste the @font-face into base.css, the JSON into settings_schema.json, and append the CSS variables. Save and refresh.",
+          },
+        ]}
+      />
       <SoftwareApplicationSchema />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-12">
