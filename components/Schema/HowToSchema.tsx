@@ -1,48 +1,64 @@
 import { JsonLd } from "./JsonLd";
 
+export type HowToStepData = {
+  /** Short label. Optional — when omitted, only `text` is emitted. */
+  name?: string;
+  /** The instruction body. Required. */
+  text: string;
+};
+
+type Props = {
+  /** Stable element id for the JSON-LD `<script>` — must be unique per page. */
+  id?: string;
+  /** The full "How to ..." sentence. */
+  name: string;
+  /** One-sentence description shown by Google when expanding the rich result. */
+  description: string;
+  /** ISO 8601 duration (e.g., "PT5M"). Optional. */
+  totalTime?: string;
+  /** Free-form supply names (e.g., "Custom font file (WOFF2 recommended)"). */
+  supply?: ReadonlyArray<string>;
+  /** Ordered steps. `position` is assigned automatically from array index. */
+  steps: ReadonlyArray<HowToStepData>;
+};
+
 /**
- * "How to install a custom font on Shopify" — three-step HowTo schema
- * for the homepage. PLAN.md §4 calls this out specifically as a pGEO
- * signal.
+ * Generic HowTo schema emitter. Used by the homepage's three-step
+ * install flow and by every non-comparison pSEO page (whose
+ * useCaseSteps describe theme-specific installation steps that Google
+ * rewards as HowTo rich results).
+ *
+ * Policy note: per Google's structured-data guidelines, every step
+ * here must be visible on the same page. Both call sites render the
+ * exact step text in an `<ol>` immediately above or below the schema
+ * emission point.
  */
-export function HowToSchema() {
-  const data = {
+export function HowToSchema({
+  id = "howto-schema",
+  name,
+  description,
+  totalTime,
+  supply,
+  steps,
+}: Props) {
+  const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    name: "How to install a custom font on a Shopify theme",
-    description:
-      "Generate the @font-face, settings_schema, and CSS variable code for any custom font, then paste each block into your Shopify theme.",
-    totalTime: "PT5M",
-    supply: [
-      {
-        "@type": "HowToSupply",
-        name: "Custom font file (WOFF2 recommended)",
-      },
-      {
-        "@type": "HowToSupply",
-        name: "Shopify theme code editor access",
-      },
-    ],
-    step: [
-      {
-        "@type": "HowToStep",
-        name: "Enter your font name and select formats",
-        text: "Type your font's display name and tick the format checkboxes for the files you have. WOFF2 covers ~97% of modern browsers.",
-        position: 1,
-      },
-      {
-        "@type": "HowToStep",
-        name: "Copy the three generated blocks",
-        text: "The site outputs three code blocks: the @font-face CSS, a settings_schema.json snippet, and a CSS-variable override. Each has its own copy button.",
-        position: 2,
-      },
-      {
-        "@type": "HowToStep",
-        name: "Paste into your Shopify theme",
-        text: "Upload the font file to assets/, paste the @font-face into base.css, the JSON into settings_schema.json, and append the CSS variables. Save and refresh.",
-        position: 3,
-      },
-    ],
+    name,
+    description,
+    step: steps.map((s, idx) => ({
+      "@type": "HowToStep",
+      ...(s.name ? { name: s.name } : {}),
+      text: s.text,
+      position: idx + 1,
+    })),
   };
-  return <JsonLd id="howto-schema" data={data} />;
+  if (totalTime) data.totalTime = totalTime;
+  if (supply && supply.length > 0) {
+    data.supply = supply.map((name) => ({
+      "@type": "HowToSupply",
+      name,
+    }));
+  }
+  return <JsonLd id={id} data={data} />;
 }

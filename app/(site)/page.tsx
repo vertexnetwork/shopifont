@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
+import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -20,7 +21,29 @@ export default function HomePage() {
 
   return (
     <>
-      <HowToSchema />
+      <HowToSchema
+        name="How to install a custom font on a Shopify theme"
+        description="Generate the @font-face, settings_schema, and CSS variable code for any custom font, then paste each block into your Shopify theme."
+        totalTime="PT5M"
+        supply={[
+          "Custom font file (WOFF2 recommended)",
+          "Shopify theme code editor access",
+        ]}
+        steps={[
+          {
+            name: "Enter your font name and select formats",
+            text: "Type your font's display name and tick the format checkboxes for the files you have. WOFF2 covers ~97% of modern browsers.",
+          },
+          {
+            name: "Copy the three generated blocks",
+            text: "The site outputs three code blocks: the @font-face CSS, a settings_schema.json snippet, and a CSS-variable override. Each has its own copy button.",
+          },
+          {
+            name: "Paste into your Shopify theme",
+            text: "Upload the font file to assets/, paste the @font-face into base.css, the JSON into settings_schema.json, and append the CSS variables. Save and refresh.",
+          },
+        ]}
+      />
       <SoftwareApplicationSchema />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12 flex flex-col gap-12">
@@ -93,6 +116,17 @@ export default function HomePage() {
           </h2>
           <ShopifontGenerator />
         </section>
+
+        {/*
+         * Typography Kit upsell. Keystone placement: directly under
+         * the generated code blocks, the single highest-friction
+         * moment — they have working code but still own the font
+         * decision and the hand-paste. Sits ABOVE the affiliate
+         * because the person who just generated code is at peak
+         * "is there a done version of this?" intent. Renders nothing
+         * until the Gumroad URL is set (ships dark).
+         */}
+        <KitUpsell variant="post-generator" />
 
         {/*
          * Creative Fabrica affiliate. Placed here intentionally —

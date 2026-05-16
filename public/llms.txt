@@ -37,9 +37,11 @@ All generation is pure client-side string interpolation. No file is uploaded; th
 - https://shopifont.app/embed-this  — iframe embed snippet for tutorial authors and theme reviewers
 - https://shopifont.app/extension  — Chrome Web Store extension that runs the generator inside a browser popup
 - https://shopifont.app/network  — Vertex Network hub listing sister tools by the same maker
+- https://shopifont.app/shopify-typography-kits  — Shopify Typography Kits — done-for-you font pairings
 - https://shopifont.app/uninstall-custom-font-shopify  — How to uninstall a custom font from a Shopify theme
 - https://shopifont.app/how-to-choose-a-font-for-shopify  — How to choose a font for your Shopify store
-- https://shopifont.app/best-free-fonts-for-shopify  — The best free fonts for Shopify (2026 edition)
+- https://shopifont.app/best-free-fonts-for-shopify  — The best fonts for a Shopify store (2026)
+- https://shopifont.app/shopify-font-pairings  — Shopify font pairings that work (2026)
 - https://shopifont.app/font-pairing-checklist  — Free Shopify font-pairing checklist
 - https://shopifont.app/recommendations  — Recommended Shopify tools
 - https://shopifont.app/shopify-dawn-custom-font-generator  — Free Shopify Dawn Custom Font Generator

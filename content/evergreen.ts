@@ -24,6 +24,13 @@ export type EvergreenEntry = {
 
 export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   {
+    slug: "shopify-typography-kits",
+    title: "Shopify Typography Kits — done-for-you font pairings",
+    summary:
+      "Productized font systems for Shopify storefronts: a proven heading-and-body pairing for your store type, copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, a license-cleared usage sheet, and a clean uninstall sheet. One-time purchase, instant download, no account. Six kits covering premium/editorial, luxury, DTC, editorial-warm, modern-tech, and minimal verticals.",
+    priority: 0.9,
+  },
+  {
     slug: "uninstall-custom-font-shopify",
     title: "How to uninstall a custom font from a Shopify theme",
     summary:
@@ -39,10 +46,17 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   },
   {
     slug: "best-free-fonts-for-shopify",
-    title: "The best free fonts for Shopify (2026 edition)",
+    title: "The best fonts for a Shopify store (2026)",
     summary:
-      "Curated list of free, commercially-licensed web fonts that work well on Shopify Dawn and other OS 2.0 themes. Each entry covers what the font is good for, weight availability, file size, and which kind of brand it fits. Includes a section on premium options for stores that need something more distinctive.",
-    priority: 0.5,
+      "The fonts that actually work on a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with honest notes on where each one wins or loses for ecommerce. Includes a side-by-side comparison table, pairing suggestions, and a premium-options section.",
+    priority: 0.6,
+  },
+  {
+    slug: "shopify-font-pairings",
+    title: "Shopify font pairings that work (2026)",
+    summary:
+      "Ten concrete font pairings for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.",
+    priority: 0.6,
   },
   {
     slug: "font-pairing-checklist",

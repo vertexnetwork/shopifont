@@ -1,0 +1,33 @@
+/* Heading family: Montserrat */
+@font-face {
+  font-family: "Montserrat";
+  src: url({{ 'montserrat-400.woff2' | asset_url }}) format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url({{ 'montserrat-700.woff2' | asset_url }}) format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Body family: Open Sans */
+@font-face {
+  font-family: "Open Sans";
+  src: url({{ 'open-sans-400.woff2' | asset_url }}) format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url({{ 'open-sans-700.woff2' | asset_url }}) format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

@@ -1,0 +1,17 @@
+/* Heading family → heading CSS variables */
+:root,
+[data-shopify-section],
+.shopify-section {
+  --font-heading-family: "Fraunces", sans-serif;
+  --font-heading-style: normal;
+  --font-heading-weight: 400;
+}
+
+/* Body family → body CSS variables */
+:root,
+[data-shopify-section],
+.shopify-section {
+  --font-body-family: "Inter", sans-serif;
+  --font-body-style: normal;
+  --font-body-weight: 400;
+}

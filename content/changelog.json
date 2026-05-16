@@ -1,5 +1,101 @@
 [
   {
+    "date": "2026-05-15",
+    "title": "Ignore kits/dist (Gumroad zip bundles — binary, regenerable)"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Pivot the site to sell Typography Kits; kill all Shopify-app language"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Build the Shopify Typography Kits product (6 kits × 13 themes)"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Correct Shopify-app docs: one brand domain, not two"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Wire flag-gated Shopify-app upsell at peak-friction points"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog through 2026-05-15"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Make Shopify app deploy- and review-ready"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Add reference-card page 2 to the font-pairing lead magnet"
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Regenerate changelog through 2026-05-14"
+  },
+  {
+    "date": "2026-05-14",
+    "title": "Extend HowTo schema to pSEO pages; add featureList to SoftwareApplication"
+  },
+  {
+    "date": "2026-05-13",
+    "title": "Reposition guide cluster for head-term capture; add pairings spoke"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Bulletproof print CSS: explicit @page size + full-width override"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Harden email validation; rewrite checklist PDF for one-page print"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Fix mobile horizontal overflow: constrain form controls to container"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Defer Prism syntax highlighting until idle or in-viewport"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Fix Lighthouse a11y findings: contrast + link distinguishability"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Fix Playwright + LHCI: both were config bugs, not code issues"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Update lead-magnet copy + inline CI to unblock branch-protection checks"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Make Resend welcome email opt-in; deliver checklist in-browser by default"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Lead-magnet email + printable checklist sheet"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Preview reflects more settings; equalize code-block header heights"
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Font builder v2 UX pass: identity + stickiness + clarity"
+  },
+  {
     "date": "2026-05-12",
     "title": "Ship font builder v2 (Tier 1 + 2 + 3): multi-face, variable fonts, perf/i18n"
   },

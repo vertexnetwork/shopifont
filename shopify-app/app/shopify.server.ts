@@ -2,11 +2,27 @@ import "@shopify/shopify-app-remix/adapters/node";
 import {
   ApiVersion,
   AppDistribution,
+  BillingInterval,
   shopifyApp,
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 
 import prisma from "./db.server";
+
+/**
+ * Single Billing tier definition. Referenced by the subscription gate
+ * in routes/app.tsx and registered in the `shopifyApp({ billing })`
+ * config below so `billing.require` / `billing.request` resolve to
+ * this plan instead of `never`. Pricing is env-driven so a future
+ * tier swap is one config change without code edits.
+ */
+export const BILLING_PLAN = {
+  name: process.env.SHOPIFY_BILLING_PLAN_NAME || "Shopifont Pro",
+  amount: Number(process.env.SHOPIFY_BILLING_PLAN_PRICE_USD || "4.99"),
+  currencyCode: "USD",
+  interval: BillingInterval.Every30Days,
+  trialDays: Number(process.env.SHOPIFY_BILLING_TRIAL_DAYS || "7"),
+} as const;
 
 /**
  * Shopify App initialization. The `shopifyApp` factory wires up:
@@ -34,6 +50,21 @@ const shopify = shopifyApp({
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
+  // shopify-app-remix v3 defaults to line-item billing, so the plan
+  // is expressed as a `lineItems` array rather than the flat
+  // amount/interval shape the classic template used.
+  billing: {
+    [BILLING_PLAN.name]: {
+      trialDays: BILLING_PLAN.trialDays,
+      lineItems: [
+        {
+          amount: BILLING_PLAN.amount,
+          currencyCode: BILLING_PLAN.currencyCode,
+          interval: BILLING_PLAN.interval,
+        },
+      ],
+    },
+  },
   future: {
     unstable_newEmbeddedAuthStrategy: true,
     removeRest: false,
@@ -51,16 +82,3 @@ export const unauthenticated = shopify.unauthenticated;
 export const login = shopify.login;
 export const registerWebhooks = shopify.registerWebhooks;
 export const sessionStorage = shopify.sessionStorage;
-
-/**
- * Single Billing tier definition. Referenced by the subscription gate
- * in routes/app.tsx and the install-time billing flow. Pricing is env-
- * driven so a future tier swap is one config change without code edits.
- */
-export const BILLING_PLAN = {
-  name: process.env.SHOPIFY_BILLING_PLAN_NAME || "Shopifont Pro",
-  amount: Number(process.env.SHOPIFY_BILLING_PLAN_PRICE_USD || "4.99"),
-  currencyCode: "USD",
-  interval: "EVERY_30_DAYS" as const,
-  trialDays: Number(process.env.SHOPIFY_BILLING_TRIAL_DAYS || "7"),
-} as const;

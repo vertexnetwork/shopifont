@@ -255,6 +255,11 @@ Top-level pages outside the per-theme generator system. These cover identity, mo
 
 Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.
 
+### Shopify Typography Kits — done-for-you font pairings
+
+- URL: https://shopifont.app/shopify-typography-kits
+- Summary: Productized font systems for Shopify storefronts: a proven heading-and-body pairing for your store type, copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, a license-cleared usage sheet, and a clean uninstall sheet. One-time purchase, instant download, no account. Six kits covering premium/editorial, luxury, DTC, editorial-warm, modern-tech, and minimal verticals.
+
 ### How to uninstall a custom font from a Shopify theme
 
 - URL: https://shopifont.app/uninstall-custom-font-shopify
@@ -265,10 +270,15 @@ Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover
 - URL: https://shopifont.app/how-to-choose-a-font-for-shopify
 - Summary: Decision framework for picking a custom font that fits a Shopify storefront. Covers brand fit, performance budget (file size, FOIT/CLS), licensing for ecommerce, weight selection, heading-and-body pairing, and multilingual support — with concrete examples and pitfall callouts.
 
-### The best free fonts for Shopify (2026 edition)
+### The best fonts for a Shopify store (2026)
 
 - URL: https://shopifont.app/best-free-fonts-for-shopify
-- Summary: Curated list of free, commercially-licensed web fonts that work well on Shopify Dawn and other OS 2.0 themes. Each entry covers what the font is good for, weight availability, file size, and which kind of brand it fits. Includes a section on premium options for stores that need something more distinctive.
+- Summary: The fonts that actually work on a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with honest notes on where each one wins or loses for ecommerce. Includes a side-by-side comparison table, pairing suggestions, and a premium-options section.
+
+### Shopify font pairings that work (2026)
+
+- URL: https://shopifont.app/shopify-font-pairings
+- Summary: Ten concrete font pairings for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.
 
 ### Free Shopify font-pairing checklist
 

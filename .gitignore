@@ -8,6 +8,10 @@
 /out/
 /build/
 
+# Kit zip bundles for Gumroad upload — binary, regenerable from the
+# committed kits/ source. Don't churn git with them.
+kits/dist/
+
 # extension build artifacts (the workspace has its own .gitignore;
 # duplicated here so a top-level `git add -A` from the parent never
 # stages built JS or node_modules even if someone bypasses the
