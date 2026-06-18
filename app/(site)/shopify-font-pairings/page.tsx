@@ -278,6 +278,23 @@ export default function FontPairingsPage() {
           </p>
         </header>
 
+        <Link
+          href="/shopify-typography-audit"
+          className="group flex flex-col gap-1 rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-4 sm:p-5 hover:border-electric/60 transition-colors"
+        >
+          <span className="text-sm font-semibold text-charcoal">
+            Want the pairing matched to your store — not just a list?
+          </span>
+          <span className="text-sm text-muted">
+            The free 30-second typography audit takes your theme and store type
+            and tells you which of these pairings is yours, and whether your
+            current font is quietly making the store read as stock.{" "}
+            <span className="text-electric group-hover:underline whitespace-nowrap">
+              Start the audit →
+            </span>
+          </span>
+        </Link>
+
         <section
           aria-labelledby="rule-heading"
           className="flex flex-col gap-3 rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-5 sm:p-6"

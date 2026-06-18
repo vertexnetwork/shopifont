@@ -255,6 +255,11 @@ Top-level pages outside the per-theme generator system. These cover identity, mo
 
 Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover decisions and tasks that don't map to a specific theme.
 
+### Shopify typography audit — does your store look stock?
+
+- URL: https://shopifont.app/shopify-typography-audit
+- Summary: A free 30-second diagnostic that reveals why a Shopify store reads as “just another Shopify store” — starting with the stock theme font almost no merchant changes. Answer four questions about your theme, store type, and brand priority and get a personalized typography scorecard plus the exact done-for-you fix for your vertical.
+
 ### Shopify Typography Kits — done-for-you font pairings
 
 - URL: https://shopifont.app/shopify-typography-kits

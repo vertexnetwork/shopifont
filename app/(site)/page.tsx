@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { KitUpsell } from "@/components/KitUpsell";
+import { ShopifontAudit } from "@/components/Audit";
 import { ShopifontGenerator } from "@/components/Generator";
 import { HeroCodePreview } from "@/components/Hero/CodePreview";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -63,27 +64,29 @@ export default function HomePage() {
               id="hero-anchor"
               className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.02] font-system"
             >
-              Free Shopify Custom Font Generator
+              Does your store look like every other Shopify store?
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">
-              Paste a font name. Copy three error-free code blocks tailored
-              to Shopify Dawn and every other OS 2.0 theme.
+              It&apos;s usually the fonts — most stores never change the theme
+              default, so they all read the same. Take the free 30-second
+              typography audit and see exactly what&apos;s making your store look
+              stock, plus the one change that fixes it.
             </p>
             <HeroCodePreview />
             <ProofStrip />
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
-                href="#tool-heading"
+                href="#audit"
                 className="group inline-flex items-center justify-center min-h-[3.25rem] px-6 rounded-md bg-electric text-paper font-semibold text-base shadow-cta hover:bg-electric-hover"
               >
-                Generate my font code
+                Take the 30-second audit
                 <ArrowDown className="ml-2 w-4 h-4 transition-transform group-hover:translate-y-0.5" />
               </a>
               <Link
-                href="#how-it-works"
+                href="#tool-heading"
                 className="inline-flex items-center justify-center min-h-[3.25rem] px-4 rounded-md border border-charcoal-line/50 text-charcoal hover:border-electric hover:text-electric transition-colors"
               >
-                How it works
+                I already know my font
               </Link>
             </div>
             <ul className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted">
@@ -110,10 +113,34 @@ export default function HomePage() {
           <AdSlot id="ad-leaderboard" position="leaderboard" className="hidden lg:flex" />
         </section>
 
-        <section aria-labelledby="tool-heading" className="flex flex-col gap-4">
-          <h2 id="tool-heading" className="sr-only">
-            Generator
-          </h2>
+        {/*
+         * The audit is the new top-of-funnel surface. Search demand is
+         * decision/taste ("best shopify fonts," "font pairings") — visitors
+         * who haven't chosen a font yet. The generator answers a question
+         * almost nobody searches (how to install). So the audit leads: it
+         * reveals the personal problem (you read as stock) and routes to the
+         * fix (a kit), with the generator kept below as the DIY step.
+         */}
+        <section id="audit" aria-label="Typography audit" className="scroll-mt-20">
+          <ShopifontAudit />
+        </section>
+
+        <section
+          aria-labelledby="tool-heading"
+          className="flex flex-col gap-3 scroll-mt-20"
+        >
+          <div className="flex flex-col gap-1">
+            <h2 id="tool-heading" className="text-2xl font-bold tracking-tight">
+              Already picked your font? Generate the install code
+            </h2>
+            <p className="text-sm text-muted max-w-2xl">
+              Paste a font name and copy three error-free blocks — the{" "}
+              <code className="font-mono text-xs">@font-face</code> CSS, the
+              settings_schema.json snippet, and the CSS-variable override —
+              tailored to Shopify Dawn and every other OS 2.0 theme. The
+              implementation step, free.
+            </p>
+          </div>
           <ShopifontGenerator />
         </section>
 

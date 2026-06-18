@@ -1,6 +1,10 @@
 [
   {
     "date": "2026-05-15",
+    "title": "Change guarantee 30->7 days; harden kit builder"
+  },
+  {
+    "date": "2026-05-15",
     "title": "Ignore kits/dist (Gumroad zip bundles — binary, regenerable)"
   },
   {

@@ -38,6 +38,9 @@ export const siteConfig = {
     "Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for any Shopify OS 2.0 theme. Conversion-optimized typography without layout shifts.",
   ),
   keywords: [
+    "shopify typography audit",
+    "best shopify fonts",
+    "shopify font pairings",
     "shopify custom font",
     "shopify font generator",
     "shopify @font-face",
@@ -83,10 +86,10 @@ export const siteConfig = {
   // navigation -------------------------------------------------------
   nav: {
     primary: [
-      { href: "/#themes", label: "Themes" },
+      { href: "/shopify-typography-audit", label: "Audit" },
       { href: "/shopify-typography-kits", label: "Typography Kits" },
       { href: "/best-free-fonts-for-shopify", label: "Best fonts" },
-      { href: "/#how-it-works", label: "How it works" },
+      { href: "/#themes", label: "Themes" },
       { href: "/extension", label: "Extension" },
       { href: "/about", label: "About" },
     ] as ReadonlyArray<FooterLink>,
@@ -100,6 +103,7 @@ export const siteConfig = {
         { href: "/shopify-origin-custom-font-generator", label: "Origin" },
       ] as ReadonlyArray<FooterLink>,
       company: [
+        { href: "/shopify-typography-audit", label: "Typography audit" },
         { href: "/how-to-choose-a-font-for-shopify", label: "Choose a font" },
         { href: "/best-free-fonts-for-shopify", label: "Best free fonts" },
         { href: "/shopify-font-pairings", label: "Font pairings" },
@@ -165,7 +169,7 @@ export const siteConfig = {
       enabled: Boolean(process.env.NEXT_PUBLIC_KIT_GUMROAD_URL?.trim()),
       gumroadUrl: fallback(process.env.NEXT_PUBLIC_KIT_GUMROAD_URL, ""),
       productName: "Shopify Typography Kits",
-      priceLabel: "from $39 · one-time · instant download",
+      priceLabel: "$19 · one-time · instant download",
     },
     proEnabled: false,
     email: { enabled: true, leadMagnetName: "font-pairing-checklist" },
