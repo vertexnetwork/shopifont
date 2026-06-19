@@ -33,6 +33,10 @@ shopify-app/.vite/
 # Local image uploads — screenshots / mockups not intended for the repo.
 image-uploads/
 
+# Google Search Console exports — raw analytics pulls used for research,
+# not part of the site. Keep them local.
+gsc-exports/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

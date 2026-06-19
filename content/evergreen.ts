@@ -24,6 +24,13 @@ export type EvergreenEntry = {
 
 export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   {
+    slug: "shopify-typography-audit",
+    title: "Shopify typography audit — does your store look stock?",
+    summary:
+      "A free 30-second diagnostic that reveals why a Shopify store reads as “just another Shopify store” — starting with the stock theme font almost no merchant changes. Answer four questions about your theme, store type, and brand priority and get a personalized typography scorecard plus the exact done-for-you fix for your vertical.",
+    priority: 0.8,
+  },
+  {
     slug: "shopify-typography-kits",
     title: "Shopify Typography Kits — done-for-you font pairings",
     summary:

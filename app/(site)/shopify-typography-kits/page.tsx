@@ -212,7 +212,8 @@ export default function TypographyKitsPage() {
             {KITS.map((kit) => (
               <article
                 key={kit.slug}
-                className="flex flex-col gap-3 rounded-lg border border-charcoal-line/30 bg-paper p-5 sm:p-6 shadow-card"
+                id={kit.slug}
+                className="flex flex-col gap-3 rounded-lg border border-charcoal-line/30 bg-paper p-5 sm:p-6 shadow-card scroll-mt-24"
               >
                 <header className="flex flex-col gap-1">
                   <p className="text-xs font-mono text-electric">

@@ -307,6 +307,23 @@ export default function BestFontsPage() {
           </p>
         </header>
 
+        <Link
+          href="/shopify-typography-audit"
+          className="group flex flex-col gap-1 rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-4 sm:p-5 hover:border-electric/60 transition-colors"
+        >
+          <span className="text-sm font-semibold text-charcoal">
+            Not sure which of these is right for your store?
+          </span>
+          <span className="text-sm text-muted">
+            Take the free 30-second typography audit — it reads your theme and
+            store type and tells you the exact pairing to use, and whether your
+            current font is making you look stock.{" "}
+            <span className="text-electric group-hover:underline whitespace-nowrap">
+              Start the audit →
+            </span>
+          </span>
+        </Link>
+
         <section
           aria-labelledby="comparison-heading"
           className="flex flex-col gap-3"

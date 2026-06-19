@@ -7,6 +7,8 @@
     "dev": "next dev",
     "prebuild": "tsx scripts/build-llms-txt.ts && tsx scripts/build-llms-full-txt.ts && tsx scripts/build-changelog.ts && tsx scripts/generate-favicon.ts",
     "build": "next build",
+    "build:kits": "tsx scripts/build-kits.ts",
+    "build:kit-marketing": "tsx scripts/build-kit-marketing.ts",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx,css,json}\"",
