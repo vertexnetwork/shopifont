@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { safeTrack } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site-config";
+import { KitCta } from "@/components/Kit/KitCta";
 import {
   buildAuditResult,
   storeTypeLabel,
@@ -63,12 +64,7 @@ export function ShopifontAudit() {
   }
 
   const result = useMemo(() => {
-    if (
-      draft.fontStatus &&
-      draft.storeType &&
-      draft.priority &&
-      draft.themeSlug
-    ) {
+    if (draft.fontStatus && draft.storeType && draft.priority && draft.themeSlug) {
       return buildAuditResult({
         themeSlug: draft.themeSlug,
         fontStatus: draft.fontStatus,
@@ -100,10 +96,7 @@ export function ShopifontAudit() {
       className="flex flex-col gap-5 rounded-xl border border-charcoal-line/30 bg-paper p-5 sm:p-7 shadow-card"
     >
       <div className="flex items-center justify-between gap-3">
-        <h2
-          id="audit-heading"
-          className="text-lg sm:text-xl font-bold tracking-tight"
-        >
+        <h2 id="audit-heading" className="text-lg sm:text-xl font-bold tracking-tight">
           {onResult ? "Your typography scorecard" : "30-second typography audit"}
         </h2>
         {!onResult ? (
@@ -113,9 +106,7 @@ export function ShopifontAudit() {
         ) : null}
       </div>
 
-      {!onResult ? (
-        <Progress step={step} />
-      ) : null}
+      {!onResult ? <Progress step={step} /> : null}
 
       {onResult && result ? (
         <Scorecard result={result} onRestart={restart} />
@@ -142,8 +133,7 @@ function Progress({ step }: { step: number }) {
         <span
           key={i}
           className={
-            "h-1 flex-1 rounded-full " +
-            (i <= step ? "bg-electric" : "bg-charcoal-line/25")
+            "h-1 flex-1 rounded-full " + (i <= step ? "bg-electric" : "bg-charcoal-line/25")
           }
         />
       ))}
@@ -176,9 +166,7 @@ function Steps({
             <select
               id="audit-theme"
               value={draft.themeSlug}
-              onChange={(e) =>
-                onPick({ themeSlug: e.target.value })
-              }
+              onChange={(e) => onPick({ themeSlug: e.target.value })}
               className="min-h-[3rem] flex-1 rounded-md border border-charcoal-line/40 bg-paper px-3 text-base text-charcoal focus:border-electric focus:outline-none"
             >
               {THEME_OPTIONS.map((o) => (
@@ -189,17 +177,13 @@ function Steps({
             </select>
           </div>
           <p className="text-xs text-muted">
-            On a paid or custom theme? Pick the closest — the diagnosis is the
-            same.
+            On a paid or custom theme? Pick the closest — the diagnosis is the same.
           </p>
         </Question>
       ) : null}
 
       {step === 1 ? (
-        <Question
-          prompt="Have you changed your fonts from the theme default?"
-          onBack={onBack}
-        >
+        <Question prompt="Have you changed your fonts from the theme default?" onBack={onBack}>
           <OptionGrid
             options={FONT_STATUS_OPTIONS}
             onPick={(value) => onPick({ fontStatus: value as FontStatus })}
@@ -246,9 +230,7 @@ function Question({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <p className="text-base sm:text-lg font-semibold tracking-tight text-charcoal">
-          {prompt}
-        </p>
+        <p className="text-base sm:text-lg font-semibold tracking-tight text-charcoal">{prompt}</p>
         {help ? <p className="text-sm text-muted">{help}</p> : null}
       </div>
       {children}
@@ -281,9 +263,7 @@ function OptionGrid<T extends string>({
           onClick={() => onPick(o.value)}
           className="group flex flex-col gap-0.5 rounded-lg border border-charcoal-line/30 px-4 py-3 text-left hover:border-electric hover:bg-electric/[0.04] transition-colors"
         >
-          <span className="font-medium text-charcoal group-hover:text-electric">
-            {o.label}
-          </span>
+          <span className="font-medium text-charcoal group-hover:text-electric">{o.label}</span>
           <span className="text-xs text-muted">{o.hint}</span>
         </button>
       ))}
@@ -330,34 +310,25 @@ function Scorecard({
             {score.score}/{score.max}
           </span>
         </div>
-        <p className="text-2xl sm:text-3xl font-bold tracking-tight">
-          {score.label}
-        </p>
+        <p className="text-2xl sm:text-3xl font-bold tracking-tight">{score.label}</p>
       </div>
 
       {/* Findings */}
       <ul className="flex flex-col gap-3">
         {findings.map((f, i) => (
-          <li
-            key={i}
-            className="flex gap-3 rounded-lg border border-charcoal-line/25 bg-paper p-4"
-          >
+          <li key={i} className="flex gap-3 rounded-lg border border-charcoal-line/25 bg-paper p-4">
             <span
               aria-hidden
               className={
                 "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold " +
-                (f.kind === "good"
-                  ? "bg-electric/15 text-electric"
-                  : "bg-danger/10 text-danger")
+                (f.kind === "good" ? "bg-electric/15 text-electric" : "bg-danger/10 text-danger")
               }
             >
               {f.kind === "good" ? "✓" : "!"}
             </span>
             <div className="flex flex-col gap-0.5">
               <p className="font-semibold text-charcoal">{f.title}</p>
-              <p className="text-sm text-charcoal/80 leading-relaxed">
-                {f.detail}
-              </p>
+              <p className="text-sm text-charcoal/80 leading-relaxed">{f.detail}</p>
             </div>
           </li>
         ))}
@@ -373,39 +344,57 @@ function Scorecard({
           {kit.name} — {pairingLabel}
         </h3>
         <p className="text-sm sm:text-base text-charcoal/80 leading-relaxed">
-          For a {storeTypeLabel(answers.storeType)} store, this is the proven
-          pairing: {kit.rationale}
+          For a {storeTypeLabel(answers.storeType)} store, this is the proven pairing:{" "}
+          {kit.rationale}
         </p>
         <p className="text-sm text-charcoal/80 leading-relaxed">
-          The kit is the decision already made — the exact copy-paste install
-          code for {result.theme?.name ?? "your theme"}, the licensing cleared,
-          and a visual specimen. A five-minute swap and your store stops reading
-          as stock.
+          The kit is the decision already made — the exact copy-paste install code for{" "}
+          {result.theme?.name ?? "your theme"}, the licensing cleared, and a visual specimen. A
+          five-minute swap and your store stops reading as stock.
         </p>
-        <div className="flex flex-wrap items-center gap-3 pt-1">
-          <Link
-            href={`${SALES_PATH}#${kit.slug}`}
-            onClick={() =>
-              safeTrack("audit_cta_kit_click", {
-                context: "audit",
-                recommendedKit: kit.slug,
-              })
-            }
-            className="group inline-flex items-center justify-center min-h-[2.75rem] px-5 rounded-md bg-electric text-paper font-semibold text-sm shadow-cta hover:bg-electric-hover whitespace-nowrap"
-          >
-            {kitEnabled ? `Get the ${kit.name} kit` : "See the Typography Kits"}
-            <span
-              aria-hidden
-              className="ml-1.5 transition-transform group-hover:translate-x-0.5"
-            >
-              →
-            </span>
-          </Link>
+        {/*
+         * Peak-intent CTA. The visitor just learned their store reads as
+         * stock AND got the exact kit that fixes it — the hottest moment on
+         * the site. When the store is live we buy DIRECTLY here via the
+         * Gumroad overlay (stays on-page), collapsing the old two-hop path
+         * through the sales page. The secondary link stays for shoppers who
+         * want to read what's inside first. When dark, the link is the only
+         * affordance and routes to the sales page.
+         */}
+        <div className="flex flex-col gap-3 pt-1">
           {kitEnabled ? (
-            <span className="text-xs text-muted">
-              {siteConfig.features.kit.priceLabel}
-            </span>
-          ) : null}
+            <>
+              <KitCta source="audit-scorecard" block />
+              <Link
+                href={`${SALES_PATH}#${kit.slug}`}
+                onClick={() =>
+                  safeTrack("audit_cta_kit_click", {
+                    context: "audit",
+                    recommendedKit: kit.slug,
+                  })
+                }
+                className="self-start text-sm text-electric hover:underline"
+              >
+                See all six kits and what&apos;s inside →
+              </Link>
+            </>
+          ) : (
+            <Link
+              href={`${SALES_PATH}#${kit.slug}`}
+              onClick={() =>
+                safeTrack("audit_cta_kit_click", {
+                  context: "audit",
+                  recommendedKit: kit.slug,
+                })
+              }
+              className="group inline-flex items-center justify-center self-start min-h-[2.75rem] px-5 rounded-md bg-electric text-paper font-semibold text-sm shadow-cta hover:bg-electric-hover whitespace-nowrap"
+            >
+              See the Typography Kits
+              <span aria-hidden className="ml-1.5 transition-transform group-hover:translate-x-0.5">
+                →
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -413,10 +402,9 @@ function Scorecard({
       <div className="flex flex-col gap-2 rounded-lg border border-charcoal-line/25 bg-paper-dim p-4 sm:p-5">
         <p className="font-semibold text-charcoal">Prefer to do it yourself?</p>
         <p className="text-sm text-charcoal/80 leading-relaxed">
-          Your pairing is{" "}
-          <strong>{pairingLabel}</strong>. Both are free and open-licensed —
-          grab them from Google Fonts, then use the generator to produce the
-          install code for {result.theme?.name ?? "your theme"}.
+          Your pairing is <strong>{pairingLabel}</strong>. Both are free and open-licensed — grab
+          them from Google Fonts, then use the generator to produce the install code for{" "}
+          {result.theme?.name ?? "your theme"}.
         </p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
           <a

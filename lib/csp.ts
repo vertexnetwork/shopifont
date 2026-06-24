@@ -15,6 +15,15 @@ export type CspProviders = {
   carbon?: boolean;
   clarity?: boolean;
   plausible?: boolean;
+  /** Allow the Gumroad overlay checkout (gumroad.js + the iframe modal). */
+  gumroad?: boolean;
+  /**
+   * The product's own Gumroad origin (e.g. https://thevertexnetwork.gumroad.com
+   * or a custom domain). The overlay renders the product page in an iframe at
+   * THIS origin, so it needs its own frame-src/connect-src entry beyond the
+   * shared gumroad.com hosts. Derived from NEXT_PUBLIC_KIT_GUMROAD_URL.
+   */
+  gumroadOrigin?: string;
   /** Allow `frame-ancestors *` (the /embed iframe surface). */
   embeddable?: boolean;
 };
@@ -109,6 +118,21 @@ export function buildCSP(providers: CspProviders): string {
     add(s.connectSrc, "https://plausible.io");
   }
 
+  if (providers.gumroad) {
+    // gumroad.js is just a loader: it injects the real overlay bundle + CSS
+    // from assets.gumroad.com, so BOTH hosts must be allowed or the overlay
+    // silently fails to open and the click navigates away full-page.
+    add(s.scriptSrc, "https://gumroad.com", "https://assets.gumroad.com");
+    add(s.styleSrc, "https://assets.gumroad.com");
+    add(s.imgSrc, "https://gumroad.com", "https://assets.gumroad.com", "https://*.gumroad.com");
+    add(s.connectSrc, "https://gumroad.com", "https://assets.gumroad.com", "https://*.gumroad.com");
+    add(s.frameSrc, "https://gumroad.com", "https://*.gumroad.com");
+    if (providers.gumroadOrigin) {
+      add(s.frameSrc, providers.gumroadOrigin);
+      add(s.connectSrc, providers.gumroadOrigin);
+    }
+  }
+
   if (providers.embeddable) {
     s.frameAncestors.clear();
     s.frameAncestors.add("*");
@@ -128,9 +152,7 @@ export function buildCSP(providers: CspProviders): string {
     ["object-src", new Set(["'none'"])],
   ];
 
-  return directives
-    .map(([name, values]) => `${name} ${[...values].join(" ")}`)
-    .join("; ");
+  return directives.map(([name, values]) => `${name} ${[...values].join(" ")}`).join("; ");
 }
 
 /**
@@ -138,17 +160,29 @@ export function buildCSP(providers: CspProviders): string {
  * env vars the (site) layout uses to switch providers.
  */
 export function buildCSPFromEnv(opts: { embeddable?: boolean } = {}): string {
-  const provider = (
-    process.env.NEXT_PUBLIC_AD_PROVIDER ?? process.env.NEXT_PUBLIC_AD_NETWORK
-  )
+  const provider = (process.env.NEXT_PUBLIC_AD_PROVIDER ?? process.env.NEXT_PUBLIC_AD_NETWORK)
     ?.trim()
     .toLowerCase();
+  // The kit's Gumroad URL doubles as the overlay's iframe origin. Only flag
+  // the gumroad CSP block when the product is actually live, keeping the
+  // policy tight until launch.
+  const kitGumroadUrl = process.env.NEXT_PUBLIC_KIT_GUMROAD_URL?.trim();
+  let gumroadOrigin: string | undefined;
+  if (kitGumroadUrl) {
+    try {
+      gumroadOrigin = new URL(kitGumroadUrl).origin;
+    } catch {
+      gumroadOrigin = undefined;
+    }
+  }
   return buildCSP({
     adsense: provider === "adsense",
     mediavine: provider === "mediavine",
     carbon: provider === "carbon",
     clarity: Boolean(process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID?.trim()),
     plausible: Boolean(process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim()),
+    gumroad: Boolean(kitGumroadUrl),
+    gumroadOrigin,
     vercelAnalytics: true,
     embeddable: opts.embeddable,
   });

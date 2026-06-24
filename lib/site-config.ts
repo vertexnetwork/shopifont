@@ -21,10 +21,7 @@ export type FooterLink = { href: string; label: string };
 const fallback = (envValue: string | undefined, literal: string): string =>
   envValue?.trim() || literal;
 
-const SITE_URL_RAW = fallback(
-  process.env.NEXT_PUBLIC_SITE_URL,
-  "https://shopifont.app",
-);
+const SITE_URL_RAW = fallback(process.env.NEXT_PUBLIC_SITE_URL, "https://shopifont.app");
 
 export const siteConfig = {
   // identity ---------------------------------------------------------
@@ -52,10 +49,7 @@ export const siteConfig = {
   ],
 
   // contact / legal --------------------------------------------------
-  supportEmail: fallback(
-    process.env.NEXT_PUBLIC_SITE_CONTACT_EMAIL,
-    "hello@shopifont.app",
-  ),
+  supportEmail: fallback(process.env.NEXT_PUBLIC_SITE_CONTACT_EMAIL, "hello@shopifont.app"),
   trademarkDisclaimer:
     "Not affiliated with Shopify Inc. “Shopify” and “Dawn” are trademarks of Shopify Inc. and are used here for compatibility reference only.",
 
@@ -128,10 +122,7 @@ export const siteConfig = {
 
   // JSON-LD ----------------------------------------------------------
   jsonLd: {
-    type: "SoftwareApplication" as
-      | "SoftwareApplication"
-      | "WebApplication"
-      | "FinanceApplication",
+    type: "SoftwareApplication" as "SoftwareApplication" | "WebApplication" | "FinanceApplication",
     operatingSystem: "Web",
     applicationCategory: "DeveloperApplication",
     price: 0,
@@ -170,6 +161,12 @@ export const siteConfig = {
       gumroadUrl: fallback(process.env.NEXT_PUBLIC_KIT_GUMROAD_URL, ""),
       productName: "Shopify Typography Kits",
       priceLabel: "$19 · one-time · instant download",
+      /**
+       * Full sticker price (USD, whole dollars) of the one-time bundle.
+       * The single source for the displayed price math — the founder
+       * offer subtracts a flat discount off this (see lib/gumroad-stats).
+       */
+      price: 19,
     },
     proEnabled: false,
     email: { enabled: true, leadMagnetName: "font-pairing-checklist" },
