@@ -2,6 +2,7 @@ import Script from "next/script";
 import { Header } from "@/components/Layout/Header";
 import { Footer } from "@/components/Layout/Footer";
 import { StickyMobileCta } from "@/components/Layout/StickyMobileCta";
+import { FounderBanner } from "@/components/Kit/FounderBanner";
 import { SiteSchema } from "@/components/Schema/SiteSchema";
 import { ConsentProvider } from "@/components/Consent/ConsentProvider";
 import { CookieConsent } from "@/components/Consent/CookieConsent";
@@ -21,30 +22,21 @@ import { siteConfig } from "@/lib/site-config";
 
 // Canonical name with legacy fallback so the Vercel env-var rename can
 // land without a flashed-deploy race.
-const adNetwork = (
-  process.env.NEXT_PUBLIC_AD_PROVIDER ?? process.env.NEXT_PUBLIC_AD_NETWORK
-)
+const adNetwork = (process.env.NEXT_PUBLIC_AD_PROVIDER ?? process.env.NEXT_PUBLIC_AD_NETWORK)
   ?.trim()
   .toLowerCase();
 const mediavineSiteId = process.env.NEXT_PUBLIC_MEDIAVINE_SITE_ID?.trim();
 const adsenseClientId = (
-  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ??
-  process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID ?? process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID
 )?.trim();
 const useMediavine = adNetwork === "mediavine" && Boolean(mediavineSiteId);
 const useAdsense = adNetwork === "adsense" && Boolean(adsenseClientId);
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN?.trim();
 const clarityProjectId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID?.trim();
 const clarityProjectIdSafe =
-  clarityProjectId && /^[a-z0-9]+$/i.test(clarityProjectId)
-    ? clarityProjectId
-    : null;
+  clarityProjectId && /^[a-z0-9]+$/i.test(clarityProjectId) ? clarityProjectId : null;
 
-export default async function SiteLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <ConsentProvider>
       {/* SiteSchema is async — it reads public/network.json to populate
@@ -83,6 +75,9 @@ export default async function SiteLayout({
       <a href="#main" className="skip-link">
         Skip to content
       </a>
+      {/* Cold-start scarcity strip. Self-hides unless the founder offer is
+          live (env configured + spots remain), so it ships dark. */}
+      <FounderBanner />
       <Header />
       <main id="main" className="flex-1">
         {children}

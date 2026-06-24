@@ -9,6 +9,7 @@
     "build": "next build",
     "build:kits": "tsx scripts/build-kits.ts",
     "build:kit-marketing": "tsx scripts/build-kit-marketing.ts",
+    "serve:gumroad": "node scripts/serve-gumroad-copy.mjs",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,mdx,css,json}\"",

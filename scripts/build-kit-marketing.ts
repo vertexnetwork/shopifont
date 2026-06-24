@@ -268,17 +268,20 @@ function coverSvg(): string {
   return svg(W, H, parts.join(""));
 }
 
-/** 600×600 — grid/social thumbnail. Big, legible at 120px. */
+/**
+ * 600×600 — grid/social thumbnail. Leads with the OUTCOME, not the
+ * product name — "stop looking stock" is the hook; "Typography Kits" is
+ * the value-add deliverable, demoted to the footer line.
+ */
 function thumbnailSvg(): string {
   const S = 600;
   const pad = 52;
-  const stack = ["SHOPIFY", "TYPOGRAPHY"];
   const parts: string[] = [rect(0, 0, S, S, C.ink)];
-  parts.push(mark(pad, pad, 64));
-  stack.forEach((line, i) => {
+  parts.push(mark(pad, pad, 60));
+  ["STOP", "LOOKING"].forEach((line, i) => {
     parts.push(
-      text(pad, 250 + i * 70, line, {
-        size: 60,
+      text(pad, 252 + i * 76, line, {
+        size: 68,
         weight: 800,
         fill: C.onAccent,
         family: SANS,
@@ -286,18 +289,25 @@ function thumbnailSvg(): string {
     );
   });
   parts.push(
-    text(pad, 250 + 2 * 70 + 18, "KITS.", {
-      size: 108,
+    text(pad, 252 + 2 * 76 + 12, "STOCK.", {
+      size: 112,
       weight: 800,
       fill: C.electric,
       family: SERIF,
     }),
   );
   parts.push(
-    text(pad, S - 52, "Stop looking stock.", {
-      size: 26,
+    text(pad, S - 86, "Done-for-you Shopify typography", {
+      size: 24,
       weight: 600,
       fill: "#cfe0ff",
+    }),
+  );
+  parts.push(
+    text(pad, S - 52, `Typography Kits · ${PRICE} · all 13 themes`, {
+      size: 19,
+      weight: 500,
+      fill: "#8fb4ff",
     }),
   );
   return svg(S, S, parts.join(""));
@@ -441,7 +451,7 @@ function previewKitsSvg(): string {
   const pad = 64;
   const parts: string[] = [rect(0, 0, W, H, C.paper)];
   parts.push(
-    text(pad, 84, "SIX KITS — ONE FOR YOUR STORE TYPE", {
+    text(pad, 84, "WHAT YOU GET · 6 KITS, ONE MATCHED TO YOUR STORE", {
       size: 19,
       weight: 700,
       fill: C.electric,

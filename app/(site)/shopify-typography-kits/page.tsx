@@ -7,12 +7,11 @@ import { SITE_NAME } from "@/lib/site";
 import { siteConfig } from "@/lib/site-config";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 import { KITS } from "@/content/kits";
+import { KitCta } from "@/components/Kit/KitCta";
 
 export const dynamic = "force-static";
 
-const ENTRY = EVERGREEN_ENTRIES.find(
-  (e) => e.slug === "shopify-typography-kits",
-)!;
+const ENTRY = EVERGREEN_ENTRIES.find((e) => e.slug === "shopify-typography-kits")!;
 
 const META_DESCRIPTION =
   "Done-for-you Shopify typography. Each kit is a proven font pairing for your store type, with copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, the licensing cleared, and a clean uninstall sheet. One-time, instant download, no account.";
@@ -61,43 +60,22 @@ const FAQS: ReadonlyArray<{ q: string; a: string }> = [
   },
 ];
 
-function BuyCta({ block = false }: { block?: boolean }) {
-  const { enabled, gumroadUrl, priceLabel } = siteConfig.features.kit;
+function BuyCta({ block = false, source }: { block?: boolean; source: "kits-hero" | "kits-how" }) {
+  const { enabled, gumroadUrl } = siteConfig.features.kit;
+  // Live store → the overlay buy button (opens checkout in-page, reflects
+  // the founder offer). KitCta returns null when the kit is dark, so the
+  // honest "launching shortly" fallback below shows instead.
   if (enabled && gumroadUrl) {
-    return (
-      <div
-        className={
-          "flex flex-wrap items-center gap-3 " + (block ? "" : "sm:flex-nowrap")
-        }
-      >
-        <a
-          href={gumroadUrl}
-          target="_blank"
-          rel="noopener"
-          className="group inline-flex items-center justify-center min-h-[3rem] px-6 rounded-md bg-electric text-paper font-semibold text-base shadow-cta hover:bg-electric-hover whitespace-nowrap"
-        >
-          Get a Typography Kit on Gumroad
-          <span
-            aria-hidden
-            className="ml-1.5 transition-transform group-hover:translate-x-0.5"
-          >
-            →
-          </span>
-        </a>
-        <span className="text-sm text-muted">{priceLabel}</span>
-      </div>
-    );
+    return <KitCta source={source} size="lg" block={block} />;
   }
   // Dark state — page stays live + indexable; the store just isn't open
   // yet. Honest, no dead button.
   return (
     <div className="inline-flex flex-col gap-1 rounded-md border border-charcoal-line/40 bg-paper-dim px-4 py-3">
-      <span className="text-sm font-semibold text-charcoal">
-        Launching shortly
-      </span>
+      <span className="text-sm font-semibold text-charcoal">Launching shortly</span>
       <span className="text-xs text-muted">
-        The kits are built and finalized. The store opens in days — this
-        page will carry the buy link the moment it&apos;s live.
+        The kits are built and finalized. The store opens in days — this page will carry the buy
+        link the moment it&apos;s live.
       </span>
     </div>
   );
@@ -149,21 +127,16 @@ export default function TypographyKitsPage() {
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80 leading-relaxed">
             The free generator gives you code. A kit gives you the{" "}
-            <strong>decision already made</strong>: a proven font pairing
-            for your store type, the exact copy-paste install code for all
-            13 free Shopify themes, the licensing cleared, and a visual
-            specimen so you see it before you ship it. Stop researching
-            fonts and second-guessing the install — buy the finished
-            result and move on.
+            <strong>decision already made</strong>: a proven font pairing for your store type, the
+            exact copy-paste install code for all 13 free Shopify themes, the licensing cleared, and
+            a visual specimen so you see it before you ship it. Stop researching fonts and
+            second-guessing the install — buy the finished result and move on.
           </p>
-          <BuyCta />
+          <BuyCta source="kits-hero" />
         </header>
 
         <section aria-labelledby="inside-heading" className="flex flex-col gap-4">
-          <h2
-            id="inside-heading"
-            className="text-2xl font-bold tracking-tight"
-          >
+          <h2 id="inside-heading" className="text-2xl font-bold tracking-tight">
             What&apos;s in every kit
           </h2>
           <ul className="grid gap-3 sm:grid-cols-2">
@@ -221,27 +194,20 @@ export default function TypographyKitsPage() {
                       ? kit.heading.family
                       : `${kit.heading.family} + ${kit.body.family}`}
                   </p>
-                  <h3 className="text-xl font-bold tracking-tight">
-                    {kit.name}
-                  </h3>
+                  <h3 className="text-xl font-bold tracking-tight">{kit.name}</h3>
                   <p className="text-sm text-muted">For: {kit.vertical}</p>
                 </header>
-                <p className="text-sm text-charcoal/80 leading-relaxed">
-                  {kit.rationale}
-                </p>
+                <p className="text-sm text-charcoal/80 leading-relaxed">{kit.rationale}</p>
                 <p className="text-xs text-muted">
-                  File budget on your storefront: {kit.fileBudget}. Includes
-                  install code for all 13 free Shopify themes.
+                  File budget on your storefront: {kit.fileBudget}. Includes install code for all 13
+                  free Shopify themes.
                 </p>
               </article>
             ))}
           </div>
           <p className="text-sm text-muted">
             Not sure which one? The free{" "}
-            <Link
-              href="/shopify-font-pairings"
-              className="text-electric hover:underline"
-            >
+            <Link href="/shopify-font-pairings" className="text-electric hover:underline">
               pairings guide
             </Link>{" "}
             and{" "}
@@ -251,8 +217,8 @@ export default function TypographyKitsPage() {
             >
               decision framework
             </Link>{" "}
-            walk through the same logic the kits are built on — read those
-            first if you want to understand the call before you buy it.
+            walk through the same logic the kits are built on — read those first if you want to
+            understand the call before you buy it.
           </p>
         </section>
 
@@ -260,29 +226,24 @@ export default function TypographyKitsPage() {
           aria-labelledby="how-heading"
           className="flex flex-col gap-4 rounded-lg border border-electric/30 bg-gradient-to-br from-electric/[0.06] via-electric/[0.02] to-transparent p-5 sm:p-6"
         >
-          <h2
-            id="how-heading"
-            className="text-xl sm:text-2xl font-bold tracking-tight"
-          >
+          <h2 id="how-heading" className="text-xl sm:text-2xl font-bold tracking-tight">
             How it works — about five minutes
           </h2>
           <ol className="flex flex-col gap-3 text-sm sm:text-base text-charcoal/80 leading-relaxed">
             <li>
-              <strong>1.</strong> Buy the kit for your store type. Instant
-              download, no account.
+              <strong>1.</strong> Buy the kit for your store type. Instant download, no account.
             </li>
             <li>
-              <strong>2.</strong> Get the fonts (free, from Google Fonts —
-              the kit gives you the exact links and filenames).
+              <strong>2.</strong> Get the fonts (free, from Google Fonts — the kit gives you the
+              exact links and filenames).
             </li>
             <li>
-              <strong>3.</strong> Open the folder for your theme, paste two
-              blocks into <code className="font-mono text-sm">base.css</code>,
-              save. Done — and the uninstall sheet is in the box if you
-              change your mind.
+              <strong>3.</strong> Open the folder for your theme, paste two blocks into{" "}
+              <code className="font-mono text-sm">base.css</code>, save. Done — and the uninstall
+              sheet is in the box if you change your mind.
             </li>
           </ol>
-          <BuyCta block />
+          <BuyCta source="kits-how" block />
         </section>
 
         <section aria-labelledby="faq-heading" className="flex flex-col gap-4">

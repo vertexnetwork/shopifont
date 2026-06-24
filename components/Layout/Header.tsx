@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Wordmark } from "@/components/Brand/Wordmark";
+import { KitCta } from "@/components/Kit/KitCta";
 import { siteConfig } from "@/lib/site-config";
 
 /**
@@ -50,18 +51,24 @@ export function Header() {
           <Wordmark />
         </Link>
 
-        {/* Desktop nav. Hidden below sm; the drawer below replaces it. */}
-        <nav aria-label="Primary" className="hidden sm:block text-sm">
-          <ul className="flex items-center gap-1 sm:gap-2">
-            {navLinks.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className={NAV_LINK_CLASS}>
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* Desktop nav + persistent buy CTA. Hidden below sm; the drawer
+            below replaces it. The KitCta self-hides until the kit is live,
+            so the chrome carries a standing one-tap path to the product
+            (offer-aware) the moment the store opens — no empty slot before. */}
+        <div className="hidden sm:flex items-center gap-2 lg:gap-3">
+          <nav aria-label="Primary" className="text-sm">
+            <ul className="flex items-center gap-1 sm:gap-2">
+              {navLinks.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className={NAV_LINK_CLASS}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <KitCta source="header" size="sm" hideCaption label="Get the kit" />
+        </div>
 
         {/* Mobile hamburger trigger. */}
         <button
@@ -92,10 +99,7 @@ export function Header() {
             // a dead-end tap. Desktop nav still shows it.
             .filter((l) => l.href !== "/extension")
             .map((l) => (
-              <li
-                key={l.href}
-                className="border-b border-charcoal-line/10 last:border-b-0"
-              >
+              <li key={l.href} className="border-b border-charcoal-line/10 last:border-b-0">
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
@@ -106,6 +110,10 @@ export function Header() {
               </li>
             ))}
         </ul>
+        {/* Buy CTA in the drawer — self-hides until the kit is live. */}
+        <div className="px-4 py-3 border-t border-charcoal-line/10">
+          <KitCta source="header" block />
+        </div>
       </nav>
     </header>
   );
