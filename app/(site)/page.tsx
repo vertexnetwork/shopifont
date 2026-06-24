@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
-import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontAudit } from "@/components/Audit";
 import { ShopifontGenerator } from "@/components/Generator";
@@ -26,10 +24,7 @@ export default function HomePage() {
         name="How to install a custom font on a Shopify theme"
         description="Generate the @font-face, settings_schema, and CSS variable code for any custom font, then paste each block into your Shopify theme."
         totalTime="PT5M"
-        supply={[
-          "Custom font file (WOFF2 recommended)",
-          "Shopify theme code editor access",
-        ]}
+        supply={["Custom font file (WOFF2 recommended)", "Shopify theme code editor access"]}
         steps={[
           {
             name: "Enter your font name and select formats",
@@ -67,10 +62,9 @@ export default function HomePage() {
               Does your store look like every other Shopify store?
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">
-              It&apos;s usually the fonts — most stores never change the theme
-              default, so they all read the same. Take the free 30-second
-              typography audit and see exactly what&apos;s making your store look
-              stock, plus the one change that fixes it.
+              It&apos;s usually the fonts — most stores never change the theme default, so they all
+              read the same. Take the free 30-second typography audit and see exactly what&apos;s
+              making your store look stock, plus the one change that fixes it.
             </p>
             <HeroCodePreview />
             <ProofStrip />
@@ -102,12 +96,14 @@ export default function HomePage() {
                 </time>{" "}
                 · Built for Shopify Dawn 14
               </span>
-              <span aria-hidden className="text-charcoal-line/60">·</span>
+              <span aria-hidden className="text-charcoal-line/60">
+                ·
+              </span>
               <LighthouseBadge />
             </div>
             <p className="text-[11px] text-muted max-w-xl">
-              Verify the &ldquo;no upload&rdquo; claim in DevTools → Network:
-              dropping a font file makes zero requests.
+              Verify the &ldquo;no upload&rdquo; claim in DevTools → Network: dropping a font file
+              makes zero requests.
             </p>
           </div>
           <AdSlot id="ad-leaderboard" position="leaderboard" className="hidden lg:flex" />
@@ -125,20 +121,16 @@ export default function HomePage() {
           <ShopifontAudit />
         </section>
 
-        <section
-          aria-labelledby="tool-heading"
-          className="flex flex-col gap-3 scroll-mt-20"
-        >
+        <section aria-labelledby="tool-heading" className="flex flex-col gap-3 scroll-mt-20">
           <div className="flex flex-col gap-1">
             <h2 id="tool-heading" className="text-2xl font-bold tracking-tight">
               Already picked your font? Generate the install code
             </h2>
             <p className="text-sm text-muted max-w-2xl">
               Paste a font name and copy three error-free blocks — the{" "}
-              <code className="font-mono text-xs">@font-face</code> CSS, the
-              settings_schema.json snippet, and the CSS-variable override —
-              tailored to Shopify Dawn and every other OS 2.0 theme. The
-              implementation step, free.
+              <code className="font-mono text-xs">@font-face</code> CSS, the settings_schema.json
+              snippet, and the CSS-variable override — tailored to Shopify Dawn and every other OS
+              2.0 theme. The implementation step, free.
             </p>
           </div>
           <ShopifontGenerator />
@@ -156,24 +148,13 @@ export default function HomePage() {
         <KitUpsell variant="post-generator" />
 
         {/*
-         * Creative Fabrica affiliate. Placed here intentionally —
-         * directly after the generator. Users who arrived needing a
-         * font (not just the code that installs one) just got the
-         * value they came for and are at peak receptivity for "where
-         * do I get a font" prompts. Placing the card *before* the
-         * "How it works" educational section captures intent before
-         * the user scrolls into instructional content and starts
-         * thinking about leaving.
+         * No affiliate cards on the homepage. The home page is the top
+         * of the PAID funnel (audit → kit); per the network affiliate
+         * guide §10, affiliates belong on research / pSEO surfaces only,
+         * never the funnel, where a competing card under the kit upsell
+         * splits the click and reads as a link farm. Printify lives on
+         * the pSEO generator pages + /recommendations instead.
          */}
-        <CreativeFabricaCard />
-
-        {/*
-         * Printify affiliate. Stacked under the font card so a
-         * Shopify merchant who arrived for typography sees the merch-
-         * fulfillment vertical without a second click. Same surface
-         * pattern, complementary intent — different commission line.
-         */}
-        <PrintifyCard />
 
         {/*
          * Chrome extension promo. Placed adjacent to the affiliate
@@ -199,10 +180,7 @@ export default function HomePage() {
                   <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-electric" />
                   New · Free Chrome extension
                 </p>
-                <h2
-                  id="ext-card-heading"
-                  className="text-xl sm:text-2xl font-bold tracking-tight"
-                >
+                <h2 id="ext-card-heading" className="text-xl sm:text-2xl font-bold tracking-tight">
                   Use the generator without leaving your tab
                 </h2>
                 <p className="text-sm sm:text-base text-charcoal/80 max-w-2xl">
@@ -210,9 +188,8 @@ export default function HomePage() {
                   <Link href="/extension" className="text-electric hover:underline">
                     Shopifont Chrome extension
                   </Link>{" "}
-                  generates the same three code blocks from a popup — built
-                  for the moment you&apos;re already in the Shopify admin
-                  and don&apos;t want to tab-switch.
+                  generates the same three code blocks from a popup — built for the moment
+                  you&apos;re already in the Shopify admin and don&apos;t want to tab-switch.
                 </p>
               </div>
               <Link
@@ -266,16 +243,12 @@ export default function HomePage() {
             aria-labelledby="themes-heading"
             className="flex flex-col gap-4 scroll-mt-20"
           >
-            <h2
-              id="themes-heading"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <h2 id="themes-heading" className="text-2xl font-bold tracking-tight">
               Generators for every free Shopify theme
             </h2>
             <p className="text-sm text-muted max-w-2xl">
-              One generator, thirteen tailored landing pages. Each links the
-              theme-specific selectors, default fonts, and Liquid injection
-              point you actually need.
+              One generator, thirteen tailored landing pages. Each links the theme-specific
+              selectors, default fonts, and Liquid injection point you actually need.
             </p>
 
             {featured ? (
@@ -304,7 +277,12 @@ export default function HomePage() {
                   </div>
                   <span className="inline-flex items-center self-start sm:self-center min-h-[2.5rem] px-4 rounded-md bg-electric text-paper font-medium text-sm group-hover:bg-electric-hover transition-colors">
                     Open generator
-                    <span aria-hidden className="ml-1.5 transition-transform group-hover:translate-x-0.5">→</span>
+                    <span
+                      aria-hidden
+                      className="ml-1.5 transition-transform group-hover:translate-x-0.5"
+                    >
+                      →
+                    </span>
                   </span>
                 </div>
               </Link>
@@ -317,9 +295,7 @@ export default function HomePage() {
                     href={`/shopify-${t.slug}-custom-font-generator`}
                     className="block px-4 py-3 rounded-md border border-charcoal-line/30 hover:border-electric hover:text-electric transition-colors"
                   >
-                    <span className="font-medium block">
-                      {t.name} font generator
-                    </span>
+                    <span className="font-medium block">{t.name} font generator</span>
                     <span className="block text-xs text-muted">{t.category}</span>
                   </Link>
                 </li>
@@ -354,7 +330,9 @@ function SignupChip() {
     <p className="inline-flex items-center gap-2 self-start rounded-full bg-paper-dim px-3 py-1 text-xs">
       <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-electric" />
       <span className="font-medium text-charcoal">Free, no signup</span>
-      <span aria-hidden className="text-charcoal-line/60">·</span>
+      <span aria-hidden className="text-charcoal-line/60">
+        ·
+      </span>
       <span className="text-muted">Shopify OS 2.0</span>
     </p>
   );

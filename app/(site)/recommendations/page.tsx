@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { JsonLd } from "@/components/Schema/JsonLd";
-import { CREATIVE_FABRICA_REF, PRINTIFY_REF, SITE_NAME } from "@/lib/site";
+import { PRINTIFY_REF, SITE_NAME } from "@/lib/site";
 import { absoluteUrl } from "@/lib/site-config";
 import { getSisterProperties } from "@/lib/network";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
@@ -15,7 +14,7 @@ export const dynamic = "force-static";
 const ENTRY = EVERGREEN_ENTRIES.find((e) => e.slug === "recommendations")!;
 
 const META_DESCRIPTION =
-  "The print-on-demand, font marketplace, and sister tools we recommend for Shopify merchants. Affiliate-tagged where applicable; commissions disclosed.";
+  "The print-on-demand and sister tools we recommend for Shopify merchants. Affiliate-tagged where applicable; commissions disclosed.";
 
 export const metadata: Metadata = {
   title: `${ENTRY.title} | ${SITE_NAME}`,
@@ -48,13 +47,6 @@ const AFFILIATE_ROWS: ReadonlyArray<AffiliateRow> = [
     category: "Print-on-demand fulfillment",
     description:
       "Plugs into Shopify in one click. 900+ products, no inventory risk, fulfilled and shipped automatically when an order lands. Free to start; pay only when you sell.",
-  },
-  {
-    name: "Creative Fabrica",
-    url: CREATIVE_FABRICA_REF,
-    category: "Web font marketplace",
-    description:
-      "30,000+ web fonts with commercial licenses included — drop one into the @font-face block this site generates and you're live. Most fonts under $20.",
   },
 ];
 
@@ -127,50 +119,34 @@ export default async function RecommendationsPage() {
         </nav>
 
         <header className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-wide text-muted">
-            Affiliate disclosure inline
-          </p>
+          <p className="text-xs uppercase tracking-wide text-muted">Affiliate disclosure inline</p>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
             Tools we recommend for Shopify merchants
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            A short list of the print-on-demand, font, and sister-tool surfaces
-            we&apos;d use on our own Shopify stores. The first two are
-            affiliate links — clicking through and signing up earns us a
-            commission at no cost to you. We only list what we&apos;d use
-            without the affiliate relationship.
+            A short list of the print-on-demand and sister-tool surfaces we&apos;d use on our own
+            Shopify stores. Printify is an affiliate link — clicking through and signing up earns us
+            a commission at no cost to you. We only list what we&apos;d use without the affiliate
+            relationship.
           </p>
         </header>
 
-        <section
-          aria-labelledby="affiliates-heading"
-          className="flex flex-col gap-4"
-        >
-          <h2
-            id="affiliates-heading"
-            className="text-2xl font-bold tracking-tight"
-          >
+        <section aria-labelledby="affiliates-heading" className="flex flex-col gap-4">
+          <h2 id="affiliates-heading" className="text-2xl font-bold tracking-tight">
             Affiliate-tagged
           </h2>
           <PrintifyCard />
-          <CreativeFabricaCard />
         </section>
 
         {sisters.length > 0 ? (
-          <section
-            aria-labelledby="network-heading"
-            className="flex flex-col gap-4"
-          >
-            <h2
-              id="network-heading"
-              className="text-2xl font-bold tracking-tight"
-            >
+          <section aria-labelledby="network-heading" className="flex flex-col gap-4">
+            <h2 id="network-heading" className="text-2xl font-bold tracking-tight">
               Sister tools (no affiliate)
             </h2>
             <p className="text-sm text-charcoal/80">
-              The rest of the Vertex Network — small, single-purpose web
-              tools maintained by the same builder. No affiliate code, just
-              sister properties we ship from the same workflow.
+              The rest of the Vertex Network — small, single-purpose web tools maintained by the
+              same builder. No affiliate code, just sister properties we ship from the same
+              workflow.
             </p>
             <ul className="flex flex-col gap-3">
               {sisters.map((site) => (
@@ -196,14 +172,11 @@ export default async function RecommendationsPage() {
         ) : null}
 
         <section className="rounded-md border border-charcoal-line/20 bg-paper-dim/50 p-4 text-xs text-muted leading-relaxed">
-          <strong className="text-charcoal block mb-1">
-            Why we disclose this
-          </strong>
-          Affiliate commissions cover the hosting and domain costs of running{" "}
-          {SITE_NAME} as a free tool. We list only services we&apos;d use
-          ourselves; if a recommendation here turns out not to hold up,
-          we&apos;ll pull it. Mediavine display ads (when active) and
-          AdSense (when active) cover the rest.
+          <strong className="text-charcoal block mb-1">Why we disclose this</strong>
+          Affiliate commissions cover the hosting and domain costs of running {SITE_NAME} as a free
+          tool. We list only services we&apos;d use ourselves; if a recommendation here turns out
+          not to hold up, we&apos;ll pull it. Mediavine display ads (when active) and AdSense (when
+          active) cover the rest.
         </section>
       </article>
     </>
