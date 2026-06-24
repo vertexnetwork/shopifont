@@ -110,6 +110,7 @@ export const siteConfig = {
       ] as ReadonlyArray<FooterLink>,
       legal: [
         { href: "/about", label: "About" },
+        { href: "/recommendations", label: "Recommended tools" },
         { href: "/contact", label: "Contact" },
         { href: "/privacy", label: "Privacy" },
         { href: "/terms", label: "Terms" },
