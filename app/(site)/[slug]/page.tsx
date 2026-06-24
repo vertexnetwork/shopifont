@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CreativeFabricaInline } from "@/components/Affiliate/CreativeFabricaInline";
-import { PrintifyInline } from "@/components/Affiliate/PrintifyInline";
+import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -106,8 +105,7 @@ export default async function PseoPage({ params }: PageProps) {
             <p className="text-xs uppercase tracking-wide text-muted">
               Shopify {entry.theme} · Free, no signup ·{" "}
               <span className="normal-case tracking-normal">
-                Last updated{" "}
-                <time dateTime={BUILD_DATE_ISO}>{getBuildDateLabel()}</time>
+                Last updated <time dateTime={BUILD_DATE_ISO}>{getBuildDateLabel()}</time>
               </span>
             </p>
             <h1
@@ -116,9 +114,7 @@ export default async function PseoPage({ params }: PageProps) {
             >
               {entry.h1}
             </h1>
-            <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">
-              {entry.oneLineAnswer}
-            </p>
+            <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">{entry.oneLineAnswer}</p>
             <p className="text-sm text-charcoal/80 max-w-2xl">{entry.intro}</p>
           </div>
           <AdSlot id="ad-leaderboard" position="leaderboard" className="hidden lg:flex" />
@@ -133,18 +129,12 @@ export default async function PseoPage({ params }: PageProps) {
 
         <Reveal>
           <section aria-labelledby="usecase-heading" className="flex flex-col gap-3">
-            <h2
-              id="usecase-heading"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <h2 id="usecase-heading" className="text-2xl font-bold tracking-tight">
               How to use this on {entry.theme}
             </h2>
             <ol className="flex flex-col gap-3 list-none counter-reset-[step]">
               {entry.useCaseSteps.map((step, i) => (
-                <li
-                  key={i}
-                  className="grid grid-cols-[2.25rem_1fr] gap-3 items-start"
-                >
+                <li key={i} className="grid grid-cols-[2.25rem_1fr] gap-3 items-start">
                   <span
                     aria-hidden
                     className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-electric/10 text-electric font-mono text-sm font-semibold"
@@ -167,19 +157,18 @@ export default async function PseoPage({ params }: PageProps) {
              */}
             <KitUpsell variant="pseo-steps" themeName={entry.theme} />
             {/*
-             * Inline affiliate exit. Lands AFTER the technical
-             * instructions so the user has already confirmed the
-             * workflow and is in "ok now I need a font" mode if they
-             * weren't already. Single sentence, "(affiliate)" tag
-             * inline, rel="sponsored" on the link.
+             * Affiliate (Printify, our one PartnerStack partner) as a
+             * visible card — a one-line inline mention here tested as
+             * invisible. Lands AFTER the steps and BELOW the kit upsell,
+             * so the owned product stays primary and this reads as a
+             * complement, not a substitute (network affiliate guide §10).
              *
-             * Printify is gated to generator-intent pSEO only — those
-             * are the 13 highest-commercial-intent pages where the
-             * merchant most likely sells physical products. Tutorial /
-             * fix / comparison pages skip it to avoid topical drift.
+             * Gated to generator-intent pSEO only — those are the 13
+             * highest-commercial-intent pages where the merchant most
+             * likely sells physical products. Tutorial / fix / comparison
+             * pages skip it to avoid topical drift.
              */}
-            <CreativeFabricaInline />
-            {entry.intent === "generator" ? <PrintifyInline /> : null}
+            {entry.intent === "generator" ? <PrintifyCard placement="pseo-printify-card" /> : null}
           </section>
         </Reveal>
 
@@ -192,16 +181,9 @@ export default async function PseoPage({ params }: PageProps) {
             </h2>
             <ul className="flex flex-col gap-3">
               {entry.faqs.map((f) => (
-                <li
-                  key={f.q}
-                  className="rounded-lg border border-charcoal-line/30 p-4"
-                >
-                  <h3 className="text-base font-semibold tracking-tight">
-                    {f.q}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-charcoal/80">
-                    {f.a}
-                  </p>
+                <li key={f.q} className="rounded-lg border border-charcoal-line/30 p-4">
+                  <h3 className="text-base font-semibold tracking-tight">{f.q}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-charcoal/80">{f.a}</p>
                 </li>
               ))}
             </ul>

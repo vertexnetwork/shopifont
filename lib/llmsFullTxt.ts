@@ -17,12 +17,7 @@ import { buildFontFaceCss } from "./generators/fontFace";
 import { buildSettingsSchemaJson } from "./generators/settingsSchema";
 import { fromSimple } from "./generators/legacyAdapter";
 import { getSisterPropertiesSync } from "./network";
-import {
-  NETWORK_BRAND,
-  SITE_DESCRIPTION,
-  SITE_NAME,
-  getSiteUrl,
-} from "./site";
+import { NETWORK_BRAND, SITE_DESCRIPTION, SITE_NAME, getSiteUrl } from "./site";
 
 const NETWORK_SITES = (() => {
   try {
@@ -88,11 +83,7 @@ export function buildLlmsFullTxt(): string {
   lines.push("### @font-face block");
   lines.push("");
   lines.push("```css");
-  lines.push(
-    buildFontFaceCss(
-      fromSimple({ ...SAMPLE_INPUT, formats: [...SAMPLE_INPUT.formats] }),
-    ),
-  );
+  lines.push(buildFontFaceCss(fromSimple({ ...SAMPLE_INPUT, formats: [...SAMPLE_INPUT.formats] })));
   lines.push("```");
   lines.push("");
 
@@ -162,7 +153,7 @@ export function buildLlmsFullTxt(): string {
   lines.push("");
   lines.push(`- URL: ${baseUrl}/about`);
   lines.push(
-    `- Summary: Explains why ${SITE_NAME} exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Creative Fabrica affiliate partnership for fonts), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.`,
+    `- Summary: Explains why ${SITE_NAME} exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Printify affiliate partnership), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.`,
   );
   lines.push("");
 

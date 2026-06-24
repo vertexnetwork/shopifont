@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { KitUpsell } from "@/components/KitUpsell";
-import { CreativeFabricaCard } from "@/components/Affiliate/CreativeFabricaCard";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
@@ -10,9 +9,7 @@ import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 
 export const dynamic = "force-static";
 
-const ENTRY = EVERGREEN_ENTRIES.find(
-  (e) => e.slug === "best-free-fonts-for-shopify",
-)!;
+const ENTRY = EVERGREEN_ENTRIES.find((e) => e.slug === "best-free-fonts-for-shopify")!;
 
 const META_DESCRIPTION =
   "The best fonts for a Shopify store in 2026 — six curated picks for performance-first storefronts plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with side-by-side weight, file-size, and license data.";
@@ -161,7 +158,7 @@ const POPULAR_ALTERNATIVES: ReadonlyArray<FontPick> = [
     weights: "400 → 900, italic",
     fileSize: "~42KB / weight (WOFF2)",
     description:
-      "The default \"premium\" serif on Shopify storefronts. High contrast, dramatic, instantly readable as upmarket. The pitfall: it's so common in fashion that it can read as generic luxury. Fraunces is a more distinctive modern serif with optical sizing — use Playfair if you want safe-and-recognizable, Fraunces if you want differentiated.",
+      'The default "premium" serif on Shopify storefronts. High contrast, dramatic, instantly readable as upmarket. The pitfall: it\'s so common in fashion that it can read as generic luxury. Fraunces is a more distinctive modern serif with optical sizing — use Playfair if you want safe-and-recognizable, Fraunces if you want differentiated.',
   },
   {
     name: "Open Sans",
@@ -236,10 +233,7 @@ const FAQS: ReadonlyArray<{ q: string; a: string }> = [
   },
 ];
 
-const ALL_FONTS: ReadonlyArray<FontPick> = [
-  ...CURATED_PICKS,
-  ...POPULAR_ALTERNATIVES,
-];
+const ALL_FONTS: ReadonlyArray<FontPick> = [...CURATED_PICKS, ...POPULAR_ALTERNATIVES];
 
 export default function BestFontsPage() {
   const crumbs = [
@@ -279,24 +273,20 @@ export default function BestFontsPage() {
         </nav>
 
         <header className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-wide text-muted">
-            Curated list · Updated 2026
-          </p>
+          <p className="text-xs uppercase tracking-wide text-muted">Curated list · Updated 2026</p>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
             The best fonts for a Shopify store (2026)
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Twelve fonts that actually work on a Shopify storefront — six
-            curated picks for performance-first stores, plus the six popular
-            fonts most lists recommend, with honest notes on where each one
-            wins or loses. Every font on this list is free, commercially
+            Twelve fonts that actually work on a Shopify storefront — six curated picks for
+            performance-first stores, plus the six popular fonts most lists recommend, with honest
+            notes on where each one wins or loses. Every font on this list is free, commercially
             licensed, and self-hostable as WOFF2.
           </p>
           <p className="text-sm text-muted">
-            Why self-hosted matters: every font here ships from your
-            theme&apos;s <code className="font-mono text-xs">assets/</code>{" "}
-            folder. No third-party CSS, no Google Fonts CDN call from your
-            customer&apos;s browser, no privacy concerns,{" "}
+            Why self-hosted matters: every font here ships from your theme&apos;s{" "}
+            <code className="font-mono text-xs">assets/</code> folder. No third-party CSS, no Google
+            Fonts CDN call from your customer&apos;s browser, no privacy concerns,{" "}
             <Link
               href="/fix-shopify-font-layout-shift-dawn"
               className="text-electric hover:underline"
@@ -315,29 +305,21 @@ export default function BestFontsPage() {
             Not sure which of these is right for your store?
           </span>
           <span className="text-sm text-muted">
-            Take the free 30-second typography audit — it reads your theme and
-            store type and tells you the exact pairing to use, and whether your
-            current font is making you look stock.{" "}
+            Take the free 30-second typography audit — it reads your theme and store type and tells
+            you the exact pairing to use, and whether your current font is making you look stock.{" "}
             <span className="text-electric group-hover:underline whitespace-nowrap">
               Start the audit →
             </span>
           </span>
         </Link>
 
-        <section
-          aria-labelledby="comparison-heading"
-          className="flex flex-col gap-3"
-        >
-          <h2
-            id="comparison-heading"
-            className="text-2xl font-bold tracking-tight"
-          >
+        <section aria-labelledby="comparison-heading" className="flex flex-col gap-3">
+          <h2 id="comparison-heading" className="text-2xl font-bold tracking-tight">
             Side-by-side comparison
           </h2>
           <p className="text-sm text-muted">
-            Sorted by category, then by how often we install them. Weight
-            figures are per-weight WOFF2 file size — multiply by the number
-            of weights you ship.
+            Sorted by category, then by how often we install them. Weight figures are per-weight
+            WOFF2 file size — multiply by the number of weights you ship.
           </p>
           <div className="overflow-x-auto rounded-lg border border-charcoal-line/30">
             <table className="w-full text-sm">
@@ -352,9 +334,7 @@ export default function BestFontsPage() {
               <tbody className="divide-y divide-charcoal-line/20">
                 {ALL_FONTS.map((f) => (
                   <tr key={f.name}>
-                    <td className="px-3 py-2 font-semibold whitespace-nowrap">
-                      {f.name}
-                    </td>
+                    <td className="px-3 py-2 font-semibold whitespace-nowrap">{f.name}</td>
                     <td className="px-3 py-2 text-charcoal/80">{f.category}</td>
                     <td className="px-3 py-2 text-charcoal/80">{f.bestFor}</td>
                     <td className="px-3 py-2 text-charcoal/80 font-mono text-xs whitespace-nowrap">
@@ -367,21 +347,15 @@ export default function BestFontsPage() {
           </div>
         </section>
 
-        <section
-          aria-labelledby="curated-heading"
-          className="flex flex-col gap-6"
-        >
+        <section aria-labelledby="curated-heading" className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2
-              id="curated-heading"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <h2 id="curated-heading" className="text-2xl font-bold tracking-tight">
               The six fonts we actually install
             </h2>
             <p className="text-sm text-muted">
-              These are the fonts we reach for when we have full discretion
-              over a storefront install. Chosen for screen-rendering quality,
-              weight range, license cleanliness, and how cleanly they pair.
+              These are the fonts we reach for when we have full discretion over a storefront
+              install. Chosen for screen-rendering quality, weight range, license cleanliness, and
+              how cleanly they pair.
             </p>
           </div>
           {CURATED_PICKS.map((pick, idx) => (
@@ -393,9 +367,7 @@ export default function BestFontsPage() {
                 <p className="text-xs font-mono text-electric">
                   #{idx + 1} · {pick.category}
                 </p>
-                <h3 className="text-2xl font-bold tracking-tight">
-                  {pick.name}
-                </h3>
+                <h3 className="text-2xl font-bold tracking-tight">{pick.name}</h3>
                 <p className="text-sm text-muted">
                   {pick.source} · Weights: {pick.weights} · {pick.fileSize}
                 </p>
@@ -403,30 +375,21 @@ export default function BestFontsPage() {
               <p className="text-charcoal/80 leading-relaxed">
                 <strong>Best for:</strong> {pick.bestFor}.
               </p>
-              <p className="text-charcoal/80 leading-relaxed">
-                {pick.description}
-              </p>
+              <p className="text-charcoal/80 leading-relaxed">{pick.description}</p>
             </article>
           ))}
         </section>
 
-        <section
-          aria-labelledby="popular-heading"
-          className="flex flex-col gap-6"
-        >
+        <section aria-labelledby="popular-heading" className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h2
-              id="popular-heading"
-              className="text-2xl font-bold tracking-tight"
-            >
+            <h2 id="popular-heading" className="text-2xl font-bold tracking-tight">
               The six popular alternatives every other list recommends
             </h2>
             <p className="text-sm text-muted">
-              These are the fonts you&apos;ll see on every &ldquo;best Shopify
-              fonts&rdquo; list — Montserrat, Roboto, Poppins, Playfair
-              Display, Open Sans, Lora. They&apos;re all good fonts. Below,
-              honest notes on where each one is the right call and where one
-              of the curated picks above beats it for ecommerce specifically.
+              These are the fonts you&apos;ll see on every &ldquo;best Shopify fonts&rdquo; list —
+              Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora. They&apos;re all good
+              fonts. Below, honest notes on where each one is the right call and where one of the
+              curated picks above beats it for ecommerce specifically.
             </p>
           </div>
           {POPULAR_ALTERNATIVES.map((pick, idx) => (
@@ -438,9 +401,7 @@ export default function BestFontsPage() {
                 <p className="text-xs font-mono text-electric">
                   #{idx + 7} · {pick.category}
                 </p>
-                <h3 className="text-2xl font-bold tracking-tight">
-                  {pick.name}
-                </h3>
+                <h3 className="text-2xl font-bold tracking-tight">{pick.name}</h3>
                 <p className="text-sm text-muted">
                   {pick.source} · Weights: {pick.weights} · {pick.fileSize}
                 </p>
@@ -448,27 +409,18 @@ export default function BestFontsPage() {
               <p className="text-charcoal/80 leading-relaxed">
                 <strong>Best for:</strong> {pick.bestFor}.
               </p>
-              <p className="text-charcoal/80 leading-relaxed">
-                {pick.description}
-              </p>
+              <p className="text-charcoal/80 leading-relaxed">{pick.description}</p>
             </article>
           ))}
         </section>
 
-        <section
-          aria-labelledby="pairings-heading"
-          className="flex flex-col gap-4"
-        >
-          <h2
-            id="pairings-heading"
-            className="text-2xl font-bold tracking-tight"
-          >
+        <section aria-labelledby="pairings-heading" className="flex flex-col gap-4">
+          <h2 id="pairings-heading" className="text-2xl font-bold tracking-tight">
             Three pairings to get you started
           </h2>
           <p className="text-sm text-muted">
-            Each pairing follows the same rule: a display face for headings
-            paired with a neutral, legible face for body — or a single
-            family used for both at different weights.
+            Each pairing follows the same rule: a display face for headings paired with a neutral,
+            legible face for body — or a single family used for both at different weights.
           </p>
           <ul className="flex flex-col gap-3">
             {PAIRINGS_TEASER.map((p) => (
@@ -487,15 +439,11 @@ export default function BestFontsPage() {
           </ul>
           <p className="text-sm text-muted">
             See the full{" "}
-            <Link
-              href="/shopify-font-pairings"
-              className="text-electric hover:underline"
-            >
+            <Link href="/shopify-font-pairings" className="text-electric hover:underline">
               ten Shopify font pairings guide
             </Link>{" "}
-            for the complete list with file-budget data and pitfalls per
-            pairing — plus the four pairings to avoid. For the broader
-            framework on heading + body selection, the{" "}
+            for the complete list with file-budget data and pitfalls per pairing — plus the four
+            pairings to avoid. For the broader framework on heading + body selection, the{" "}
             <Link
               href="/how-to-choose-a-font-for-shopify"
               className="text-electric hover:underline"
@@ -520,66 +468,47 @@ export default function BestFontsPage() {
             >
               Google Fonts
             </a>{" "}
-            (or use a third-party download tool that returns just the
-            weights you need). Upload them to your theme&apos;s{" "}
-            <code className="font-mono text-sm">assets/</code> folder. Open
-            the{" "}
+            (or use a third-party download tool that returns just the weights you need). Upload them
+            to your theme&apos;s <code className="font-mono text-sm">assets/</code> folder. Open the{" "}
             <Link href="/" className="text-electric hover:underline">
               {SITE_NAME} generator
             </Link>{" "}
-            in another tab, type the font name (e.g.,{" "}
-            <em>Inter</em> or <em>Montserrat</em>), tick the formats you
-            uploaded, and copy the three blocks the generator outputs into
-            the files it points you to. Refresh your storefront — the new
-            font is live.
+            in another tab, type the font name (e.g., <em>Inter</em> or <em>Montserrat</em>), tick
+            the formats you uploaded, and copy the three blocks the generator outputs into the files
+            it points you to. Refresh your storefront — the new font is live.
           </p>
           <p className="text-charcoal/80 leading-relaxed">
             If you change your mind, the{" "}
-            <Link
-              href="/uninstall-custom-font-shopify"
-              className="text-electric hover:underline"
-            >
+            <Link href="/uninstall-custom-font-shopify" className="text-electric hover:underline">
               uninstall guide
             </Link>{" "}
-            walks through the reversal — nothing in this workflow is
-            permanent.
+            walks through the reversal — nothing in this workflow is permanent.
           </p>
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="text-2xl font-bold tracking-tight">
-            When free isn&apos;t enough
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight">When free isn&apos;t enough</h2>
           <p className="text-charcoal/80 leading-relaxed">
-            Free fonts cover most stores. They don&apos;t cover every store —
-            if your brand depends on a face with real personality, or you
-            want exclusivity in your category, the paid market is where
-            you&apos;ll find it. The two cleanest paths:
+            Free fonts cover most stores. They don&apos;t cover every store — if your brand depends
+            on a face with real personality, or you want exclusivity in your category, the paid
+            market is where you&apos;ll find it. The two cleanest paths:
           </p>
           <ul className="list-disc pl-6 flex flex-col gap-2 text-charcoal/80 leading-relaxed">
             <li>
-              <strong>Direct from a foundry.</strong> Klim Type Foundry,
-              Commercial Type, Pangram Pangram, Grilli Type — buy a web
-              license tier that matches your traffic. Most cost between
-              $50 and $500 for a single weight depending on the foundry.
+              <strong>Direct from a foundry.</strong> Klim Type Foundry, Commercial Type, Pangram
+              Pangram, Grilli Type — buy a web license tier that matches your traffic. Most cost
+              between $50 and $500 for a single weight depending on the foundry.
             </li>
             <li>
-              <strong>A marketplace with commercial licenses included.</strong>
-              {" "}Lower per-font cost, no per-pageview tier math, full
-              breadth across display and body styles. The card below is
-              our affiliate placement — we use it ourselves and only
-              recommend it because the included commercial license is
-              what makes it work for Shopify stores.
+              <strong>A marketplace with commercial licenses included.</strong> Sites like Creative
+              Fabrica or Envato Elements bundle the commercial license into a low per-font cost — no
+              per-pageview tier math, full breadth across display and body styles. Just confirm the
+              license explicitly covers web/embedding before you ship it to a storefront.
             </li>
           </ul>
         </section>
 
-        <CreativeFabricaCard />
-
-        <section
-          aria-labelledby="faq-heading"
-          className="flex flex-col gap-4"
-        >
+        <section aria-labelledby="faq-heading" className="flex flex-col gap-4">
           <h2 id="faq-heading" className="text-2xl font-bold tracking-tight">
             Frequently asked questions
           </h2>
@@ -605,9 +534,7 @@ export default function BestFontsPage() {
         </section>
 
         <section className="flex flex-col gap-3 rounded-lg border border-charcoal-line/30 bg-paper-dim p-5">
-          <h2 className="text-xl font-bold tracking-tight">
-            Still narrowing down?
-          </h2>
+          <h2 className="text-xl font-bold tracking-tight">Still narrowing down?</h2>
           <p className="text-charcoal/80 leading-relaxed">
             The{" "}
             <Link
@@ -616,9 +543,9 @@ export default function BestFontsPage() {
             >
               decision-framework guide
             </Link>{" "}
-            walks through the six axes we use to pick fonts — brand fit,
-            performance budget, licensing, weights, pairing, and
-            multilingual support. Worth the ten minutes before you commit.
+            walks through the six axes we use to pick fonts — brand fit, performance budget,
+            licensing, weights, pairing, and multilingual support. Worth the ten minutes before you
+            commit.
           </p>
           <KitUpsell variant="soft" />
         </section>

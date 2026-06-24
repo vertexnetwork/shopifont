@@ -74,3 +74,6 @@ Thumbs.db
 # Playwright artifacts
 playwright-report/
 test-results/
+
+# Playwright conversion-audit screenshots (local, regenerable)
+.playwright-screenshots/

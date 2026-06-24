@@ -110,6 +110,7 @@ export const siteConfig = {
       ] as ReadonlyArray<FooterLink>,
       legal: [
         { href: "/about", label: "About" },
+        { href: "/recommendations", label: "Recommended tools" },
         { href: "/contact", label: "Contact" },
         { href: "/privacy", label: "Privacy" },
         { href: "/terms", label: "Terms" },
@@ -117,7 +118,7 @@ export const siteConfig = {
       ] as ReadonlyArray<FooterLink>,
     },
     disclaimer:
-      "Independent tool, not affiliated with Shopify Inc. Display ads + a small Creative Fabrica/Printify affiliate program keep the tool free.",
+      "Independent tool, not affiliated with Shopify Inc. Display ads + a small Printify affiliate partnership keep the tool free.",
   },
 
   // JSON-LD ----------------------------------------------------------
@@ -180,20 +181,20 @@ export const siteConfig = {
           | undefined) ?? "none",
     },
     /**
-     * Shopifont deliberately ships two affiliate slots (Creative Fabrica
-     * + Printify). Spec §10 acknowledges multi-affiliate as DIVERGENT
-     * but allowed when documented; both verticals (typography + merch
-     * fulfillment) sit adjacent to the Shopify-merchant audience this
-     * tool serves. Slot order matters: index 0 is the primary, used by
-     * the headline card on the homepage.
+     * Affiliate partners. Single partner by design: Printify, the one
+     * already-live PartnerStack + cash + complement fit for this
+     * audience (POD merch ≠ a typography kit, so it can't cannibalize
+     * the paid product). Creative Fabrica was cut — it runs an in-house
+     * self-managed wallet, not the network's PartnerStack dashboard
+     * (see vertex-network-affiliate-guide §5).
+     *
+     * Placement rule (network affiliate guide §10): affiliates render on
+     * research / pSEO surfaces only, NEVER on the paid funnel
+     * (home / audit / kits), one per page max, always secondary to the
+     * kit. Order is by provider, not index — code finds partners by
+     * `provider`, so this list can grow/shrink without breaking refs.
      */
     affiliates: [
-      {
-        url: "https://www.creativefabrica.com/ref/24727168/",
-        label: "Creative Fabrica",
-        provider: "creative-fabrica",
-        rel: "sponsored noopener",
-      },
       {
         url: "https://try.printify.com/j8xm11chwojf",
         label: "Printify",
@@ -201,12 +202,6 @@ export const siteConfig = {
         rel: "sponsored noopener",
       },
     ] satisfies ReadonlyArray<Affiliate>,
-    affiliate: {
-      enabled: true,
-      url: "https://www.creativefabrica.com/ref/24727168/",
-      label: "Creative Fabrica",
-      provider: "creative-fabrica",
-    },
     consent: { required: true },
     themeToggle: false,
   },

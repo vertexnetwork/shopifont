@@ -11,12 +11,7 @@
 
 import { siteConfig } from "./site-config";
 
-export {
-  siteConfig,
-  absoluteUrl,
-  BUILD_DATE_ISO,
-  getBuildDateLabel,
-} from "./site-config";
+export { siteConfig, absoluteUrl, BUILD_DATE_ISO, getBuildDateLabel } from "./site-config";
 
 export const SITE_NAME = siteConfig.name;
 export const SITE_TAGLINE = siteConfig.tagline;
@@ -26,15 +21,12 @@ export function getSiteUrl(): string {
   return siteConfig.url;
 }
 
-/** @deprecated read `siteConfig.features.affiliates[0].url` instead. */
-export const CREATIVE_FABRICA_REF = siteConfig.features.affiliates[0]!.url;
-
-/** @deprecated read `siteConfig.features.affiliates[1].url` instead. */
-export const PRINTIFY_REF = siteConfig.features.affiliates[1]!.url;
+/** @deprecated find by provider in `siteConfig.features.affiliates` instead. */
+export const PRINTIFY_REF =
+  siteConfig.features.affiliates.find((a) => a.provider === "printify")?.url ?? "";
 
 /** @deprecated read `siteConfig.features.extension.chromeWebStoreUrl` instead. */
-export const CHROME_WEB_STORE_URL =
-  siteConfig.features.extension.chromeWebStoreUrl;
+export const CHROME_WEB_STORE_URL = siteConfig.features.extension.chromeWebStoreUrl;
 
 export const NETWORK_BRAND = "Vertex Network";
 
