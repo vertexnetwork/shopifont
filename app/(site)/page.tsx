@@ -2,7 +2,7 @@ import Link from "next/link";
 import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontAudit } from "@/components/Audit";
 import { ShopifontGenerator } from "@/components/Generator";
-import { HeroCodePreview } from "@/components/Hero/CodePreview";
+import { HeroSpecimen } from "@/components/Hero/Specimen";
 import { AdSlot } from "@/components/Layout/AdSlot";
 import { LighthouseBadge } from "@/components/Layout/LighthouseBadge";
 import { ProofStrip } from "@/components/Layout/ProofStrip";
@@ -66,7 +66,7 @@ export default function HomePage() {
               read the same. Take the free 30-second typography audit and see exactly what&apos;s
               making your store look stock, plus the one change that fixes it.
             </p>
-            <HeroCodePreview />
+            <HeroSpecimen />
             <ProofStrip />
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
