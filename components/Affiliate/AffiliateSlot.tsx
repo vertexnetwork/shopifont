@@ -5,8 +5,7 @@ import type { Affiliate } from "@/lib/site-config";
 
 /**
  * Generic affiliate slot. Reads from `siteConfig.features.affiliates[]`
- * (we ship two — Creative Fabrica + Printify) and renders a card or an
- * inline mention.
+ * (we ship one — Printify) and renders a card or an inline mention.
  *
  * Click telemetry: fires an `affiliate_click` event with `provider`
  * and `placement` props via the `safeTrack` no-op-safe wrapper.
