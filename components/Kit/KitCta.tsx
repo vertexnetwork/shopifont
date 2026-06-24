@@ -25,6 +25,14 @@ import { useFoundingOffer } from "@/components/Kit/useFoundingOffer";
  *      the modal to any link already carrying it and just navigates away
  *      full-page. The script appends `overlay=true` itself. (See CSP +
  *      .env notes.) The target/rel are the no-JS fallback only.
+ *
+ * One more constraint, enforced by the URL you put in NEXT_PUBLIC_KIT_
+ * GUMROAD_URL (not by this file): the overlay bundle only binds links
+ * whose host ends in `gumroad.com` — it reads the allowed host off the
+ * gumroad.js script tag's own origin. A Gumroad *custom domain* (e.g.
+ * kits.shopifont.app) therefore does NOT bind and the click navigates
+ * full-page. Use the `*.gumroad.com` product URL here; the buyer still
+ * stays on our page because the overlay is a modal over it.
  */
 
 type Source = "kits-hero" | "kits-how" | "audit-scorecard" | "header" | "upsell";
