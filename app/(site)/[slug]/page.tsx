@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { PrintifyInline } from "@/components/Affiliate/PrintifyInline";
+import { PrintifyCard } from "@/components/Affiliate/PrintifyCard";
 import { KitUpsell } from "@/components/KitUpsell";
 import { ShopifontGenerator } from "@/components/Generator";
 import { AdSlot } from "@/components/Layout/AdSlot";
@@ -157,18 +157,18 @@ export default async function PseoPage({ params }: PageProps) {
              */}
             <KitUpsell variant="pseo-steps" themeName={entry.theme} />
             {/*
-             * Inline affiliate exit (Printify, our one PartnerStack
-             * partner). Lands AFTER the technical instructions and below
-             * the kit upsell, so it's strictly secondary to the owned
-             * product (network affiliate guide §10). Single sentence,
-             * "(affiliate)" tag inline, rel="sponsored" on the link.
+             * Affiliate (Printify, our one PartnerStack partner) as a
+             * visible card — a one-line inline mention here tested as
+             * invisible. Lands AFTER the steps and BELOW the kit upsell,
+             * so the owned product stays primary and this reads as a
+             * complement, not a substitute (network affiliate guide §10).
              *
              * Gated to generator-intent pSEO only — those are the 13
              * highest-commercial-intent pages where the merchant most
              * likely sells physical products. Tutorial / fix / comparison
              * pages skip it to avoid topical drift.
              */}
-            {entry.intent === "generator" ? <PrintifyInline /> : null}
+            {entry.intent === "generator" ? <PrintifyCard placement="pseo-printify-card" /> : null}
           </section>
         </Reveal>
 
