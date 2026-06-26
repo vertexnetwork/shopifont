@@ -99,10 +99,13 @@ export default function AboutPage() {
           <p className="text-charcoal/80 leading-relaxed">
             We maintain a typed metadata file for every free Shopify OS 2.0 theme — Dawn, Sense,
             Refresh, Crave, Origin, Studio, Taste, Spotlight, Colorblock, Craft, Ride, Publisher,
-            and Trade — and generate a dedicated guide for each. The guides cover the theme&apos;s
-            default fonts, the exact file path the{" "}
+            and Trade — and generate a dedicated guide for each. The guides cover each theme&apos;s
+            typography tokens, the file path the{" "}
             <code className="font-mono text-sm">@font-face</code> block belongs in, and the CSS
-            variable convention that lets a single override block survive theme updates.
+            variable convention that lets a single override block survive theme updates. Where a
+            guide names a theme&apos;s specific default font or CSS selector, we&apos;ve confirmed it
+            against a live install; otherwise it uses the OS 2.0 token convention every Dawn-derived
+            theme shares — we don&apos;t print theme internals we haven&apos;t verified.
           </p>
         </section>
 

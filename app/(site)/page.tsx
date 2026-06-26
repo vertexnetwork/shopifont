@@ -247,8 +247,8 @@ export default function HomePage() {
               Generators for every free Shopify theme
             </h2>
             <p className="text-sm text-muted max-w-2xl">
-              One generator, thirteen tailored landing pages. Each links the theme-specific
-              selectors, default fonts, and Liquid injection point you actually need.
+              One generator, thirteen tailored landing pages — each with typography guidance for that
+              store type, the CSS-variable override, and the Liquid injection point you actually need.
             </p>
 
             {featured ? (
