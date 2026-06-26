@@ -234,11 +234,24 @@ export function absoluteUrl(path: string): string {
 }
 
 /**
- * Build-time timestamp baked into the bundle. Surfaced on every pSEO
- * page as a "last updated" trust signal. Refreshes automatically every
- * deploy.
+ * Timestamp surfaced as the "last updated" trust signal across pSEO
+ * pages and in Article schema. Sourced from the deploy's git commit date
+ * (the same honest signal the sitemap's `lastmod` uses) so it only moves
+ * when the site's content actually changes — NOT on every rebuild.
+ *
+ * A bare `new Date()` here stamped "updated today" on all ~70 pages on
+ * every deploy even when nothing changed — a synthetic-uniformity tell
+ * that makes a templated set look machine-stamped (audit Dimension #6).
+ * Falls back to build time only for local / non-Vercel builds.
  */
-export const BUILD_DATE_ISO: string = new Date().toISOString();
+export const BUILD_DATE_ISO: string = (() => {
+  const commitDate = process.env.VERCEL_GIT_COMMIT_AUTHOR_DATE?.trim();
+  if (commitDate) {
+    const parsed = new Date(commitDate);
+    if (!Number.isNaN(parsed.getTime())) return parsed.toISOString();
+  }
+  return new Date().toISOString();
+})();
 
 const BUILD_DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
   year: "numeric",

@@ -8,6 +8,13 @@ type Props = {
   description?: string;
   /** Absolute or relative URL of the page hosting the app. */
   url?: string;
+  /**
+   * Omit the shared `featureList` / `browserRequirements`. Set on pSEO
+   * pages so the same 10-line feature block isn't emitted as byte-identical
+   * structured data on ~70 URLs (audit Dimension #3) — the canonical, full
+   * entity lives once on the homepage.
+   */
+  concise?: boolean;
 };
 
 /**
@@ -33,7 +40,7 @@ const FEATURE_LIST: ReadonlyArray<string> = [
   "Free Chrome extension for in-context font generation in the Shopify admin",
 ];
 
-export function SoftwareApplicationSchema({ name, description, url }: Props) {
+export function SoftwareApplicationSchema({ name, description, url, concise = false }: Props) {
   const data = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -42,8 +49,14 @@ export function SoftwareApplicationSchema({ name, description, url }: Props) {
     url: url ? (url.startsWith("http") ? url : absoluteUrl(url)) : absoluteUrl("/"),
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Web",
-    browserRequirements: "Requires JavaScript and a modern browser.",
-    featureList: FEATURE_LIST,
+    // The full feature inventory is the homepage entity's job; pSEO pages
+    // emit a lean node so the same list isn't duplicated across the set.
+    ...(concise
+      ? {}
+      : {
+          browserRequirements: "Requires JavaScript and a modern browser.",
+          featureList: FEATURE_LIST,
+        }),
     offers: {
       "@type": "Offer",
       price: "0",

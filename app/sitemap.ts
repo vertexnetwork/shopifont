@@ -76,8 +76,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pseo = PSEO_ENTRIES.map((entry) => ({
     url: `${base}/${entry.slug}`,
     lastModified: LAST_MOD,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
+    // Tiered off a real signal (page intent + theme popularity) instead of
+    // one uniform value across the whole set — see content/pseo.ts.
+    changeFrequency: entry.sitemapChangeFrequency,
+    priority: entry.sitemapPriority,
   }));
 
   const evergreen = EVERGREEN_ENTRIES.map((entry) => ({

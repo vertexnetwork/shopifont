@@ -62,6 +62,7 @@ export default async function PseoPage({ params }: PageProps) {
         name={`${entry.h1} | Shopifont`}
         description={entry.metaDescription}
         url={`/${entry.slug}`}
+        concise
       />
       <FaqSchema id="faq-schema" faqs={entry.faqs} />
       <BreadcrumbSchema id="breadcrumb-schema" crumbs={crumbs} />
@@ -116,6 +117,7 @@ export default async function PseoPage({ params }: PageProps) {
             </h1>
             <p className="text-base sm:text-lg text-charcoal/80 max-w-2xl">{entry.oneLineAnswer}</p>
             <p className="text-sm text-charcoal/80 max-w-2xl">{entry.intro}</p>
+            <p className="text-sm text-charcoal/80 max-w-2xl">{entry.verticalAngle}</p>
           </div>
           <AdSlot id="ad-leaderboard" position="leaderboard" className="hidden lg:flex" />
         </section>

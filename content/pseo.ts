@@ -53,7 +53,23 @@ export type PseoEntry = {
   faqs: ReadonlyArray<{ q: string; a: string }>;
   relatedSlugs: ReadonlyArray<string>;
   breadcrumbLabel: string;
+  /**
+   * Vertical-specific typography guidance rendered as a standalone
+   * paragraph. Genuine editorial value that differs per theme, so each
+   * page carries unique main content beyond the templated noun-swap
+   * (audit Dimension #1/#2).
+   */
+  verticalAngle: string;
+  /**
+   * Per-page sitemap weighting derived from a real signal (page intent +
+   * theme popularity) instead of one uniform value across the whole set
+   * (audit Dimension #6/#7).
+   */
+  sitemapPriority: number;
+  sitemapChangeFrequency: SitemapChangeFrequency;
 };
+
+export type SitemapChangeFrequency = "yearly" | "monthly" | "weekly";
 
 /* ------------------------------------------------------------------ */
 /* Helpers — guarded references to per-theme defaults                  */
@@ -83,6 +99,18 @@ function defaultFallbackName(theme: ThemeMeta): string {
 }
 
 /**
+ * A parenthetical "such as ..." example of the theme's heading selectors,
+ * emitted ONLY when the selectors have been verified against a live
+ * install. For unverified themes it returns an empty string, so the
+ * surrounding copy reads "the theme's heading selectors" without citing
+ * specific class names that might be wrong. Generalization over
+ * fabrication — see audit playbook Part 6 and Dimension #5.
+ */
+function selectorEg(theme: ThemeMeta): string {
+  return theme.selectorsVerified ? ` (such as ${theme.notableSelector})` : "";
+}
+
+/**
  * Split prose useCase into ordered steps on sentence boundaries.
  * Preserves abbreviation-safe behavior because we only break on
  * `.!?` followed by whitespace + capital letter.
@@ -103,7 +131,7 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
   const h1 = `Free Shopify ${theme.name} Custom Font Generator`;
   const oneLineAnswer = `Paste any font name above to generate the exact @font-face CSS, settings_schema.json snippet, and CSS variable overrides Shopify ${theme.name} needs to render your custom font without layout shifts.`;
   const intro = `${theme.name} is ${theme.positioning} Out of the box, ${theme.name} ships with ${defaultHeading(theme)} for headings and ${defaultBody(theme)} for body — typography that's deliberately ${theme.typographyCharacter} If you need a brand-specific face on a ${theme.category} ${theme.name} store, this generator builds the three code blocks Shopify expects in seconds.`;
-  const useCase = `Upload your custom font files to your ${theme.name} theme's \`assets/\` folder. Paste the generated @font-face block into ${theme.injectionPoint} so Shopify's Liquid \`asset_url\` filter resolves correctly. Add the settings_schema.json snippet to expose a Theme Editor toggle for non-technical merchants. Finally, the CSS variable overrides retarget ${theme.notableSelector} and every other element that reads from \`--font-heading-family\` or \`--font-body-family\` — meaning your custom face propagates site-wide without touching ${theme.name}'s core templates.`;
+  const useCase = `Upload your custom font files to your ${theme.name} theme's \`assets/\` folder. Paste the generated @font-face block into ${theme.injectionPoint} so Shopify's Liquid \`asset_url\` filter resolves correctly. Add the settings_schema.json snippet to expose a Theme Editor toggle for non-technical merchants. Finally, the CSS variable overrides retarget ${theme.name}'s heading selectors${selectorEg(theme)} and every other element that reads from \`--font-heading-family\` or \`--font-body-family\` — meaning your custom face propagates site-wide without touching ${theme.name}'s core templates.`;
 
   return {
     slug,
@@ -128,7 +156,7 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
       },
       {
         q: `Will a custom font cause layout shift on ${theme.name}?`,
-        a: `Not if you set \`font-display: swap\` (the generator does this automatically) and reserve typography metrics by overriding ${theme.name}'s CSS variables instead of swapping fonts via JavaScript. ${theme.name}'s headings — ${theme.notableSelector} — read from \`--font-heading-family\`, so the override happens before paint and the metric box doesn't change after load.`,
+        a: `Not if you set \`font-display: swap\` (the generator does this automatically) and reserve typography metrics by overriding ${theme.name}'s CSS variables instead of swapping fonts via JavaScript. ${theme.name}'s heading selectors${selectorEg(theme)} read from \`--font-heading-family\`, so the override happens before paint and the metric box doesn't change after load.`,
       },
       {
         q: `Do I need to edit Liquid to use a custom font on ${theme.name}?`,
@@ -145,6 +173,9 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
       `fix-shopify-font-layout-shift-${theme.slug}`,
     ],
     breadcrumbLabel: `${theme.name} Generator`,
+    verticalAngle: theme.verticalAngle,
+    sitemapPriority: theme.popularity === "tier-1" ? 0.8 : 0.7,
+    sitemapChangeFrequency: "monthly",
   };
 }
 
@@ -153,7 +184,7 @@ function buildLiquidTutorialEntry(theme: ThemeMeta): PseoEntry {
   const h1 = `Add a Custom Font to Shopify ${theme.name} with Liquid`;
   const oneLineAnswer = `On Shopify ${theme.name}, custom fonts are wired up by uploading the file to \`assets/\`, then referencing it inside an @font-face block via the Liquid \`asset_url\` filter — no Liquid template edits required.`;
   const intro = `Adding a custom font to ${theme.name} is mostly a CSS task — the only Liquid you need is the one-liner that Shopify uses to resolve uploaded asset paths. Because ${theme.name} is ${theme.positioning} you can drop the @font-face block directly into ${theme.injectionPoint} and skip every snippet file.`;
-  const useCase = `In your ${theme.name} theme's code editor, navigate to \`assets/\` and upload your WOFF2 (and any fallbacks). Open the file at ${theme.injectionPoint} and paste the @font-face block from the generator above. The crucial detail is the Liquid filter \`{{ 'yourfont.woff2' | asset_url }}\` — Shopify rewrites this at render time to the actual CDN URL for the asset, including a cache-busting hash. Reference that font-family from anywhere in your stylesheet, or — preferred — override \`--font-heading-family\` so all of ${theme.name}'s heading selectors (including ${theme.notableSelector}) inherit the new face automatically.`;
+  const useCase = `In your ${theme.name} theme's code editor, navigate to \`assets/\` and upload your WOFF2 (and any fallbacks). Open the file at ${theme.injectionPoint} and paste the @font-face block from the generator above. The crucial detail is the Liquid filter \`{{ 'yourfont.woff2' | asset_url }}\` — Shopify rewrites this at render time to the actual CDN URL for the asset, including a cache-busting hash. Reference that font-family from anywhere in your stylesheet, or — preferred — override \`--font-heading-family\` so all of ${theme.name}'s heading selectors${selectorEg(theme)} inherit the new face automatically.`;
 
   return {
     slug,
@@ -182,7 +213,7 @@ function buildLiquidTutorialEntry(theme: ThemeMeta): PseoEntry {
       },
       {
         q: `How do I scope the font to only headings on ${theme.name}?`,
-        a: `Set \`--font-heading-family\` only and leave \`--font-body-family\` untouched. ${theme.name}'s heading selectors — including ${theme.notableSelector} — read from the heading token, while paragraph and form copy continue to use the body token and ${defaultBody(theme)}.`,
+        a: `Set \`--font-heading-family\` only and leave \`--font-body-family\` untouched. ${theme.name}'s heading selectors${selectorEg(theme)} read from the heading token, while paragraph and form copy continue to use the body token and ${defaultBody(theme)}.`,
       },
     ],
     relatedSlugs: [
@@ -191,6 +222,9 @@ function buildLiquidTutorialEntry(theme: ThemeMeta): PseoEntry {
       `fix-shopify-font-layout-shift-${theme.slug}`,
     ],
     breadcrumbLabel: `${theme.name} Liquid`,
+    verticalAngle: theme.verticalAngle,
+    sitemapPriority: 0.6,
+    sitemapChangeFrequency: "monthly",
   };
 }
 
@@ -199,7 +233,7 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
   const h1 = `${theme.name} Theme Typography CSS Variables`;
   const oneLineAnswer = `${theme.name} exposes \`--font-heading-family\`, \`--font-heading-style\`, \`--font-heading-weight\`, and the matching \`--font-body-*\` tokens on \`:root\` — overriding them is the cleanest way to swap typography without forking core theme files.`;
   const intro = `${theme.name} centralizes its entire typography system in six CSS custom properties on \`:root\`. Because ${theme.positioning}, every page-level heading and paragraph reads from those tokens — meaning a single override block can retarget the whole site.`;
-  const useCase = `The six tokens are: \`--font-heading-family\`, \`--font-heading-style\`, \`--font-heading-weight\`, \`--font-body-family\`, \`--font-body-style\`, and \`--font-body-weight\`. ${theme.name} sets them in \`base.css\` from the values configured in the Theme Editor. To swap them, you append a \`:root { ... }\` override to ${theme.injectionPoint} — that override loads after the theme's defaults and wins by source order. Selectors like ${theme.notableSelector} pick up the change without any template edits, and the override survives ${theme.name} updates because you're modifying values, not the cascade chain itself.`;
+  const useCase = `The six tokens are: \`--font-heading-family\`, \`--font-heading-style\`, \`--font-heading-weight\`, \`--font-body-family\`, \`--font-body-style\`, and \`--font-body-weight\`. ${theme.name} sets them in \`base.css\` from the values configured in the Theme Editor. To swap them, you append a \`:root { ... }\` override to ${theme.injectionPoint} — that override loads after the theme's defaults and wins by source order. Every heading and body selector${selectorEg(theme)} picks up the change without any template edits, and the override survives ${theme.name} updates because you're modifying values, not the cascade chain itself.`;
 
   return {
     slug,
@@ -220,7 +254,7 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
       },
       {
         q: `What's the difference between --font-heading-family and --font-body-family in ${theme.name}?`,
-        a: `\`--font-heading-family\` is consumed by every heading-level rule, including ${theme.notableSelector}. \`--font-body-family\` is consumed by paragraphs, list items, form copy, and the cart drawer in ${theme.name}. Setting only one lets you mix a display heading face with ${defaultBody(theme)} on body — a useful split when your custom font is large.`,
+        a: `\`--font-heading-family\` is consumed by every heading-level rule${selectorEg(theme)}. \`--font-body-family\` is consumed by paragraphs, list items, form copy, and the cart drawer in ${theme.name}. Setting only one lets you mix a display heading face with ${defaultBody(theme)} on body — a useful split when your custom font is large.`,
       },
       {
         q: `How do I override ${theme.name}'s typography without touching base.css directly?`,
@@ -237,6 +271,9 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
       `fix-shopify-font-layout-shift-${theme.slug}`,
     ],
     breadcrumbLabel: `${theme.name} CSS Vars`,
+    verticalAngle: theme.verticalAngle,
+    sitemapPriority: 0.6,
+    sitemapChangeFrequency: "monthly",
   };
 }
 
@@ -245,7 +282,7 @@ function buildLayoutShiftFixEntry(theme: ThemeMeta): PseoEntry {
   const h1 = `Fix Custom Font Layout Shift on Shopify ${theme.name}`;
   const oneLineAnswer = `Layout shift on ${theme.name} after a custom font installs is almost always a missing \`font-display: swap\`, an unpreloaded WOFF2, or a JS-driven font swap that fires after first paint — fix all three and your CLS drops to zero.`;
   const intro = `${theme.name} ships clean Core Web Vitals out of the box, but a poorly configured custom font can knock CLS up by 0.10 or more. Because ${theme.positioning}, the merchant audience tends to research these issues directly on mobile — making CLS a conversion-impacting metric, not just an SEO one.`;
-  const useCase = `Three fixes cover almost every case. First, set \`font-display: swap\` on every @font-face declaration so the browser renders fallback metrics immediately and swaps in your custom face when ready. Second, preload the WOFF2 with \`<link rel="preload" as="font" type="font/woff2" crossorigin>\` from ${theme.name}'s \`theme.liquid\` head — preloading saves the round-trip the browser would otherwise make after parsing CSS. Third, override \`--font-heading-family\` instead of swapping classes via JavaScript: ${theme.name}'s headings (${theme.notableSelector}) read the variable at first paint, eliminating the post-load reflow that JS-driven swaps cause. Verify with the Performance panel in DevTools — the CLS bar should be flat across the load.`;
+  const useCase = `Three fixes cover almost every case. First, set \`font-display: swap\` on every @font-face declaration so the browser renders fallback metrics immediately and swaps in your custom face when ready. Second, preload the WOFF2 with \`<link rel="preload" as="font" type="font/woff2" crossorigin>\` from ${theme.name}'s \`theme.liquid\` head — preloading saves the round-trip the browser would otherwise make after parsing CSS. Third, override \`--font-heading-family\` instead of swapping classes via JavaScript: ${theme.name}'s heading selectors${selectorEg(theme)} read the variable at first paint, eliminating the post-load reflow that JS-driven swaps cause. Verify with the Performance panel in DevTools — the CLS bar should be flat across the load.`;
 
   return {
     slug,
@@ -283,6 +320,9 @@ function buildLayoutShiftFixEntry(theme: ThemeMeta): PseoEntry {
       `add-custom-font-${theme.slug}-liquid`,
     ],
     breadcrumbLabel: `${theme.name} CLS Fix`,
+    verticalAngle: theme.verticalAngle,
+    sitemapPriority: 0.6,
+    sitemapChangeFrequency: "monthly",
   };
 }
 
@@ -338,6 +378,9 @@ function buildFormatTutorialEntry(
       `${theme.slug}-theme-typography-css-variables`,
     ],
     breadcrumbLabel: `${theme.name} ${formatUpper}`,
+    verticalAngle: theme.verticalAngle,
+    sitemapPriority: 0.5,
+    sitemapChangeFrequency: "yearly",
   };
 }
 
@@ -345,7 +388,7 @@ function buildComparisonEntry(a: ThemeMeta, b: ThemeMeta): PseoEntry {
   const slug = `${a.slug}-vs-${b.slug}-custom-font`;
   const h1 = `${a.name} vs ${b.name}: Custom Font Setup Compared`;
   const oneLineAnswer = `Both ${a.name} and ${b.name} expose the same six \`--font-heading-*\` and \`--font-body-*\` CSS variables, so the @font-face block and CSS variable override generated above paste cleanly into either theme — the only material difference is the default ${defaultHeading(a)} vs ${defaultHeading(b)} fallback.`;
-  const intro = `${a.name} is ${a.positioning} ${b.name} is ${b.positioning} Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and the ${a.notableSelector.split(",")[0]?.trim()} vs ${b.notableSelector.split(",")[0]?.trim()} selectors that pick up the override.`;
+  const intro = `${a.name} is ${a.positioning} ${b.name} is ${b.positioning} Despite the different positioning, both themes are OS 2.0 and inherit Dawn's typography token convention — meaning the workflow to add a custom font is essentially identical. The differences are in defaults, fallback metrics, and which heading selectors each theme ships — but the override block you paste is identical.`;
   const useCase = `For a side-by-side migration: paste the same @font-face block into ${a.injectionPoint} on ${a.name} and into ${b.injectionPoint} on ${b.name}. The CSS variable override block is byte-identical between the two — both themes read \`--font-heading-family\` and \`--font-body-family\` from \`:root\`. The settings_schema.json snippet is also portable: ${a.name} and ${b.name} both honor \`font_picker\` and \`select\` types in the Theme Editor. Where the themes diverge is in their default fallback faces (${a.name} uses ${defaultHeading(a)}; ${b.name} uses ${defaultBody(b)}), so check that your custom face's \`size-adjust\` matches well enough that any swap is invisible.`;
 
   return {
@@ -385,6 +428,9 @@ function buildComparisonEntry(a: ThemeMeta, b: ThemeMeta): PseoEntry {
       `${b.slug}-theme-typography-css-variables`,
     ],
     breadcrumbLabel: `${a.name} vs ${b.name}`,
+    verticalAngle: `Whether you're running a ${a.category} store on ${a.name} or a ${b.category} store on ${b.name}, the typography goal is the same: a distinctive heading face that signals your category, paired with a body face legible enough for product and checkout copy.`,
+    sitemapPriority: 0.5,
+    sitemapChangeFrequency: "yearly",
   };
 }
 
@@ -420,6 +466,8 @@ function formatRequirement(format: "woff2" | "woff" | "ttf"): string {
 
 const TITLE_MAX = 60;
 const DESCRIPTION_MAX = 155;
+/** PLAN.md §3 internal-link rule: each page links 3–5 related slugs. */
+const RELATED_MAX = 5;
 
 function clampTitle(input: string): string {
   if (input.length <= TITLE_MAX) return input;
@@ -466,15 +514,25 @@ const generated: PseoEntry[] = [
   }),
 ];
 
-assertUniqueSlugs(generated);
-assertFaqUniquenessThreshold(generated, 3);
-assertMetaLengths(generated);
-assertRelatedLinksValid(generated);
+/**
+ * Format and comparison pages are never referenced by another page's
+ * `relatedSlugs`, so without this pass they'd be reachable only via the
+ * sitemap — orphans (audit Dimension #8). This distributes one inbound
+ * link for each across sibling pages, respecting the 3–5 cap.
+ */
+const linked = attachInboundLinks(generated);
 
-export const PSEO_ENTRIES: ReadonlyArray<PseoEntry> = generated;
+assertUniqueSlugs(linked);
+assertFaqUniquenessThreshold(linked, 3);
+assertMetaLengths(linked);
+assertRelatedLinksValid(linked);
+assertNoOrphans(linked);
+assertRelatedLinkCount(linked);
+
+export const PSEO_ENTRIES: ReadonlyArray<PseoEntry> = linked;
 
 export const PSEO_BY_SLUG: Readonly<Record<string, PseoEntry>> = Object.freeze(
-  Object.fromEntries(generated.map((e) => [e.slug, e])),
+  Object.fromEntries(linked.map((e) => [e.slug, e])),
 );
 
 /* ------------------------------------------------------------------ */
@@ -536,6 +594,97 @@ function assertRelatedLinksValid(entries: ReadonlyArray<PseoEntry>): void {
           `/${entry.slug} links to /${related}, which is not a generated pSEO slug.`,
         );
       }
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Orphan elimination (audit Dimension #8)                             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Sibling pages that can host an inbound link to an orphaned variant
+ * page, in fallback order. Derived from the orphan's own slug so this
+ * stays correct as themes are added. Returns [] for slugs that are
+ * already linked by the base builders (generators/tutorials/fixes).
+ */
+function candidateParents(slug: string): string[] {
+  const fmt = slug.match(/^shopify-(.+)-(?:woff2|woff|ttf)-font-code$/);
+  if (fmt) {
+    const t = fmt[1];
+    return [
+      `shopify-${t}-custom-font-generator`,
+      `add-custom-font-${t}-liquid`,
+      `${t}-theme-typography-css-variables`,
+      `fix-shopify-font-layout-shift-${t}`,
+    ];
+  }
+  const cmp = slug.match(/^(.+)-vs-(.+)-custom-font$/);
+  if (cmp) {
+    const [, a, b] = cmp;
+    return [
+      `fix-shopify-font-layout-shift-${a}`,
+      `fix-shopify-font-layout-shift-${b}`,
+      `${a}-theme-typography-css-variables`,
+      `${b}-theme-typography-css-variables`,
+    ];
+  }
+  return [];
+}
+
+/**
+ * Give every page at least one inbound internal link. Pages that no base
+ * builder links to (format + comparison variants) each receive a single
+ * link from a sibling page, chosen so no page's related list exceeds
+ * RELATED_MAX. Pure: returns new entries with extended relatedSlugs.
+ */
+function attachInboundLinks(entries: PseoEntry[]): PseoEntry[] {
+  const related = new Map(entries.map((e) => [e.slug, [...e.relatedSlugs]]));
+  const inboundCount = new Map<string, number>();
+  for (const arr of related.values()) {
+    for (const r of arr) inboundCount.set(r, (inboundCount.get(r) ?? 0) + 1);
+  }
+
+  for (const entry of entries) {
+    if ((inboundCount.get(entry.slug) ?? 0) > 0) continue;
+    const parent = candidateParents(entry.slug).find((p) => {
+      const list = related.get(p);
+      return (
+        list !== undefined &&
+        p !== entry.slug &&
+        list.length < RELATED_MAX &&
+        !list.includes(entry.slug)
+      );
+    });
+    if (!parent) {
+      throw new Error(
+        `No capacity to give /${entry.slug} an inbound link without ` +
+          `exceeding ${RELATED_MAX} related links on a sibling page.`,
+      );
+    }
+    related.get(parent)!.push(entry.slug);
+    inboundCount.set(entry.slug, 1);
+  }
+
+  return entries.map((e) => ({ ...e, relatedSlugs: related.get(e.slug)! }));
+}
+
+function assertNoOrphans(entries: ReadonlyArray<PseoEntry>): void {
+  const linkedSlugs = new Set<string>();
+  for (const e of entries) for (const r of e.relatedSlugs) linkedSlugs.add(r);
+  for (const e of entries) {
+    if (!linkedSlugs.has(e.slug)) {
+      throw new Error(`/${e.slug} has no inbound internal link (orphan).`);
+    }
+  }
+}
+
+function assertRelatedLinkCount(entries: ReadonlyArray<PseoEntry>): void {
+  for (const e of entries) {
+    if (e.relatedSlugs.length < 3 || e.relatedSlugs.length > RELATED_MAX) {
+      throw new Error(
+        `/${e.slug} has ${e.relatedSlugs.length} related links (must be 3–${RELATED_MAX}).`,
+      );
     }
   }
 }
