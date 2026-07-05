@@ -229,7 +229,7 @@ Top-level pages outside the per-theme generator system. These cover identity, mo
 ### About
 
 - URL: https://shopifont.app/about
-- Summary: Explains why Shopifont exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Printify affiliate partnership), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.
+- Summary: Explains why Shopifont exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (paid typography kits + a single Printify affiliate partnership), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.
 
 ### Chrome extension
 
@@ -283,7 +283,7 @@ Hand-crafted top-of-funnel guides outside the per-theme pSEO system. These cover
 ### Shopify font pairings that work (2026)
 
 - URL: https://shopifont.app/shopify-font-pairings
-- Summary: Ten concrete font pairings for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.
+- Summary: Thirteen concrete font pairings and combinations for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans, Oswald + Lora, Playfair Display + Source Sans 3, DM Sans + DM Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.
 
 ### Free Shopify font-pairing checklist
 
@@ -878,7 +878,7 @@ Shopifont is one of several independent web tools maintained by the same builder
 
 ## Privacy
 
-Shopifont runs entirely in the browser. There is no upload endpoint for the optional font preview — the file is read into memory via the FontFace API and a blob URL, never transmitted. Plausible Analytics is loaded for aggregate page views (cookie-free, no individual tracking). Microsoft Clarity captures heatmaps with sensitive form fields masked by default. Mediavine display ads, when active, follow Mediavine's own consent flow in regulated jurisdictions.
+Shopifont runs entirely in the browser. There is no upload endpoint for the optional font preview — the file is read into memory via the FontFace API and a blob URL, never transmitted. Plausible Analytics is loaded for aggregate page views (cookie-free, no individual tracking). Microsoft Clarity captures heatmaps with sensitive form fields masked by default. There is no third-party display advertising on the site.
 
 ## Licensing
 

@@ -62,7 +62,7 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
     slug: "shopify-font-pairings",
     title: "Shopify font pairings that work (2026)",
     summary:
-      "Ten concrete font pairings for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.",
+      "Thirteen concrete font pairings and combinations for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans, Oswald + Lora, Playfair Display + Source Sans 3, DM Sans + DM Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.",
     priority: 0.6,
   },
   {

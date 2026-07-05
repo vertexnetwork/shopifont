@@ -4,7 +4,7 @@ import { KitUpsell } from "@/components/KitUpsell";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, getBuildDateLabel } from "@/lib/site";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 
 export const dynamic = "force-static";
@@ -14,10 +14,10 @@ const ENTRY = EVERGREEN_ENTRIES.find(
 )!;
 
 const META_DESCRIPTION =
-  "Ten concrete Shopify font pairings with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, and more), file-weight budgets, brand fits, and the pitfall each pairing avoids. Plus the three pairings most stores reach for that almost always fail.";
+  "Thirteen Shopify font pairings and combinations with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Oswald + Lora, and more), file-weight budgets, brand fits, and the pitfall each avoids. Plus the four pairings that almost always fail.";
 
 export const metadata: Metadata = {
-  title: "Shopify Font Pairings That Work (2026)",
+  title: "Shopify Font Pairings & Combinations (2026)",
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {
@@ -175,6 +175,42 @@ const PAIRINGS: ReadonlyArray<Pairing> = [
     pitfall:
       "Two geometric sans never work — they look identical to a quick scan and you've doubled file weight for zero visual gain. Never pair Manrope with Inter, Outfit, or Poppins.",
   },
+  {
+    key: "oswald-lora",
+    heading: "Oswald",
+    body: "Lora",
+    category: "Condensed display + text serif",
+    bestFor: "Sport, streetwear, and bold editorial storefronts",
+    fileBudget: "~140KB (2 weights each, WOFF2)",
+    works:
+      "Oswald's tall, condensed caps give headlines real impact and vertical rhythm; Lora's calligraphic serif warms up the body so the store doesn't read as all-shout. The contrast between a narrow gothic and a rounded text serif is about as high as pairings get — instant hierarchy.",
+    pitfall:
+      "Oswald is headline-only. Never set it below ~24px or in sentence-case body copy — its condensed rhythm gets exhausting fast. Keep Lora at Regular for body; let Oswald own the loud part.",
+  },
+  {
+    key: "playfair-source-sans-3",
+    heading: "Playfair Display",
+    body: "Source Sans 3",
+    category: "Luxury serif + UI-legible sans",
+    bestFor: "Premium brands with spec-heavy or long-form product copy",
+    fileBudget: "~150KB (2 weights each, WOFF2)",
+    works:
+      "Playfair delivers the upmarket headline; Source Sans 3 (Adobe's open-source workhorse — most lists still call it by its retired name, Source Sans Pro) was drawn for interface legibility at small sizes, so it holds up across dense specs, filters, and policy pages better than Lato or Roboto.",
+    pitfall:
+      "Source Sans 3 is quiet by design — don't ask it to carry personality. If your body copy needs character, this isn't the pairing; if it needs to disappear so the product leads, it's ideal.",
+  },
+  {
+    key: "dm-sans-dm-sans",
+    heading: "DM Sans (Bold)",
+    body: "DM Sans (Regular)",
+    category: "Single-family pairing",
+    bestFor: "Minimal, modern DTC brands on a tight performance budget",
+    fileBudget: "~85KB (2 weights, WOFF2)",
+    works:
+      "The most contemporary single-family option here — DM Sans's low-contrast geometry reads as clean and current, and one family means half the files, no x-height mismatch, and one licensing check. A sharper, more modern alternative to Poppins + Poppins.",
+    pitfall:
+      "Like every single-family pairing, hierarchy leans entirely on weight and size — go from DM Sans Bold headings to Regular body with a real size jump, and use color for secondary text rather than reaching for a third weight.",
+  },
 ];
 
 const ANTIPATTERNS: ReadonlyArray<{ pairing: string; why: string }> = [
@@ -258,13 +294,13 @@ export default function FontPairingsPage() {
 
         <header className="flex flex-col gap-4">
           <p className="text-xs uppercase tracking-wide text-muted">
-            Curated pairings · Updated 2026
+            Curated pairings · Updated {getBuildDateLabel()}
           </p>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
             Shopify font pairings that actually work (2026)
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Ten concrete heading-and-body font combinations for Shopify
+            Thirteen concrete heading-and-body font combinations for Shopify
             storefronts — with the file-weight budget, the kind of brand
             each pairing fits, and the specific pitfall each one avoids.
             Plus the four pairings most stores reach for that almost
@@ -322,7 +358,7 @@ export default function FontPairingsPage() {
           className="flex flex-col gap-3"
         >
           <h2 id="table-heading" className="text-2xl font-bold tracking-tight">
-            Ten pairings at a glance
+            Thirteen pairings at a glance
           </h2>
           <p className="text-sm text-muted">
             Sorted by how often we&apos;d reach for each. File budgets

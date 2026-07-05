@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const FAQS: ReadonlyArray<{ q: string; a: string }> = [
   {
     q: "Does the embed cost anything?",
-    a: `No. ${SITE_NAME} is free to use and free to embed. The iframe is the same generator you'd see at the homepage — share-config and Mediavine ads are suppressed inside the embed so the partner site stays clean.`,
+    a: `No. ${SITE_NAME} is free to use and free to embed. The iframe is the same generator you'd see at the homepage — share-config and analytics are suppressed inside the embed so the partner site stays clean.`,
   },
   {
     q: "What does the embed weigh?",
@@ -173,7 +173,7 @@ export default function EmbedThisPage() {
             />
             <FeatureCard
               title="No tracking on host page"
-              body="Mediavine, Clarity, and our session-recording stack stay on the homepage. Only privacy-safe Plausible loads inside the embed."
+              body="Clarity and our session-recording stack stay on the homepage. Only privacy-safe Plausible loads inside the embed."
             />
             <FeatureCard
               title="Always up to date"

@@ -76,8 +76,8 @@ export function Footer() {
             {siteConfig.features.affiliates
               .map((a) => a.label)
               .join(" and ")}{" "}
-            links pay us a commission at no cost to you. Display ads keep the
-            rest of the lights on. Full disclosure on the{" "}
+            links pay us a commission at no cost to you — that and the paid
+            typography kits keep the tool free. Full disclosure on the{" "}
             <Link href="/about" className="underline hover:text-electric">
               About
             </Link>{" "}

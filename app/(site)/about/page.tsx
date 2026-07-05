@@ -125,18 +125,17 @@ export default function AboutPage() {
             push the paid one.
           </p>
           <p className="text-charcoal/80 leading-relaxed">
-            Two smaller revenue lines support the rest. First, an affiliate link: we work with{" "}
+            One smaller revenue line supports the rest: an affiliate link. We work with{" "}
             <strong>Printify</strong> (print-on-demand fulfillment) — if you click through and buy
             something, we receive a small commission at no extra cost to you. It carries{" "}
             <code className="font-mono text-sm">rel=&quot;sponsored&quot;</code> per Google&apos;s
-            webmaster guidelines. Second, display advertising via Mediavine, kept inside
-            Mediavine&apos;s density bounds — no interstitials, no sound-on autoplay, and
-            reserved-height ad slots so a loading ad never makes the page jump while you read.
+            webmaster guidelines. There are no display ads on the site — no ad network, no
+            interstitials, and no third-party ad trackers.
           </p>
           <p className="text-charcoal/80 leading-relaxed">
             None of this influences the editorial content. Theme metadata comes straight from
             Shopify&apos;s public Theme Store and each theme&apos;s own documentation; the font
-            recommendations are the same whether or not a kit exists for them. If advertising ever
+            recommendations are the same whether or not a kit exists for them. If monetization ever
             conflicts with the tool experience, the experience wins.
           </p>
         </section>
@@ -156,10 +155,8 @@ export default function AboutPage() {
           </p>
           <p className="text-charcoal/80 leading-relaxed">
             The optional file-preview feature loads your font in your browser only — there is no
-            upload endpoint and no telemetry attached to the file itself. Display advertising, when
-            active, is served by Mediavine and follows Mediavine&apos;s own privacy controls; users
-            in regulated jurisdictions see Mediavine&apos;s consent flow before personalized ads
-            load.
+            upload endpoint and no telemetry attached to the file itself. The site runs no display
+            advertising, so there are no ad-network cookies or ad trackers to consent to.
           </p>
         </section>
 

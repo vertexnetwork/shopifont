@@ -118,7 +118,7 @@ export const siteConfig = {
       ] as ReadonlyArray<FooterLink>,
     },
     disclaimer:
-      "Independent tool, not affiliated with Shopify Inc. Display ads + a small Printify affiliate partnership keep the tool free.",
+      "Independent tool, not affiliated with Shopify Inc. Our paid typography kits and a small Printify affiliate partnership keep the tool free.",
   },
 
   // JSON-LD ----------------------------------------------------------
