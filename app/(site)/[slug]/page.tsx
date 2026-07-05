@@ -193,6 +193,44 @@ export default async function PseoPage({ params }: PageProps) {
         </Reveal>
 
         <Reveal>
+          <section
+            aria-labelledby="choose-font-heading"
+            className="rounded-lg border border-charcoal-line/30 bg-paper-dim p-5 flex flex-col gap-2"
+          >
+            <h2
+              id="choose-font-heading"
+              className="text-sm font-semibold uppercase tracking-wide text-muted"
+            >
+              Still choosing a font?
+            </h2>
+            <p className="text-sm text-charcoal/80 leading-relaxed">
+              Browse the{" "}
+              <Link
+                href="/best-free-fonts-for-shopify"
+                className="font-medium text-electric hover:underline"
+              >
+                best free fonts for Shopify
+              </Link>{" "}
+              with performance and licensing notes, the{" "}
+              <Link
+                href="/shopify-font-pairings"
+                className="font-medium text-electric hover:underline"
+              >
+                Shopify font pairings that work
+              </Link>
+              , or run the{" "}
+              <Link
+                href="/shopify-typography-audit"
+                className="font-medium text-electric hover:underline"
+              >
+                30-second typography audit
+              </Link>{" "}
+              to get a recommendation for your store.
+            </p>
+          </section>
+        </Reveal>
+
+        <Reveal>
           <RelatedLinks slugs={entry.relatedSlugs} />
         </Reveal>
       </div>

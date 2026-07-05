@@ -16,7 +16,7 @@ const META_DESCRIPTION =
   "Step-by-step guide to removing a custom font from your Shopify Dawn theme. Cleanly reverses the @font-face block, CSS variable overrides, and settings_schema.json entry without touching anything else.";
 
 export const metadata: Metadata = {
-  title: `${ENTRY.title} | ${SITE_NAME}`,
+  title: ENTRY.title,
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

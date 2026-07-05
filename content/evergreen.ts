@@ -53,9 +53,9 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   },
   {
     slug: "best-free-fonts-for-shopify",
-    title: "The best fonts for a Shopify store (2026)",
+    title: "The best free fonts for a Shopify store (2026)",
     summary:
-      "The fonts that actually work on a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with honest notes on where each one wins or loses for ecommerce. Includes a side-by-side comparison table, pairing suggestions, and a premium-options section.",
+      "The best free fonts for a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the ten popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora, Lato, Source Sans 3, DM Sans, Oswald) most lists recommend, with honest notes on where each wins or loses for ecommerce. Includes a side-by-side comparison table, per-theme picks, pairing suggestions, and a premium-options section.",
     priority: 0.6,
   },
   {

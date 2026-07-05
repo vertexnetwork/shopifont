@@ -17,7 +17,7 @@ const META_DESCRIPTION =
   "The print-on-demand and sister tools we recommend for Shopify merchants. Affiliate-tagged where applicable; commissions disclosed.";
 
 export const metadata: Metadata = {
-  title: `${ENTRY.title} | ${SITE_NAME}`,
+  title: ENTRY.title,
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

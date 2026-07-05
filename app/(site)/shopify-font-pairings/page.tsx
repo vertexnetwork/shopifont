@@ -17,7 +17,7 @@ const META_DESCRIPTION =
   "Ten concrete Shopify font pairings with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, and more), file-weight budgets, brand fits, and the pitfall each pairing avoids. Plus the three pairings most stores reach for that almost always fail.";
 
 export const metadata: Metadata = {
-  title: `Shopify Font Pairings That Work (2026) | ${SITE_NAME}`,
+  title: "Shopify Font Pairings That Work (2026)",
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

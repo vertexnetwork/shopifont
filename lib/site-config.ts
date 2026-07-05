@@ -234,6 +234,16 @@ export function absoluteUrl(path: string): string {
 }
 
 /**
+ * The date the site — and its cornerstone evergreen content — first went
+ * live (the repo's first commit). Used as `datePublished` in Article
+ * schema so publication stays distinct from `dateModified` (the last
+ * content deploy). A published date that equals the modified date on
+ * every deploy is a synthetic-uniformity tell; anchoring publication to
+ * the real launch date removes it honestly (audit Dimension #6).
+ */
+export const SITE_LAUNCH_ISO = "2026-05-06T00:00:00.000Z";
+
+/**
  * Timestamp surfaced as the "last updated" trust signal across pSEO
  * pages and in Article schema. Sourced from the deploy's git commit date
  * (the same honest signal the sitemap's `lastmod` uses) so it only moves

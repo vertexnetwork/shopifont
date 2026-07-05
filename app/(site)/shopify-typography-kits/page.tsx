@@ -17,7 +17,7 @@ const META_DESCRIPTION =
   "Done-for-you Shopify typography. Each kit is a proven font pairing for your store type, with copy-paste install code pre-built for all 13 free OS 2.0 themes, a visual specimen, the licensing cleared, and a clean uninstall sheet. One-time, instant download, no account.";
 
 export const metadata: Metadata = {
-  title: `Shopify Typography Kits — done-for-you font pairings | ${SITE_NAME}`,
+  title: { absolute: `Shopify Typography Kits — done-for-you font pairings | ${SITE_NAME}` },
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

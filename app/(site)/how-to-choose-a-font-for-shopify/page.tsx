@@ -14,7 +14,7 @@ const META_DESCRIPTION =
   "A practical decision framework for choosing a custom font for your Shopify store. Covers brand fit, performance budget, licensing, weight selection, pairing, and the pitfalls that bite ecommerce stores specifically.";
 
 export const metadata: Metadata = {
-  title: `${ENTRY.title} | ${SITE_NAME}`,
+  title: ENTRY.title,
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

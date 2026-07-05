@@ -1,5 +1,5 @@
 import { JsonLd } from "./JsonLd";
-import { BUILD_DATE_ISO, SITE_NAME, absoluteUrl } from "@/lib/site";
+import { BUILD_DATE_ISO, SITE_LAUNCH_ISO, SITE_NAME, absoluteUrl } from "@/lib/site";
 
 /**
  * Article JSON-LD for the evergreen guide pages — content articles
@@ -7,23 +7,28 @@ import { BUILD_DATE_ISO, SITE_NAME, absoluteUrl } from "@/lib/site";
  * SoftwareApplicationSchema because they bundle a tool; the evergreen
  * pages are pure prose, so Article is the right schema.org fit.
  *
- * `datePublished` and `dateModified` both use BUILD_DATE_ISO. These
- * pages rebuild on every deploy, and the underlying advice is
- * evergreen — so a refreshed dateModified each deploy correctly
- * signals to Google + AI extractors that the content is actively
- * maintained.
+ * `dateModified` uses BUILD_DATE_ISO (the last content deploy's commit
+ * date) so a refresh each real content change signals active
+ * maintenance to Google + AI extractors. `datePublished` defaults to
+ * SITE_LAUNCH_ISO (the site's first-commit date) so the two stay
+ * distinct — published == modified on every deploy is a machine-stamped
+ * tell. Pass `datePublished` to override when a page's true first-
+ * published date differs from launch.
  */
 export function ArticleSchema({
   id,
   title,
   description,
   path,
+  datePublished,
 }: {
   id: string;
   title: string;
   description: string;
   /** Canonical path including leading slash, e.g. "/uninstall-custom-font-shopify". */
   path: string;
+  /** ISO date the article was first published. Defaults to SITE_LAUNCH_ISO. */
+  datePublished?: string;
 }) {
   const url = absoluteUrl(path);
   const data = {
@@ -37,7 +42,7 @@ export function ArticleSchema({
       "@id": url,
     },
     inLanguage: "en-US",
-    datePublished: BUILD_DATE_ISO,
+    datePublished: datePublished ?? SITE_LAUNCH_ISO,
     dateModified: BUILD_DATE_ISO,
     author: {
       "@type": "Organization",
