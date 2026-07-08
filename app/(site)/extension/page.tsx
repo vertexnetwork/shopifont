@@ -9,7 +9,7 @@ const EXTENSION_DESCRIPTION =
   `The ${SITE_NAME} Chrome extension generates Shopify @font-face CSS, settings_schema.json, and CSS variable overrides directly from a popup — no tab switch, no upload, no telemetry. Built for all 13 free Shopify OS 2.0 themes.`;
 
 export const metadata: Metadata = {
-  title: `Chrome Extension — ${SITE_NAME}`,
+  title: "Chrome Extension",
   description: EXTENSION_DESCRIPTION,
   alternates: { canonical: "/extension" },
   openGraph: {

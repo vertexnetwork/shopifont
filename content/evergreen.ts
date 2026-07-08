@@ -53,16 +53,16 @@ export const EVERGREEN_ENTRIES: ReadonlyArray<EvergreenEntry> = [
   },
   {
     slug: "best-free-fonts-for-shopify",
-    title: "The best fonts for a Shopify store (2026)",
+    title: "The best free fonts for a Shopify store (2026)",
     summary:
-      "The fonts that actually work on a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with honest notes on where each one wins or loses for ecommerce. Includes a side-by-side comparison table, pairing suggestions, and a premium-options section.",
+      "The best free fonts for a Shopify storefront in 2026 — six curated picks for stores that care about performance and brand fit, plus the ten popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora, Lato, Source Sans 3, DM Sans, Oswald) most lists recommend, with honest notes on where each wins or loses for ecommerce. Includes a side-by-side comparison table, per-theme picks, pairing suggestions, and a premium-options section.",
     priority: 0.6,
   },
   {
     slug: "shopify-font-pairings",
     title: "Shopify font pairings that work (2026)",
     summary:
-      "Ten concrete font pairings for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.",
+      "Thirteen concrete font pairings and combinations for Shopify stores, with named heading + body fonts (Fraunces + Inter, Playfair Display + Lato, Montserrat + Open Sans, Lora + Open Sans, Outfit + Public Sans, Poppins + Poppins, Inter + Inter, Playfair Display + Roboto, IBM Plex Sans + IBM Plex Serif, Manrope + IBM Plex Sans, Oswald + Lora, Playfair Display + Source Sans 3, DM Sans + DM Sans), the kind of brand each pairing fits, the total WOFF2 file budget, and the pitfall each pairing avoids. Includes a section on pairings to avoid and why.",
     priority: 0.6,
   },
   {

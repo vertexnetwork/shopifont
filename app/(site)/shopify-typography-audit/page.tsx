@@ -17,7 +17,7 @@ const META_DESCRIPTION =
   "Free 30-second Shopify typography audit. Answer four questions about your theme and store and see exactly why your fonts make the store read as stock — plus the done-for-you pairing that fixes it. No signup, runs in your browser.";
 
 export const metadata: Metadata = {
-  title: `Shopify Typography Audit — is your store's font hurting it? | ${SITE_NAME}`,
+  title: { absolute: `Shopify Typography Audit — is your store's font hurting it? | ${SITE_NAME}` },
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

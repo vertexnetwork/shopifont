@@ -4,7 +4,7 @@ import { KitUpsell } from "@/components/KitUpsell";
 import { ArticleSchema } from "@/components/Schema/ArticleSchema";
 import { BreadcrumbSchema } from "@/components/Schema/BreadcrumbSchema";
 import { FaqSchema } from "@/components/Schema/FaqSchema";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, getBuildDateLabel } from "@/lib/site";
 import { EVERGREEN_ENTRIES } from "@/content/evergreen";
 
 export const dynamic = "force-static";
@@ -12,10 +12,10 @@ export const dynamic = "force-static";
 const ENTRY = EVERGREEN_ENTRIES.find((e) => e.slug === "best-free-fonts-for-shopify")!;
 
 const META_DESCRIPTION =
-  "The best fonts for a Shopify store in 2026 — six curated picks for performance-first storefronts plus the six popular fonts (Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora) most lists recommend, with side-by-side weight, file-size, and license data.";
+  "The best free fonts for a Shopify store in 2026 — 16 performance-first picks with weight, file-size and license data, plus the exact CSS to install each.";
 
 export const metadata: Metadata = {
-  title: `Best Fonts for Shopify Stores (2026) | ${SITE_NAME}`,
+  title: "Best Free Fonts for Shopify (2026)",
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {
@@ -180,6 +180,46 @@ const POPULAR_ALTERNATIVES: ReadonlyArray<FontPick> = [
     description:
       "A serif designed for body copy (not headlines) — calligraphic roots, comfortable at long reading lengths. Good fit for content-heavy stores (cookbooks, journals, curated-goods brands with detailed product stories). Pair with a neutral sans like Inter or Public Sans for headings.",
   },
+  {
+    name: "Lato",
+    source: "Google Fonts · SIL OFL",
+    category: "Humanist sans",
+    bestFor: "Warm, approachable brands that still want to look clean",
+    weights: "100 → 900, italic",
+    fileSize: "~34KB / weight (WOFF2)",
+    description:
+      "One of the most-installed Google Fonts on the web — semi-rounded details give it a warmer feel than Inter or Roboto without giving up clarity. Works for both headings and body. The catch is Montserrat's catch: it's everywhere, so it reads as safe rather than distinctive. Reach for it when friendliness matters more than standing out.",
+  },
+  {
+    name: "Source Sans 3",
+    source: "Google Fonts · SIL OFL",
+    category: "Humanist sans",
+    bestFor: "Interface-dense stores that need small-size legibility",
+    weights: "200 → 900, italic",
+    fileSize: "~33KB / weight (WOFF2)",
+    description:
+      "Adobe's first open-source typeface, redrawn and renamed in 2020 — most other “best Shopify fonts” lists still call it by its retired name, Source Sans Pro. Built for UI legibility at small sizes, which makes it a strong body face for spec tables, filters, and long product descriptions. Public Sans covers similar ground on a slightly tighter file budget; pick Source Sans 3 if you want a touch more warmth.",
+  },
+  {
+    name: "DM Sans",
+    source: "Google Fonts · SIL OFL",
+    category: "Geometric sans",
+    bestFor: "Minimal, modern DTC brands",
+    weights: "100 → 1000, italic, optical sizes",
+    fileSize: "~30KB / weight (WOFF2)",
+    description:
+      "Low-contrast geometric sans with tight, even spacing — reads as clean and contemporary, which is why it has become a default in minimalist DTC and SaaS-adjacent stores. Its 2023 update pushed the range to a full Thin → ExtraBlack with an optical-size axis, so one family covers both fine print and large display. Close in spirit to Poppins but more restrained — choose DM Sans when you want modern-neutral over friendly-round.",
+  },
+  {
+    name: "Oswald",
+    source: "Google Fonts · SIL OFL",
+    category: "Condensed sans",
+    bestFor: "Headlines for sport, streetwear, and bold promo copy",
+    weights: "200 → 700",
+    fileSize: "~28KB / weight (WOFF2)",
+    description:
+      "A tall, narrow gothic — the free stand-in for the Bebas-Neue-style condensed look you see on sport and streetwear brands. Excellent for short, loud headlines and price or promo callouts where you want impact and vertical rhythm. Do not set body copy in it: condensed faces get exhausting past a line or two. Pair it with a plain neutral body face like Public Sans or Inter.",
+  },
 ];
 
 /**
@@ -207,6 +247,60 @@ const PAIRINGS_TEASER: ReadonlyArray<{
     heading: "Poppins",
     body: "Poppins",
     note: "Single-family pairing — Bold for headings, Regular for body. Cleanest performance budget; hardest to mess up.",
+  },
+];
+
+/**
+ * Per-theme starting points. Grounded in each theme's store category and
+ * editorial `verticalAngle` (advice that's true regardless of theme
+ * internals) — NOT in unverified default-font claims. Only Dawn's
+ * default (Assistant) is cited, because it's the one theme with
+ * `defaultsVerified: true` in content/themes.ts. Every row routes to a
+ * live generator page (the five tier-1 slugs also in the footer nav) —
+ * this is the entity space no competitor list touches (none of them
+ * name a single Shopify theme).
+ */
+const THEME_PICKS: ReadonlyArray<{
+  theme: string;
+  slug: string;
+  storeType: string;
+  pick: string;
+  why: string;
+}> = [
+  {
+    theme: "Dawn",
+    slug: "dawn",
+    storeType: "General-purpose — the theme every new store starts on",
+    pick: "Inter, or a Fraunces heading",
+    why: "Dawn ships Assistant as its default font, so it's the look every un-customized Shopify store shares. Swapping the heading face is the single fastest way to stop reading as stock.",
+  },
+  {
+    theme: "Sense",
+    slug: "sense",
+    storeType: "Health, beauty & personal care",
+    pick: "Public Sans, or a Fraunces heading",
+    why: "Wellness brands read as trustworthy with a calm, low-contrast face — keep ingredient and usage copy easy to scan rather than stylized.",
+  },
+  {
+    theme: "Refresh",
+    slug: "refresh",
+    storeType: "Sport & energy",
+    pick: "Oswald headings + Public Sans body",
+    why: "A tall condensed face carries momentum for sport and energy brands; keep the body utilitarian so spec and price copy stays readable at a glance.",
+  },
+  {
+    theme: "Crave",
+    slug: "crave",
+    storeType: "Food & beverage",
+    pick: "Outfit, or Fraunces",
+    why: "A characterful, slightly oversized heading matches appetite-appeal photography, balanced by a plain body face so nutrition and shipping details don't compete.",
+  },
+  {
+    theme: "Origin",
+    slug: "origin",
+    storeType: "Home & furniture",
+    pick: "Fraunces headings + Lora body",
+    why: "Home and furniture stores lean editorial — a refined serif suits long product descriptions and lifestyle storytelling.",
   },
 ];
 
@@ -273,13 +367,15 @@ export default function BestFontsPage() {
         </nav>
 
         <header className="flex flex-col gap-4">
-          <p className="text-xs uppercase tracking-wide text-muted">Curated list · Updated 2026</p>
+          <p className="text-xs uppercase tracking-wide text-muted">
+            Curated list · Updated {getBuildDateLabel()}
+          </p>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight leading-tight">
-            The best fonts for a Shopify store (2026)
+            The best free fonts for a Shopify store (2026)
           </h1>
           <p className="text-base sm:text-lg text-charcoal/80">
-            Twelve fonts that actually work on a Shopify storefront — six curated picks for
-            performance-first stores, plus the six popular fonts most lists recommend, with honest
+            Sixteen fonts that actually work on a Shopify storefront — six curated picks for
+            performance-first stores, plus the ten popular fonts most lists recommend, with honest
             notes on where each one wins or loses. Every font on this list is free, commercially
             licensed, and self-hostable as WOFF2.
           </p>
@@ -383,13 +479,14 @@ export default function BestFontsPage() {
         <section aria-labelledby="popular-heading" className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <h2 id="popular-heading" className="text-2xl font-bold tracking-tight">
-              The six popular alternatives every other list recommends
+              The ten popular alternatives every other list recommends
             </h2>
             <p className="text-sm text-muted">
               These are the fonts you&apos;ll see on every &ldquo;best Shopify fonts&rdquo; list —
-              Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora. They&apos;re all good
-              fonts. Below, honest notes on where each one is the right call and where one of the
-              curated picks above beats it for ecommerce specifically.
+              Montserrat, Roboto, Poppins, Playfair Display, Open Sans, Lora, Lato, Source Sans 3, DM
+              Sans, and Oswald. They&apos;re all good fonts. Below, honest notes on where each one is
+              the right call and where one of the curated picks above beats it for ecommerce
+              specifically.
             </p>
           </div>
           {POPULAR_ALTERNATIVES.map((pick, idx) => (
@@ -454,6 +551,44 @@ export default function BestFontsPage() {
           </p>
         </section>
 
+        <section aria-labelledby="by-theme-heading" className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h2 id="by-theme-heading" className="text-2xl font-bold tracking-tight">
+              Best fonts by Shopify theme
+            </h2>
+            <p className="text-sm text-muted">
+              The right pick shifts with your theme&apos;s built-in personality and the kind of store
+              it&apos;s built for. Starting points for the five most-installed free themes — each row
+              links to a generator you can drop the font straight into.
+            </p>
+          </div>
+          <ul className="flex flex-col gap-3">
+            {THEME_PICKS.map((t) => (
+              <li
+                key={t.slug}
+                className="flex flex-col gap-1.5 rounded-lg border border-charcoal-line/30 bg-paper p-4"
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <p className="font-semibold tracking-tight">
+                    {t.theme}
+                    <span className="ml-2 text-xs font-normal text-muted">{t.storeType}</span>
+                  </p>
+                  <Link
+                    href={`/shopify-${t.slug}-custom-font-generator`}
+                    className="text-sm text-electric hover:underline whitespace-nowrap"
+                  >
+                    {t.theme} font generator →
+                  </Link>
+                </div>
+                <p className="text-sm">
+                  <span className="font-bold">Try:</span> {t.pick}
+                </p>
+                <p className="text-sm text-charcoal/80 leading-relaxed">{t.why}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section className="flex flex-col gap-3">
           <h2 className="text-2xl font-bold tracking-tight">
             How to install any of these on Shopify
@@ -504,6 +639,43 @@ export default function BestFontsPage() {
               Fabrica or Envato Elements bundle the commercial license into a low per-font cost — no
               per-pageview tier math, full breadth across display and body styles. Just confirm the
               license explicitly covers web/embedding before you ship it to a storefront.
+            </li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="real-stores-heading" className="flex flex-col gap-4">
+          <h2 id="real-stores-heading" className="text-2xl font-bold tracking-tight">
+            What real Shopify stores actually use
+          </h2>
+          <p className="text-charcoal/80 leading-relaxed">
+            Most &ldquo;best fonts&rdquo; lists tell you a big brand uses a specific font. Be
+            skeptical: those claims are often wrong, and even when they&apos;re right the font is
+            usually one you can&apos;t download. Three things that are actually true and useful:
+          </p>
+          <ul className="list-disc pl-6 flex flex-col gap-2 text-charcoal/80 leading-relaxed">
+            <li>
+              <strong>The default you&apos;re escaping is Assistant.</strong> Dawn — Shopify&apos;s
+              flagship free theme and the one most new stores launch on — ships Assistant as its
+              default font. If a store hasn&apos;t touched its typography, that neutral Assistant look
+              is usually what you&apos;re seeing, and it&apos;s why so many stores feel
+              interchangeable.
+            </li>
+            <li>
+              <strong>The biggest brands buy custom or licensed type you can&apos;t download.</strong>{" "}
+              Allbirds&apos; identity came from a brand agency (Red Antler); luxury houses license
+              private typefaces. That&apos;s why &ldquo;what font does [brand] use&rdquo; often has no
+              free answer — the win is matching the category <em>feel</em>, not hunting the exact
+              file. The picks above are the closest honest free stand-ins.
+            </li>
+            <li>
+              <strong>You can check any store yourself in ten seconds.</strong> Right-click a heading
+              on any storefront, choose <em>Inspect</em>, and read the{" "}
+              <code className="font-mono text-xs">font-family</code> line under Computed styles. Match
+              the closest free equivalent from the list above, then{" "}
+              <Link href="/" className="text-electric hover:underline">
+                run it through the generator
+              </Link>{" "}
+              to get the install code.
             </li>
           </ul>
         </section>

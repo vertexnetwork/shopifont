@@ -14,7 +14,7 @@ const META_DESCRIPTION =
   "Free six-axis font-pairing checklist for Shopify storefronts — brand fit, contrast, x-height, weight availability, performance budget, licensing. Opens as a printable PDF the moment you submit your email.";
 
 export const metadata: Metadata = {
-  title: `${ENTRY.title} | ${SITE_NAME}`,
+  title: ENTRY.title,
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {

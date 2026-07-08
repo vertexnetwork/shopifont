@@ -114,21 +114,25 @@ export default function PrivacyPage() {
         </Section>
 
         <Section title="Advertising">
-          <p>
-            This site is funded by display advertising. Currently active:{" "}
-            <strong>{adProviderLabel}</strong>.
-          </p>
           {adProvider !== "none" ? (
-            <p>
-              Ad networks may set their own cookies and use device identifiers
-              to serve and measure advertising. They follow their own privacy
-              and consent flows in regulated jurisdictions (GDPR, CCPA,
-              ePrivacy). Where the law requires consent for personalized ads,
-              the ad network presents that flow before personalized ads load.
-            </p>
+            <>
+              <p>
+                This site displays ads via <strong>{adProviderLabel}</strong>.
+              </p>
+              <p>
+                Ad networks may set their own cookies and use device identifiers
+                to serve and measure advertising. They follow their own privacy
+                and consent flows in regulated jurisdictions (GDPR, CCPA,
+                ePrivacy). Where the law requires consent for personalized ads,
+                the ad network presents that flow before personalized ads load.
+              </p>
+            </>
           ) : (
             <p>
-              No third-party ad scripts run on the site at the moment.
+              This site runs <strong>no display advertising</strong> — no ad
+              network, no ad cookies, and no ad trackers. {siteConfig.name} is
+              supported by its paid Typography Kits and the affiliate partnership
+              below.
             </p>
           )}
         </Section>

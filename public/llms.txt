@@ -41,7 +41,7 @@ All generation is pure client-side string interpolation. No file is uploaded; th
 - https://shopifont.app/shopify-typography-kits  — Shopify Typography Kits — done-for-you font pairings
 - https://shopifont.app/uninstall-custom-font-shopify  — How to uninstall a custom font from a Shopify theme
 - https://shopifont.app/how-to-choose-a-font-for-shopify  — How to choose a font for your Shopify store
-- https://shopifont.app/best-free-fonts-for-shopify  — The best fonts for a Shopify store (2026)
+- https://shopifont.app/best-free-fonts-for-shopify  — The best free fonts for a Shopify store (2026)
 - https://shopifont.app/shopify-font-pairings  — Shopify font pairings that work (2026)
 - https://shopifont.app/font-pairing-checklist  — Free Shopify font-pairing checklist
 - https://shopifont.app/recommendations  — Recommended Shopify tools

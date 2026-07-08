@@ -153,7 +153,7 @@ export function buildLlmsFullTxt(): string {
   lines.push("");
   lines.push(`- URL: ${baseUrl}/about`);
   lines.push(
-    `- Summary: Explains why ${SITE_NAME} exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (Mediavine display ads + a single Printify affiliate partnership), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.`,
+    `- Summary: Explains why ${SITE_NAME} exists, how the tool is built (static Next.js export, pure client-side string interpolation, no server), how the site stays free (paid typography kits + a single Printify affiliate partnership), and the privacy posture (Plausible + Clarity, no upload endpoint for the optional preview). Includes contact email and the trademark disclaimer.`,
   );
   lines.push("");
 
@@ -246,7 +246,7 @@ export function buildLlmsFullTxt(): string {
   lines.push("## Privacy");
   lines.push("");
   lines.push(
-    `${SITE_NAME} runs entirely in the browser. There is no upload endpoint for the optional font preview — the file is read into memory via the FontFace API and a blob URL, never transmitted. Plausible Analytics is loaded for aggregate page views (cookie-free, no individual tracking). Microsoft Clarity captures heatmaps with sensitive form fields masked by default. Mediavine display ads, when active, follow Mediavine's own consent flow in regulated jurisdictions.`,
+    `${SITE_NAME} runs entirely in the browser. There is no upload endpoint for the optional font preview — the file is read into memory via the FontFace API and a blob URL, never transmitted. Plausible Analytics is loaded for aggregate page views (cookie-free, no individual tracking). Microsoft Clarity captures heatmaps with sensitive form fields masked by default. There is no third-party display advertising on the site.`,
   );
   lines.push("");
   lines.push("## Licensing");

@@ -17,7 +17,7 @@ const META_DESCRIPTION =
   "The print-on-demand and sister tools we recommend for Shopify merchants. Affiliate-tagged where applicable; commissions disclosed.";
 
 export const metadata: Metadata = {
-  title: `${ENTRY.title} | ${SITE_NAME}`,
+  title: ENTRY.title,
   description: META_DESCRIPTION,
   alternates: { canonical: `/${ENTRY.slug}` },
   openGraph: {
@@ -175,8 +175,7 @@ export default async function RecommendationsPage() {
           <strong className="text-charcoal block mb-1">Why we disclose this</strong>
           Affiliate commissions cover the hosting and domain costs of running {SITE_NAME} as a free
           tool. We list only services we&apos;d use ourselves; if a recommendation here turns out
-          not to hold up, we&apos;ll pull it. Mediavine display ads (when active) and AdSense (when
-          active) cover the rest.
+          not to hold up, we&apos;ll pull it. Our paid Typography Kits cover the rest.
         </section>
       </article>
     </>

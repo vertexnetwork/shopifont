@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 const NETWORK_DESCRIPTION = `${NETWORK_BRAND} is a small collection of independent web tools for online sellers and small operators. Each tool is free, requires no account, and solves one specific operational problem.`;
 
 export const metadata: Metadata = {
-  title: `${NETWORK_BRAND} — ${siteConfig.name}`,
+  title: { absolute: `${NETWORK_BRAND} — ${siteConfig.name}` },
   description: NETWORK_DESCRIPTION,
   alternates: { canonical: "/network" },
   openGraph: {

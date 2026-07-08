@@ -11,7 +11,13 @@
 
 import { siteConfig } from "./site-config";
 
-export { siteConfig, absoluteUrl, BUILD_DATE_ISO, getBuildDateLabel } from "./site-config";
+export {
+  siteConfig,
+  absoluteUrl,
+  BUILD_DATE_ISO,
+  SITE_LAUNCH_ISO,
+  getBuildDateLabel,
+} from "./site-config";
 
 export const SITE_NAME = siteConfig.name;
 export const SITE_TAGLINE = siteConfig.tagline;

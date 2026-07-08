@@ -138,7 +138,7 @@ function buildGeneratorEntry(theme: ThemeMeta): PseoEntry {
     theme: theme.name,
     intent: "generator",
     h1,
-    metaTitle: clampTitle(`${theme.name} Custom Font Generator | Shopify`),
+    metaTitle: clampTitle(`Shopify ${theme.name} Custom Font Generator`),
     metaDescription: clampDescription(
       `Generate copy-paste @font-face CSS, settings_schema.json, and CSS variable overrides for the Shopify ${theme.name} theme. Free, no signup, zero CLS.`,
     ),
@@ -240,9 +240,9 @@ function buildCssVarTutorialEntry(theme: ThemeMeta): PseoEntry {
     theme: theme.name,
     intent: "tutorial",
     h1,
-    metaTitle: clampTitle(`${theme.name} Typography CSS Variables Guide`),
+    metaTitle: clampTitle(`${theme.name} Theme Typography CSS Variables`),
     metaDescription: clampDescription(
-      `Reference for the six CSS custom properties that control typography in the Shopify ${theme.name} theme, plus the override pattern that survives upgrades.`,
+      `The six CSS variables that control fonts in Shopify ${theme.name} — plus the copy-paste :root override that swaps typography site-wide and survives theme updates.`,
     ),
     oneLineAnswer,
     intro,
